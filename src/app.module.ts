@@ -11,6 +11,8 @@ import { MessageModule } from './modules/message/message.module';
 import { ChannelModule } from './modules/channel/channel.module';
 import { WhatsappModule } from './modules/whatsapp/whatsapp.module';
 import { ConfigService } from './shared/config.service';
+import { SlackModule } from './modules/slack/slack.module';
+import { WorkspaceModel } from './modules/workspace/workspace.model';
 
 @Module({
   imports: [
@@ -22,14 +24,15 @@ import { ConfigService } from './shared/config.service';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DATABASE,
-      entities: [],
-      synchronize: true,
+      entities: [WorkspaceModel],
+      synchronize: false,
     }),
     UserModule,
     WorkspaceModule,
     MessageModule,
     ChannelModule,
-    WhatsappModule
+    WhatsappModule,
+    SlackModule
   ],
   controllers: [AppController],
   providers: [AppService, ConfigService, SlackService],

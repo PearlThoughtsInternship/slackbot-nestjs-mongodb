@@ -1,16 +1,25 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { OauthAccessDto } from '../slack/dto/OauthAccessDto';
+import { WorkspaceModel } from './workspace.model';
 
 @Injectable()
 export class WorkspaceService {
-    getAddRedirectUri = () => {
-        return `${apiUrl}/slack/oauth_redirect`;
-    };
-    
-    getSigninRedirectUri = () => {
-        return `${apiUrl}/slack/signin`;
-    };
-    
-    getTeamRoute = ({ teamId, teamName }, userId) => {
-        return `${apiUrl}/team/${teamId}/${userId}/${teamName}`;
-    };
+    constructor(@InjectRepository(WorkspaceModel) private readonly _workspaceModel: Repository<WorkspaceModel>) {
+
+    }
+  
+    async findOne(query): Promise<WorkspaceModel> {
+        return this._workspaceModel.findOne(query);
+    }
+
+    async create(data: OauthAccessDto): Promise<WorkspaceModel> {
+        return this._workspaceModel.create({
+            team_id: data.team.id,
+            name: data.team.name,
+            userId: data.authed_user.id,
+            accessToken: data.access_token
+        });
+    }
 }
