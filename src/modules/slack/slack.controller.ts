@@ -12,6 +12,11 @@ export class SlackController {
 
     }
 
+    @Get('signin')
+    async signin(@Request() req, @Response() res) {
+        res.status(HttpStatus.OK).send(`Thanks!`);
+    }
+
     @Get('install')
     async install(@Request() req, @Response() res) {
         const params = {
@@ -21,21 +26,27 @@ export class SlackController {
             redirect_uri: encodeURI(`${this._configService.get('APP_URL')}/slack/oauth_redirect`),
             state:""
         };
+        console.log("paramsparamsparams");
+        console.log(params);
         const url = `https://slack.com/oauth/v2/authorize?${stringify(params)}`;
-
+        console.log(url);
         return res.status(HttpStatus.FOUND).redirect(url);
     }
 
     @Get('oauth_redirect')
     async add(@Request() req, @Res() res) {
+        console.log("mndmasnmdamns");
         const { code } = req.query;
+        console.log(req.query);
         const data = await this._slackService.oauthAccess(
             code,
-            `${this._configService.get('APP_URL')}/slack/signin`,
+            `${this._configService.get('APP_URL')}/slack/oauth_redirect`,
         ) as OauthAccessDto;
+        console.log("datadatadatadata");
+        console.log(data);
         if (data.ok) {
             const { team, authed_user } = data;
-            let workspace = await this._workspaceService.findOne({team_id: team.id});
+            let workspace = await this._workspaceService.findOne({teamId: team.id});
             
             if (!workspace) {
                 workspace = await this._workspaceService.create(data);

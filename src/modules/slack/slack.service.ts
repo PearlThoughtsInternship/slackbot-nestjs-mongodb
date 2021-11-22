@@ -24,6 +24,8 @@ export class SlackService {
             client_secret: this._clientSecret,
             redirect_uri: redirectUri,
         };
+        console.log("datadatadatadata");
+        console.log(data);
         let response;
         try {
             response = await this._webClient.oauth.v2.access(data);

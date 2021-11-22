@@ -1,20 +1,20 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Entity({ name: 'workspace' })
 export class WorkspaceModel {
 
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ name: "id" })
   id: number;
 
-  @Column()
+  @Column({ name: "name" })
   name: string;
 
-  @Column()
+  @Column({ name: "userId" })
   userId: string;
 
-  @Column()
+  @Column({ name: "accessToken" })
   accessToken: string;
 
-  @Column()
-  team_id: string;
+  @Column({ name: "team_id" })
+  teamId: string;
 }

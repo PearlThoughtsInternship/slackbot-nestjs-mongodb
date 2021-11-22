@@ -15,11 +15,11 @@ export class WorkspaceService {
     }
 
     async create(data: OauthAccessDto): Promise<WorkspaceModel> {
-        return this._workspaceModel.create({
-            team_id: data.team.id,
+        return this._workspaceModel.save({
+            teamId: data.team.id,
             name: data.team.name,
             userId: data.authed_user.id,
-            accessToken: data.access_token
+            accessToken: data.access_token,
         });
     }
 }

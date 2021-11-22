@@ -8,11 +8,18 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user/user.module';
 import { WorkspaceModule } from './modules/workspace/workspace.module';
 import { MessageModule } from './modules/message/message.module';
-import { ChannelModule } from './modules/channel/channel.module';
-import { WhatsappModule } from './modules/whatsapp/whatsapp.module';
+// import { MessageModule } from './modules/message/message.module';
+// import { ChannelModule } from './modules/channel/channel.module';
+// import { WhatsappModule } from './modules/whatsapp/whatsapp.module';
 import { ConfigService } from './shared/config.service';
 import { SlackModule } from './modules/slack/slack.module';
 import { WorkspaceModel } from './modules/workspace/workspace.model';
+import { MessageModel } from './modules/message/message.model';
+import { ChannelModel } from './modules/channel/channel.model';
+import { ChannelModule } from './modules/channel/channel.module';
+import { MessageController } from './modules/message/message.controller';
+import { WorkspaceService } from 'src/modules/workspace/workspace.service';
+import { ChannelService } from 'src/modules/channel/channel.service';
 
 @Module({
   imports: [
@@ -24,22 +31,23 @@ import { WorkspaceModel } from './modules/workspace/workspace.model';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DATABASE,
-      entities: [WorkspaceModel],
+      entities: [WorkspaceModel, MessageModel, ChannelModel],
       synchronize: false,
     }),
     UserModule,
     WorkspaceModule,
     MessageModule,
     ChannelModule,
-    WhatsappModule,
+    // MessageModule,
+    // WhatsappModule,
     SlackModule
   ],
-  controllers: [AppController],
-  providers: [AppService, ConfigService, SlackService],
+  controllers: [AppController, MessageController],
+  providers: [AppService, ConfigService, SlackService, ChannelService],
 })
 export class AppModule {
 
-  constructor(private slackService: SlackService) {
+  constructor(private slackService: SlackService, private _workspaceService: WorkspaceService) {
 
   }
 
@@ -50,11 +58,11 @@ export class AppModule {
       clientSecret: process.env.SLACK_CLIENT_SECRET,
       scopes: "",
       authorize: async ({ teamId, enterpriseId }) => {
-        // const data = await this.workspaceRepository.findByTeamId(teamId);
-        // return {
-        //     botToken: data.accessToken,
-        //     botId: data.userId
-        // };
+        let data = await this._workspaceService.findOne({teamId: teamId});
+        return {
+            botToken: data.accessToken,
+            botId: data.userId
+        };
       },
       receiver,
     });
