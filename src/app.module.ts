@@ -22,6 +22,10 @@ import { MessageController } from './modules/message/message.controller';
 import { WorkspaceService } from 'src/modules/workspace/workspace.service';
 import { ChannelService } from 'src/modules/channel/channel.service';
 import { SlackApiService } from './modules/slack/slack.service';
+import { SubscriptionService } from 'src/providers/subscription.service';
+import { UnsubscriptionService } from 'src/providers/unsubscription.service';
+import { OtpService } from 'src/providers/otp.service';
+import { OriginalButtonService } from 'src/providers/orgBtn.service';
 
 @Module({
   imports: [
@@ -44,7 +48,17 @@ import { SlackApiService } from './modules/slack/slack.service';
     SlackApiModule
   ],
   controllers: [AppController, MessageController],
-  providers: [AppService, ConfigService, SlackService, ChannelService, SlackApiService],
+  providers: [
+    AppService,
+    ConfigService,
+    SlackService,
+    ChannelService,
+    SlackApiService,
+    SubscriptionService,
+    UnsubscriptionService,
+    OtpService,
+    OriginalButtonService
+  ],
 })
 export class AppModule {
 
