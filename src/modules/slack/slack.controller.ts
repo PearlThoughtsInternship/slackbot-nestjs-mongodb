@@ -1,14 +1,14 @@
 import { Controller, Post, Request, Get, Response, HttpStatus, Res } from '@nestjs/common';
 import { ConfigService } from '../../shared/config.service';
 import { WorkspaceService } from 'src/modules/workspace/workspace.service';
-import { SlackService } from './slack.service';
+import { SlackApiService } from './slack.service';
 import { stringify } from 'querystring';
 import { OauthAccessDto } from './dto/OauthAccessDto';
 
 @Controller('slack')
 export class SlackController {
 
-    constructor(private _configService: ConfigService, private _workspaceService: WorkspaceService, private _slackService: SlackService) {
+    constructor(private _configService: ConfigService, private _workspaceService: WorkspaceService, private _slackService: SlackApiService) {
 
     }
 

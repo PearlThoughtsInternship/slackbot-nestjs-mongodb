@@ -10,16 +10,18 @@ import { WorkspaceModule } from './modules/workspace/workspace.module';
 import { MessageModule } from './modules/message/message.module';
 // import { MessageModule } from './modules/message/message.module';
 // import { ChannelModule } from './modules/channel/channel.module';
-// import { WhatsappModule } from './modules/whatsapp/whatsapp.module';
+import { WhatsappModule } from './modules/whatsapp/whatsapp.module';
 import { ConfigService } from './shared/config.service';
-import { SlackModule } from './modules/slack/slack.module';
+import { SlackApiModule } from './modules/slack/slack.module';
 import { WorkspaceModel } from './modules/workspace/workspace.model';
 import { MessageModel } from './modules/message/message.model';
 import { ChannelModel } from './modules/channel/channel.model';
+import { WhatsappModel } from './modules/whatsapp/whatsapp.model';
 import { ChannelModule } from './modules/channel/channel.module';
 import { MessageController } from './modules/message/message.controller';
 import { WorkspaceService } from 'src/modules/workspace/workspace.service';
 import { ChannelService } from 'src/modules/channel/channel.service';
+import { SlackApiService } from './modules/slack/slack.service';
 
 @Module({
   imports: [
@@ -31,19 +33,18 @@ import { ChannelService } from 'src/modules/channel/channel.service';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DATABASE,
-      entities: [WorkspaceModel, MessageModel, ChannelModel],
+      entities: [WorkspaceModel, MessageModel, ChannelModel, WhatsappModel],
       synchronize: false,
     }),
     UserModule,
     WorkspaceModule,
     MessageModule,
     ChannelModule,
-    // MessageModule,
-    // WhatsappModule,
-    SlackModule
+    WhatsappModule,
+    SlackApiModule
   ],
   controllers: [AppController, MessageController],
-  providers: [AppService, ConfigService, SlackService, ChannelService],
+  providers: [AppService, ConfigService, SlackService, ChannelService, SlackApiService],
 })
 export class AppModule {
 
@@ -67,5 +68,6 @@ export class AppModule {
       receiver,
     });
     this.slackService.initSlackCommand(boltApp);
+    this.slackService.initSlackInteractive(boltApp);
   }
 }

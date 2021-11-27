@@ -1,26 +1,22 @@
 import { Controller, Post, Request, Get, Response, HttpStatus, Res, Body } from '@nestjs/common';
 
 import { ChannelService } from '../channel/channel.service';
-// import { WorkspaceService } from '../workspace/workspace.service';
-// import { MessageService } from './message.service';
-// import { WhatsappService } from '../whatsapp/whatsapp.service';
-// import { SlackService } from '../slack/slack.service';
+import { WorkspaceService } from '../workspace/workspace.service';
+import { MessageService } from './message.service';
+import { WhatsappService } from '../whatsapp/whatsapp.service';
+import { SlackApiService } from '../slack/slack.service';
 
 import { ConfigService } from '../../shared/config.service';
 
 @Controller('message')
 export class MessageController {
-    // constructor() {
-        // this.channelRepository = new ChannelService();
-        // this.workspaceRepository = new WorkspaceService();
-        // this.messageRepository = new MessageService();
-        // this.whatsAppRepository = new WhatsAppService();
-        // this.slackService = new SlackService();
-        // this.messageService = new MessageService();
-    // }
     constructor(
-        private channelRepository: ChannelService,
+        private channelService: ChannelService,
+        private workspaceService: WorkspaceService,
         private configService: ConfigService,
+        private slackService: SlackApiService,
+        private messageService: MessageService,
+        private whatsAppService: WhatsappService,
     ) {}
 
     @Post('/')
@@ -86,8 +82,11 @@ export class MessageController {
                 console.log('notification type: ' + notificationType);
                 switch (notificationType) {
                     case 'login':
-                        channel = await this.channelRepository.findByType('login-otp');
+                        console.log("channelchannelchannelchannel1111");
+                        channel = await this.channelService.findByType('login-otp');
+                        console.log("channelchannelchannelchannel");
                         channelID = channel.channelID;
+                        console.log('channel type: ' + channelID);
                         icon_url = 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/SBI-logo.svg/1200px-SBI-logo.svg.png';
                         blocks = [
                             {
@@ -111,9 +110,10 @@ export class MessageController {
                                 ]
                             }
                         ]
+                        console.log('blocksblocksblocksblocks: ' + JSON.stringify(blocks));
                         break;
                     case 'fundTransfer':
-                        channel = await this.channelRepository.findByType('fund-transfer-otp');
+                        channel = await this.channelService.findByType('fund-transfer-otp');
                         channelID = channel.channelID;
                         icon_url = 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/SBI-logo.svg/1200px-SBI-logo.svg.png';
                         blocks = [
@@ -153,7 +153,7 @@ export class MessageController {
                         ]
                         break;
                     case 'credit':
-                        channel = await this.channelRepository.findByType('service-alerts');
+                        channel = await this.channelService.findByType('service-alerts');
                         channelID = channel.channelID;
                         icon_url = 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/SBI-logo.svg/1200px-SBI-logo.svg.png';
                         blocks = [
@@ -190,7 +190,7 @@ export class MessageController {
                         ]
                         break;
                     case 'transaction':
-                        channel = await this.channelRepository.findByType('service-alerts');
+                        channel = await this.channelService.findByType('service-alerts');
                         channelID = channel.channelID;
                         icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
                         blocks = [
@@ -236,7 +236,7 @@ export class MessageController {
                         ]
                         break;
                     default:
-                        channel = await this.channelRepository.findByType('Uncategorized');
+                        channel = await this.channelService.findByType('Uncategorized');
                         channelID = channel.channelID;
                         break;
                 }
@@ -343,7 +343,7 @@ export class MessageController {
 
                 switch (notificationType) {
                     case 'login':
-                        channel = await this.channelRepository.findByType('login-otp');
+                        channel = await this.channelService.findByType('login-otp');
                         channelID = channel.channelID;
                         icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
                         blocks = [
@@ -370,7 +370,7 @@ export class MessageController {
                         ]
                         break;
                     case 'cardLogin':
-                        channel = await this.channelRepository.findByType('login-otp');
+                        channel = await this.channelService.findByType('login-otp');
                         channelID = channel.channelID;
                         icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
                         blocks = [
@@ -397,7 +397,7 @@ export class MessageController {
                         ]
                         break;
                     case 'fundTransfer':
-                        channel = await this.channelRepository.findByType('fund-transfer-otp');
+                        channel = await this.channelService.findByType('fund-transfer-otp');
                         channelID = channel.channelID;
                         icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
                         blocks = [
@@ -438,7 +438,7 @@ export class MessageController {
                         ]
                         break;
                     case 'cardFundTransfer':
-                        channel = await this.channelRepository.findByType('fund-transfer-otp');
+                        channel = await this.channelService.findByType('fund-transfer-otp');
                         channelID = channel.channelID;
                         icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
                         blocks = [
@@ -478,7 +478,7 @@ export class MessageController {
                         ]
                         break;
                     case 'credit':
-                        channel = await this.channelRepository.findByType('service-alerts');
+                        channel = await this.channelService.findByType('service-alerts');
                         channelID = channel.channelID;
                         icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
                         blocks = [
@@ -515,7 +515,7 @@ export class MessageController {
                         ]
                         break;
                     case 'devopsCloud':
-                        channel = await this.channelRepository.findByType('DevopsAws');
+                        channel = await this.channelService.findByType('DevopsAws');
                         channelID = channel.channelID;
                         if (cloudPayeeAWS){
                             icon_url = 'https://res.cloudinary.com/wagon/image/upload/v1585091640/ntgefujscihnprq2a9bb.png';
@@ -547,7 +547,7 @@ export class MessageController {
                         ]
                         break;
                     case 'transaction':
-                        channel = await this.channelRepository.findByType('service-alerts');
+                        channel = await this.channelService.findByType('service-alerts');
                         channelID = channel.channelID;
                         icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
                         blocks = [
@@ -593,7 +593,7 @@ export class MessageController {
                         ]
                         break;
                     case 'limit':
-                        channel = await this.channelRepository.findByType('service-alerts');
+                        channel = await this.channelService.findByType('service-alerts');
                         channelID = channel.channelID;
                         icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
                         blocks = [
@@ -621,7 +621,7 @@ export class MessageController {
                         ]
                         break;
                     case 'udemyOTP':
-                        channel = await this.channelRepository.findByType('udemy-new-course-otp');
+                        channel = await this.channelService.findByType('udemy-new-course-otp');
                         channelID = channel.channelID;
                         icon_url = 'https://media.glassdoor.com/sql/434871/udemy-squareLogo-1627922062697.png';
                         blocks = [
@@ -648,11 +648,11 @@ export class MessageController {
                         ]
                         break;
                     case 'package-delivery':
-                        channel = await this.channelRepository.findByType('Package-delivery');
+                        channel = await this.channelService.findByType('Package-delivery');
                         channelID = channel.channelID;
                         break;
                     default:
-                        channel = await this.channelRepository.findByType('Uncategorized');
+                        channel = await this.channelService.findByType('Uncategorized');
                         channelID = channel.channelID;
                         break;
                 }
@@ -753,7 +753,7 @@ export class MessageController {
                 
                 switch (notificationType) {
                     case 'fundTransfer':
-                        channel = await this.channelRepository.findByType('fund-transfer-otp');
+                        channel = await this.channelService.findByType('fund-transfer-otp');
                         channelID = channel.channelID;
                         icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
                         blocks = [
@@ -793,7 +793,7 @@ export class MessageController {
                         ]
                         break;
                     case 'credit':
-                        channel = await this.channelRepository.findByType('service-alerts');
+                        channel = await this.channelService.findByType('service-alerts');
                         channelID = channel.channelID;
                         icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
                         blocks = [
@@ -838,7 +838,7 @@ export class MessageController {
                         ]
                         break;
                     case 'transaction':
-                        channel = await this.channelRepository.findByType('service-alerts');
+                        channel = await this.channelService.findByType('service-alerts');
                         channelID = channel.channelID;
                         icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
                         blocks = [
@@ -879,7 +879,7 @@ export class MessageController {
                         ]
                         break;
                     case 'personalMessage':
-                        channel = await this.channelRepository.findByType('PersonalMessages');
+                        channel = await this.channelService.findByType('PersonalMessages');
                         channelID = channel.channelID;
                         icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
                         blocks = [
@@ -928,12 +928,12 @@ export class MessageController {
                         ]
                         break;
                     case 'personalMessageNoBlock':
-                        channel = await this.channelRepository.findByType('PersonalMessages');
+                        channel = await this.channelService.findByType('PersonalMessages');
                         channelID = channel.channelID;
                         icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
                         break;
                     case 'CorpLogin':
-                    channel = await this.channelRepository.findByType('login-otp');
+                    channel = await this.channelService.findByType('login-otp');
                     channelID = channel.channelID;
                     icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
                     blocks = [
@@ -957,7 +957,7 @@ export class MessageController {
                     ]
                     break;
                     default:
-                        channel = await this.channelRepository.findByType('Uncategorized');
+                        channel = await this.channelService.findByType('Uncategorized');
                         channelID = channel.channelID;
                         break;
                 }
@@ -1006,7 +1006,7 @@ export class MessageController {
 
                 switch (notificationType) {
                     case 'fundTransfer':
-                        channel = await this.channelRepository.findByType('fund-transfer-otp');
+                        channel = await this.channelService.findByType('fund-transfer-otp');
                         channelID = channel.channelID;
                         icon_url = 'https://www.searchpng.com/wp-content/uploads/2019/01/Axis-Bank-PNG-Logo--715x715.png';
                         blocks = [
@@ -1046,7 +1046,7 @@ export class MessageController {
                         ]
                         break;
                     case 'beneficiary':
-                        channel = await this.channelRepository.findByType('payee-otp');
+                        channel = await this.channelService.findByType('payee-otp');
                         channelID = channel.channelID;
                         icon_url = 'https://www.searchpng.com/wp-content/uploads/2019/01/Axis-Bank-PNG-Logo--715x715.png';
                         blocks = [
@@ -1074,10 +1074,10 @@ export class MessageController {
                         break;
                     case 'credit':
                         if(account.slice(-4)=="2879"){
-                            channel = await this.channelRepository.findByType('PersonalMessages');
+                            channel = await this.channelService.findByType('PersonalMessages');
                             channelID = channel.channelID;
                         } else{
-                            channel = await this.channelRepository.findByType('service-alerts');
+                            channel = await this.channelService.findByType('service-alerts');
                             channelID = channel.channelID;
                         }
                         
@@ -1120,7 +1120,7 @@ export class MessageController {
                         ]
                         break;
                     case 'transaction':
-                        channel = await this.channelRepository.findByType('service-alerts');
+                        channel = await this.channelService.findByType('service-alerts');
                         channelID = channel.channelID;
                         icon_url = 'https://www.searchpng.com/wp-content/uploads/2019/01/Axis-Bank-PNG-Logo--715x715.png';
                         blocks = [
@@ -1161,7 +1161,7 @@ export class MessageController {
                         ]
                         break;
                     case 'balance':
-                        channel = await this.channelRepository.findByType('BalanceAlert');
+                        channel = await this.channelService.findByType('BalanceAlert');
                         channelID = channel.channelID;
                         icon_url = 'https://www.searchpng.com/wp-content/uploads/2019/01/Axis-Bank-PNG-Logo--715x715.png';
                         blocks = [
@@ -1189,13 +1189,13 @@ export class MessageController {
                         ]
                         break;
                     case 'personalMessage':
-                        channel = await this.channelRepository.findByType('PersonalMessages');
+                        channel = await this.channelService.findByType('PersonalMessages');
                         channelID = channel.channelID;
                         icon_url = 'https://www.searchpng.com/wp-content/uploads/2019/01/Axis-Bank-PNG-Logo--715x715.png';
                         // Yet to add any Block Message for personal Axis Card
                         break;
                     default:
-                        channel = await this.channelRepository.findByType('Uncategorized');
+                        channel = await this.channelService.findByType('Uncategorized');
                         channelID = channel.channelID;
                         break;
                 }
@@ -1225,7 +1225,7 @@ export class MessageController {
 
                 switch (notificationType) {
                     case 'credit':
-                        channel = await this.channelRepository.findByType('service-alerts');
+                        channel = await this.channelService.findByType('service-alerts');
                         channelID = channel.channelID;
                         icon_url = 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/SBI-logo.svg/1200px-SBI-logo.svg.png';
                         blocks = [
@@ -1262,7 +1262,7 @@ export class MessageController {
                         ]
                         break;
                     case 'transaction':
-                        channel = await this.channelRepository.findByType('service-alerts');
+                        channel = await this.channelService.findByType('service-alerts');
                         channelID = channel.channelID;
                         icon_url = 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/SBI-logo.svg/1200px-SBI-logo.svg.png';
                         blocks = [
@@ -1308,7 +1308,7 @@ export class MessageController {
                         ]
                         break;
                     default:
-                        channel = await this.channelRepository.findByType('Uncategorized');
+                        channel = await this.channelService.findByType('Uncategorized');
                         channelID = channel.channelID;
                         break;
                 }
@@ -1326,7 +1326,7 @@ export class MessageController {
 
                 switch (notificationType) {
                     case 'credit':
-                        channel = await this.channelRepository.findByType('service-alerts');
+                        channel = await this.channelService.findByType('service-alerts');
                         channelID = channel.channelID;
                         icon_url = 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/SBI-logo.svg/1200px-SBI-logo.svg.png';
                         blocks = [
@@ -1367,7 +1367,7 @@ export class MessageController {
                         ]
                         break;
                     default:
-                        channel = await this.channelRepository.findByType('Uncategorized');
+                        channel = await this.channelService.findByType('Uncategorized');
                         channelID = channel.channelID;
                         break;
                 }
@@ -1385,7 +1385,7 @@ export class MessageController {
 
                 switch (notificationType) {
                     case 'fundTransfer':
-                        channel = await this.channelRepository.findByType('fund-transfer-otp');
+                        channel = await this.channelService.findByType('fund-transfer-otp');
                         channelID = channel.channelID;
                         icon_url = 'https://media-exp1.licdn.com/dms/image/C560BAQHeKdeWlnZYRw/company-logo_200_200/0/1519882729303?e=2159024400&v=beta&t=9ztSYDXwdEN3djuaWApSyPafuPaxTDcVQQEOSR9XvjQ';
                         blocks = [
@@ -1408,7 +1408,7 @@ export class MessageController {
                         ]
                         break;
                     default:
-                        channel = await this.channelRepository.findByType('Uncategorized');
+                        channel = await this.channelService.findByType('Uncategorized');
                         channelID = channel.channelID;
                         break;
                 }
@@ -1426,7 +1426,7 @@ export class MessageController {
 
                 switch (notificationType) {
                     case 'Uncategorized':
-                        channel = await this.channelRepository.findByType('Uncategorized');
+                        channel = await this.channelService.findByType('Uncategorized');
                         channelID = channel.channelID;
                         icon_url = 'https://www.fintechfutures.com/files/2016/03/payoneer.png';
                         blocks = [
@@ -1449,7 +1449,7 @@ export class MessageController {
                         ]
                         break;
                     default:
-                        channel = await this.channelRepository.findByType('Uncategorized');
+                        channel = await this.channelService.findByType('Uncategorized');
                         channelID = channel.channelID;
                         break;
                 }
@@ -1467,7 +1467,7 @@ export class MessageController {
 
                 switch (notificationType) {
                     case 'Uncategorized':
-                        channel = await this.channelRepository.findByType('Uncategorized');
+                        channel = await this.channelService.findByType('Uncategorized');
                         channelID = channel.channelID;
                         icon_url = 'https://images.saasworthy.com/tr:w-150,h-0/cashfree_1995_logo_1597819642_ojxbr.png';
                         blocks = [
@@ -1490,7 +1490,7 @@ export class MessageController {
                         ]
                         break;
                     default:
-                        channel = await this.channelRepository.findByType('Uncategorized');
+                        channel = await this.channelService.findByType('Uncategorized');
                         channelID = channel.channelID;
                         break;
                 }
@@ -1508,7 +1508,7 @@ export class MessageController {
 
                 switch (notificationType) {
                     case 'personalMessage':
-                        channel = await this.channelRepository.findByType('PersonalMessages');
+                        channel = await this.channelService.findByType('PersonalMessages');
                         channelID = channel.channelID;
                         icon_url = 'https://scontent.famd4-1.fna.fbcdn.net/v/t1.6435-9/54433583_2270713066327585_4370000988841443328_n.png?_nc_cat=1&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=W0Ieb692IT4AX8CUYbE&_nc_ht=scontent.famd4-1.fna&oh=a0a5238fee7f8df4e8a50a37d3b659e4&oe=6193612B';
                         blocks = [
@@ -1553,13 +1553,13 @@ export class MessageController {
                         ]
                         break;
                     default:
-                        channel = await this.channelRepository.findByType('Uncategorized');
+                        channel = await this.channelService.findByType('Uncategorized');
                         channelID = channel.channelID;
                         break;
                 }
                 break;
             case 'TEST':
-                channel = await this.channelRepository.findByType('Test');
+                channel = await this.channelService.findByType('Test');
                 channelID = channel.channelID;
                 console.log('notification type: ' + notificationType);
                 break;
@@ -1567,125 +1567,129 @@ export class MessageController {
                 channelID = "uncategorizedChannel";
                 if(sender.length > 9){
                     //Undefined message
-                    channel = await this.channelRepository.findByType('PersonalMessages');
+                    channel = await this.channelService.findByType('PersonalMessages');
                     channelID = channel.channelID;
                 }
                 console.log('notification type: ' + notificationType);
                 break;
         }
 
-        // //represent as join
-        // if(channel && channel.workspaceId) {
-        //     workspace = await this.workspaceRepository.findById(channel.workspaceId);
-        // } else {
-        //     workspace = await this.workspaceRepository.findByTeamId(process.env.DEFAULT_WORKSPACE_ID);
-        // }
-
-        // try {
+        //represent as join
+        console.log("workspaceIdworkspaceIdworkspaceIdworkspaceId");
+        console.log(channel.workspaceId);
+        if(channel && channel.workspaceId) {
+            workspace = await this.workspaceService.findById(channel.workspaceId);
+        } else {
+            workspace = await this.workspaceService.findByTeamId(process.env.DEFAULT_WORKSPACE_ID);
+        }
+        console.log("workspaceworkspaceworkspaceworkspace");
+        console.log(workspace);
+        try {
             
-        //     //add a action block in blocks which will show a button to see the actual message modal
-        //     var a = {sender,message}
-        //     var btn =   {
-        //                     "type": "actions",
-        //                     "block_id": "actionblock789",
-        //                     "elements": [
-        //                         {
-        //                             "type": "button",
-        //                             "text": {
-        //                                 "type": "plain_text",
-        //                                 "text": "Show Original Mesasge ✉"
-        //                             },
-        //                             "style": "danger",
-        //                             "value": JSON.stringify(a),
-        //                             "action_id": "orignal_message_button"
-        //                         },
-        //                         {
-        //                             "type": "button",
-        //                             "text": {
-        //                                 "type": "plain_text",
-        //                                 "text": "Subscribe 📲",
-        //                                 "emoji": true
-        //                             },
-        //                             "style": "primary",
-        //                             "value": 'blank',
-        //                             "action_id": "whatsapp_sub_button"
-        //                         },
-        //                         {
-        //                             "type": "button",
-        //                             "text": {
-        //                                 "type": "plain_text",
-        //                                 "text": "Unsubscribe 📲",
-        //                                 "emoji": true
-        //                             },
-        //                             "style": "danger",
-        //                             "value": 'blank',
-        //                             "action_id": "whatsapp_unsub_button"
-        //                         }
-        //                     ]
-        //                 }
+            //add a action block in blocks which will show a button to see the actual message modal
+            var a = {sender,message}
+            var btn =   {
+                            "type": "actions",
+                            "block_id": "actionblock789",
+                            "elements": [
+                                {
+                                    "type": "button",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "Show Original Mesasge ✉"
+                                    },
+                                    "style": "danger",
+                                    "value": JSON.stringify(a),
+                                    "action_id": "orignal_message_button"
+                                },
+                                {
+                                    "type": "button",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "Subscribe 📲",
+                                        "emoji": true
+                                    },
+                                    "style": "primary",
+                                    "value": 'blank',
+                                    "action_id": "whatsapp_sub_button"
+                                },
+                                {
+                                    "type": "button",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "Unsubscribe 📲",
+                                        "emoji": true
+                                    },
+                                    "style": "danger",
+                                    "value": 'blank',
+                                    "action_id": "whatsapp_unsub_button"
+                                }
+                            ]
+                        }
 
-        //     if(blocks ==undefined){
-        //         blocks =    [
-        //                         {
-        //                             "type": "section",
-        //                             "text": {
-        //                                 "type": "plain_text",
-        //                                 "text": message,
-        //                                 "emoji": true
-        //                             }
-        //                         }
-        //                     ]
-        //     }
-        //     blocks.push(btn);
+            if(blocks ==undefined){
+                blocks =    [
+                                {
+                                    "type": "section",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": message,
+                                        "emoji": true
+                                    }
+                                }
+                            ]
+            }
+            blocks.push(btn);
             
-        //     //POST A/C to SENDER ID TO PREVIOUS CHANNELS CONFIGURED
-        //     await this.slackService.postBlockMessage(
-        //         workspace.accessToken,
-        //         channelID,
-        //         message,
-        //         blocks,
-        //         icon_url,
-        //     );
+            //POST A/C to SENDER ID TO PREVIOUS CHANNELS CONFIGURED
+            await this.slackService.postBlockMessage(
+                workspace.accessToken,
+                channelID,
+                message,
+                blocks,
+                icon_url,
+            );
 
-        //     //Log Messages to Database
-        //     let data = {
-        //         sender,
-        //         message,
-        //         forwardedFrom,
-        //         notificationType,
-        //         channelID,
-        //         blocks:JSON.stringify(blocks)
-        //     }
-        //     const text = await this.messageRepository.log(data);
+            //Log Messages to Database
+            let data = {
+                sender,
+                message,
+                forwardedFrom,
+                notificationType,
+                channelID,
+                blocks:JSON.stringify(blocks)
+            }
+            const text = await this.messageService.log(data);
 
-        //     //CREATE A LIST OF SUBSCRIBERS FOR PREVIOUS CHANNEL IDS
-        //     var activeSubscribers = await this.whatsAppRepository.channelSubscribers(channelID);
-
-        //     //Post messages to whatsapp subscribers--------------------
-        //     if(activeSubscribers.length>0){
-        //         //Iterating over the list of subscribers for this channel
-        //         for (let i=0;i<activeSubscribers.length;i++){
-        //             this.messageService.sendAlerts(
-        //                 activeSubscribers[i]['fullname'],
-        //                 activeSubscribers[i]['whatsappnum'],
-        //                 activeSubscribers[i]['channelname'],
-        //                 sender,card,account,OTP,amount,
-        //                 payee,utr,limitConsumed,availableLimit,
-        //                 balance,ref,notificationType
-        //             );
+            //CREATE A LIST OF SUBSCRIBERS FOR PREVIOUS CHANNEL IDS
+            var activeSubscribers = await this.whatsAppService.channelSubscribers(channelID);
+            - console.log("activeSubscribersactiveSubscribersactiveSubscribers");
+            - console.log(activeSubscribers);
+            // Post messages to whatsapp subscribers--------------------
+            if(activeSubscribers.length>0){
+                //Iterating over the list of subscribers for this channel
+                for (let i=0;i<activeSubscribers.length;i++){
+                    this.messageService.sendAlerts(
+                        activeSubscribers[i]['fullname'],
+                        activeSubscribers[i]['whatsappnum'],
+                        activeSubscribers[i]['channelname'],
+                        sender,card,account,OTP,amount,
+                        payee,utr,limitConsumed,availableLimit,
+                        balance,ref,notificationType
+                    );
                     
-        //             console.log('\x1b[36m%s\x1b[0m',`Posted alerts to Subscirber:${activeSubscribers[i]['fullname']} | To:${activeSubscribers[i]['whatsappnum']} | For:#${activeSubscribers[i]['channelname']}`);
+                    console.log('\x1b[36m%s\x1b[0m',`Posted alerts to Subscirber:${activeSubscribers[i]['fullname']} | To:${activeSubscribers[i]['whatsappnum']} | For:#${activeSubscribers[i]['channelname']}`);
                     
-        //         }
+                }
 
-        //     }else{
-        //         console.log(`No subscribers for ${channelID} channel.`);
-        //     }
+            }else{
+                console.log(`No subscribers for ${channelID} channel.`);
+            }
             
-        // }
-        // catch (error) {
-        //     console.error(error);
-        // }
+        }
+        catch (error) {
+            console.error(error);
+        }
         res.send('yay!');
     }
 }

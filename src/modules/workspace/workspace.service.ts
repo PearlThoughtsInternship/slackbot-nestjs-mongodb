@@ -10,6 +10,14 @@ export class WorkspaceService {
 
     }
   
+    async findByTeamId(teamId) {
+        return this._workspaceModel.findOne({'teamId': teamId});
+    }
+
+    async findById(teamId) {
+        return this._workspaceModel.findOne({'id': teamId});
+    }
+
     async findOne(query): Promise<WorkspaceModel> {
         return this._workspaceModel.findOne(query);
     }
