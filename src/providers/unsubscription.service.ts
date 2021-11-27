@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { ChannelService } from 'src/modules/channel/channel.service';
 import { WorkspaceService } from 'src/modules/workspace/workspace.service';
-import { MessageService } from 'src/modules/message/message.service';
 import { WhatsappService } from 'src/modules/whatsapp/whatsapp.service';
 import { SlackApiService } from 'src/modules/slack/slack.service';
 import { ConfigService } from 'src/shared/config.service';
@@ -10,11 +8,9 @@ import { ConfigService } from 'src/shared/config.service';
 @Injectable()
 export class UnsubscriptionService {
     constructor(
-        private channelService: ChannelService,
         private workspaceService: WorkspaceService,
         private configService: ConfigService,
         private slackService: SlackApiService,
-        private messageService: MessageService,
         private whatsAppService: WhatsappService,
     ) {}
 

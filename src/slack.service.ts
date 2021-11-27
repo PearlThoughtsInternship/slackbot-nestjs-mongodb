@@ -3,12 +3,6 @@ import { Injectable } from '@nestjs/common';
 // import { orgBtn, subBtn, unSubBtn, subModal, otpModal, unsubModal } from 'src/providers/blocks';
 // import { orgBtn, subBtn } from 'src/providers/blocks';
 
-import { ChannelService } from 'src/modules/channel/channel.service';
-import { WorkspaceService } from 'src/modules/workspace/workspace.service';
-import { MessageService } from 'src/modules/message/message.service';
-import { WhatsappService } from 'src/modules/whatsapp/whatsapp.service';
-import { SlackApiService } from 'src/modules/slack/slack.service';
-import { ConfigService } from 'src/shared/config.service';
 import { SubscriptionService } from 'src/providers/subscription.service';
 import { UnsubscriptionService } from 'src/providers/unsubscription.service';
 import { OtpService } from 'src/providers/otp.service';
@@ -29,12 +23,6 @@ import { OriginalButtonService } from 'src/providers/orgBtn.service';
 @Injectable()
 export class SlackService {
     constructor(
-        private channelService: ChannelService,
-        private workspaceService: WorkspaceService,
-        private configService: ConfigService,
-        private slackService: SlackApiService,
-        private messageService: MessageService,
-        private whatsAppService: WhatsappService,
         private subscriptionService: SubscriptionService,
         private unsubscriptionService: UnsubscriptionService,
         private otpService: OtpService,

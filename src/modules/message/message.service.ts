@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { OauthAccessDto } from '../slack/dto/OauthAccessDto';
 import { MessageModel } from './message.model';
-import { MessageBird } from 'messagebird';
+// import { MessageBird } from 'messagebird';
 import { ConfigService } from '../../shared/config.service';
 // import { messagebird } from 'messagebird'(messageBirdApiKey);
 
@@ -52,14 +52,15 @@ export class MessageService {
                             },
                             'reportUrl': 'https://c86a91731880.ngrok.io'
                             };
-
-        // messagebird.conversations.send(params, function (err, response) {
-        //     if (err) {
-        //         return console.log(err);
-        //     }
-        //     console.log('\x1b[36m%s\x1b[0m',`Posted the OTP to Subscirber: ${username} For Number: ${whatsappnum}`);
-        //     // console.log(response);
-        // });
+        const messagebird = require('messagebird')(this.configService.get('MESSAGE_BIRD_KEY'));
+        // var messagebird = MessageBird(this.configService.get('MESSAGE_BIRD_KEY'));
+        messagebird.conversations.send(params, function (err, response) {
+            if (err) {
+                return console.log(err);
+            }
+            console.log('\x1b[36m%s\x1b[0m',`Posted the OTP to Subscirber: ${username} For Number: ${whatsappnum}`);
+            // console.log(response);
+        });
     }
 
     async randomOTP() {
@@ -137,12 +138,13 @@ export class MessageService {
         },
         'reportUrl': 'https://aade1ece34f9.ngrok.io'
         };
-    
-        // messagebird.conversations.send(params, function (err, response) {
-        // if (err) {
-        //     return console.log(err);
-        // }
-        // // console.log(response);
-        // });
+        
+        const messagebird = require('messagebird')(this.configService.get('MESSAGE_BIRD_KEY'));
+        messagebird.conversations.send(params, function (err, response) {
+        if (err) {
+            return console.log(err);
+        }
+        // console.log(response);
+        });
     }
 }
