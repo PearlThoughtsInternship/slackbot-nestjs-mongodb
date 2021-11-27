@@ -31,10 +31,14 @@ export class WhatsappService {
         var time = Date.now || function() {
             return +new Date;
         };
-
         return this._whatsappModel.save({
             username:username,
-            whatsappnum: whatsappNum
+            whatsappnum: whatsappNum,
+            channelid: channelid,
+            userid: userID,
+            timecreated:time(),
+            fullname:realName,
+            channelname:channelName
         });
     }
 

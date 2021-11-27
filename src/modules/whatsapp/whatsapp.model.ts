@@ -19,7 +19,7 @@ export class WhatsappModel {
   userid: string;
 
   @Column({ name: "timecreated" })
-  timecreated: string;
+  timecreated: Date;
 
   @Column({ name: "fullname" })
   fullname: string;

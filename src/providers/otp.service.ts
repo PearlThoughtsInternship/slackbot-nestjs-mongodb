@@ -5,6 +5,7 @@ import { MessageService } from 'src/modules/message/message.service';
 import { WhatsappService } from 'src/modules/whatsapp/whatsapp.service';
 import { SlackApiService } from 'src/modules/slack/slack.service';
 import { ConfigService } from 'src/shared/config.service';
+let attemptsLeft = 4;
 
 @Injectable()
 export class OtpService {
@@ -17,7 +18,6 @@ export class OtpService {
     ) {}
 
     async initOtpModal({ack, body, view, client}) {
-        let attemptsLeft = 4;
         let modalUpdate;
         var recievedData = JSON.parse(body.view.private_metadata);
         var userID = recievedData.userID;
@@ -29,7 +29,7 @@ export class OtpService {
         var time = Date.now || function() {
             return +new Date;
         };
-        let channelName = "";
+        let channelName = recievedData.channelName;
         console.log(`Input : ${input_otp} , Correct OTP : ${OPTVerify}`);
         if(input_otp==OPTVerify){
 

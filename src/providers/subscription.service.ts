@@ -22,7 +22,7 @@ export class SubscriptionService {
         var userID = profile.user.id;
         var channelName = body.channel.name;
         var channelID = body.channel.id;
-        var pData = {realName,userID,channelName};
+        var pData = {realName,userID,channelName,channelID};
         
         try {
             // Call views.open with the built-in client
@@ -101,7 +101,7 @@ export class SubscriptionService {
         let whatsappNum = view['state']['values']['whatsappNumBlock']['plain_text_input-action']['value'];
         let realName = recievedData.realName;
         let channelName = recievedData.channelName;
-        let channelID = "";
+        let channelID = recievedData.channelID;
 
         //check if user has already subbed with the input number
         var checkIfAlreadySubbed =  await this.whatsAppService.listOfSubscribersByNumber(whatsappNum,channelID);
@@ -111,7 +111,7 @@ export class SubscriptionService {
             var OPTVerify = await this.messageService.randomOTP();
             console.log(`First OTP SENT ${OPTVerify}, ATTEMPTS LEFT : ${attemptsLeft}`);
             this.messageService.whatsappOTPVerify(realName,whatsappNum,'#'+channelName,OPTVerify);
-            let subData = {userID,whatsappNum,channelID,realName,OPTVerify}
+            let subData = {userID,whatsappNum,channelID,realName,OPTVerify,channelName}
             modalUpdate = {
                 "response_action": "update",
                 "view": {
@@ -173,7 +173,7 @@ export class SubscriptionService {
         }
         //if the user is already subbed offer him call to open a modal to unsub
         else{
-            let unsubData = {userID,whatsappNum,channelID,realName}
+            let unsubData = {userID,whatsappNum,channelID,realName,channelName}
             modalUpdate = {
                 "response_action": "update",
                 "view": {

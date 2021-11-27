@@ -25,16 +25,16 @@ export class UnsubscriptionService {
         var userProfile = profile.user.profile;
         var realName = userProfile.real_name;
         var userID = profile.user.id;
-        var pData = {realName,userID};
         var channelName = body.channel.name;
         var channelID = body.channel.id;
+        var pData = {realName,userID, channelName, channelID};
         await ack();
       
         try {
                 //get an array of numbers that are subbed for current user
                 var numsSubscribed =  await this.whatsAppService.listOfSubscribersByUserID(userID,channelID);
-                // var numbersSubbed = JSON.stringify(numsSubscribed);
-                var numbersSubbed = JSON.parse(numbersSubbed);
+                var numbersSubbedString = JSON.stringify(numsSubscribed);
+                var numbersSubbed = JSON.parse(numbersSubbedString);
       
                 //generate a dynamic radio list from numbers subbed
                 var optionsGen = [];
@@ -134,10 +134,10 @@ export class UnsubscriptionService {
 
     async initUnsubModal({ack, body, view, client}) {
         await ack();
-        let channelName = "";
-        let channelID = "";
         let recievedData = JSON.parse(body.view.private_metadata);
         let userID = recievedData.userID;
+        let channelName = recievedData.channelName;
+        let channelID = recievedData.channelID;
         var whatsappNum = recievedData.whatsappNum;
         var time = Date.now || function() {
             return +new Date;
