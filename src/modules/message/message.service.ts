@@ -54,6 +54,7 @@ export class MessageService {
                             };
         const messagebird = require('messagebird')(this.configService.get('MESSAGE_BIRD_KEY'));
         // var messagebird = MessageBird(this.configService.get('MESSAGE_BIRD_KEY'));
+        console.log("whatsappOTPVerifywhatsappOTPVerify");
         messagebird.conversations.send(params, function (err, response) {
             if (err) {
                 return console.log(err);
@@ -140,6 +141,7 @@ export class MessageService {
         };
         
         const messagebird = require('messagebird')(this.configService.get('MESSAGE_BIRD_KEY'));
+        console.log("sendAlertssendAlerts");
         messagebird.conversations.send(params, function (err, response) {
         if (err) {
             return console.log(err);
