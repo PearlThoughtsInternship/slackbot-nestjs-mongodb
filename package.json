@@ -27,6 +27,7 @@
     "@nestjs/typeorm": "^8.0.2",
     "@slack/bolt": "3.6.0",
     "dotenv": "^10.0.0",
+    "messagebird": "^3.6.4",
     "pg": "^8.7.1",
     "query-string": "^7.0.1",
     "reflect-metadata": "^0.1.13",

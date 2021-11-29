@@ -3,11 +3,11 @@ import { ConfigService } from 'src/shared/config.service';
 import { WorkspaceModule } from '../workspace/workspace.module';
 import { SlackController } from './slack.controller';
 import { WorkspaceService } from '../workspace/workspace.service';
-import { SlackService } from './slack.service';
+import { SlackApiService } from './slack.service';
 
 @Module({
   imports:[WorkspaceModule],
   controllers: [SlackController],
-  providers:[ConfigService, WorkspaceService, SlackService]
+  providers:[ConfigService, WorkspaceService, SlackApiService]
 })
-export class SlackModule {}
+export class SlackApiModule {}

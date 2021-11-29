@@ -10,16 +10,24 @@ export class WorkspaceService {
 
     }
   
+    async findByTeamId(teamId) {
+        return this._workspaceModel.findOne({'teamId': teamId});
+    }
+
+    async findById(teamId) {
+        return this._workspaceModel.findOne({'id': teamId});
+    }
+
     async findOne(query): Promise<WorkspaceModel> {
         return this._workspaceModel.findOne(query);
     }
 
     async create(data: OauthAccessDto): Promise<WorkspaceModel> {
-        return this._workspaceModel.create({
-            team_id: data.team.id,
+        return this._workspaceModel.save({
+            teamId: data.team.id,
             name: data.team.name,
             userId: data.authed_user.id,
-            accessToken: data.access_token
+            accessToken: data.access_token,
         });
     }
 }

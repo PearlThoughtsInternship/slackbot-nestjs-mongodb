@@ -3,7 +3,7 @@ import { ConfigService } from 'src/shared/config.service';
 import { WebClient, WebAPICallResult, ErrorCode, Block } from '@slack/web-api';
 
 @Injectable()
-export class SlackService {
+export class SlackApiService {
     private _clientId: string;
     private _clientSecret: string;
     private _webClient: WebClient;
@@ -24,6 +24,8 @@ export class SlackService {
             client_secret: this._clientSecret,
             redirect_uri: redirectUri,
         };
+        console.log("datadatadatadata");
+        console.log(data);
         let response;
         try {
             response = await this._webClient.oauth.v2.access(data);
@@ -56,6 +58,38 @@ export class SlackService {
             }
         }
 
+        return response;
+    }
+    
+    async postBlockMessage(token, channel, text, blocks, icon_url): Promise<WebAPICallResult> {
+        const data = { token, channel, text, blocks, unfurl_links: false, icon_url };
+        console.log(data)
+        let response;
+        try {
+            response = await this._webClient.chat.postMessage(data);
+        } catch (error) {
+            if (error.code === ErrorCode.PlatformError) {
+                response = error.data;
+            } else {
+                throw new Error(error);
+            }
+        }
+        console.log(response)
+        return response;
+    }
+
+    async postEphemeral(token, channel, text, user, attachments, blocks, icon_url): Promise<WebAPICallResult> {
+        const data = { token, channel, text, user, attachments, blocks, icon_url };
+        let response;
+        try {
+            response = await this._webClient.chat.postEphemeral(data);
+        } catch (error) {
+            if (error.code === ErrorCode.PlatformError) {
+                response = error.data;
+            } else {
+                throw new Error(error);
+            }
+        }
         return response;
     }
 }
