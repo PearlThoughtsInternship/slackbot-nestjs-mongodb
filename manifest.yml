@@ -1,0 +1,57 @@
+_metadata:
+  major_version: 1
+  minor_version: 1
+display_information:
+  name: Message Router
+  description: Message Router
+  background_color: '#004492'
+features:
+  app_home:
+    home_tab_enabled: true
+    messages_tab_enabled: true
+    messages_tab_read_only_enabled: false
+  bot_user:
+    display_name: Message Router
+    always_online: false
+oauth_config:
+  redirect_urls:
+    - <your-domain-url>/slack/oauth_redirect
+  scopes:
+    user:
+      - channels:history
+      - channels:write
+      - chat:write
+      - groups:write
+      - identify
+      - im:write
+      - mpim:write
+      - team:read
+      - users:read
+    bot:
+      - app_mentions:read
+      - channels:history
+      - channels:join
+      - channels:manage
+      - chat:write
+      - chat:write.customize
+      - chat:write.public
+      - commands
+      - conversations.connect:manage
+      - groups:write
+      - im:write
+      - mpim:write
+      - users:read
+      - users:write
+settings:
+  event_subscriptions:
+    request_url: <your-domain-url>/slack/event
+    bot_events:
+      - app_home_opened
+      - app_uninstalled
+      - team_join
+  interactivity:
+    is_enabled: true
+    request_url: <your-domain-url>/slack/interactive
+  org_deploy_enabled: false
+  socket_mode_enabled: false
+  token_rotation_enabled: false
