@@ -22,7 +22,7 @@ export class MessageController {
     @Post('/')
     async message(@Body() body, @Request() req, @Response() res) {
         // ForwardedFrom is actually returned as Forwardedfrom
-        var forwardedFrom = body.ForwardedFrom;
+        var forwardedFrom = req.get('Forwardedfrom');
         /**
          * Dissecting Sender IDs in SMS
          * BZ-SBIINB
