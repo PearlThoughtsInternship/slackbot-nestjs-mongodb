@@ -34,9 +34,9 @@ export class MessageController {
         let regexSenderID = /[A-Za-z]{2}-[A-Za-z]{6}/m;
         var sender;
         if (regexSenderID.test(req.get('From'))) {
-            sender = body.From.split('-')[1]; //Extracts the 6-char Org ID
+            sender = req.get('From').split('-')[1]; //Extracts the 6-char Org ID
         } else {
-            sender = body.From; // Take the mobile number as it is
+            sender = req.get('From'); // Take the mobile number as it is
         }
         var message = req.body.data;
         let blocks;
