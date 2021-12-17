@@ -1564,7 +1564,7 @@ export class MessageController {
                 console.log('notification type: ' + notificationType);
                 break;
             default:
-                channelID = "uncategorizedChannel";
+                channelID = process.env.CHANNEL_ID_UNCATEGORIZED;
                 if(sender.length > 9){
                     //Undefined message
                     channel = await this.channelService.findByType('PersonalMessages');
@@ -1576,7 +1576,7 @@ export class MessageController {
 
         //represent as join
         console.log("workspaceIdworkspaceIdworkspaceIdworkspaceId");
-        console.log(channel.workspaceId);
+        // console.log(channel.workspaceId);
         if(channel && channel.workspaceId) {
             workspace = await this.workspaceService.findById(channel.workspaceId);
         } else {
