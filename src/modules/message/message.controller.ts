@@ -1558,6 +1558,65 @@ export class MessageController {
                         break;
                 }
                 break;
+            case 'RZRPAY':
+                const regexRZRPAYFundTransfer = /(?<OTP>\d+).?is.*OTP.*INR.(?<amount>(\d+(.*\,\d{0,})?)).*from.*?account.*?(?<account>X*\d+)/m;
+                if (regexRZRPAYFundTransfer.test(message)) {
+                    ({
+                        groups: { amount,OTP,account }
+                    } = regexRZRPAYFundTransfer.exec(message));
+                    notificationType = 'fundTransfer';
+                }
+
+                console.log('notification type: ' + notificationType);
+
+                switch (notificationType) {
+                    case 'fundTransfer':
+                        channel = await this.channelService.findByType('fund-transfer-otp');
+                        channelID = channel.channelID;
+                        icon_url = 'https://imgr.search.brave.com/446wUCKeQiktuGH_F_Tb9oJaLyssn3S6TuSWLJKgsBY/fit/175/175/ce/1/aHR0cHM6Ly9pbnZv/aWNlLm5nL2Fzc2V0/cy9pbWFnZXMvbG9n/by9wYXJ0bmVycy9y/YXpvcnBheS5wbmc';
+                        blocks = [
+                            {
+                                "type": "header",
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "Fund transfer / (NEFT/IMPS)"
+                                }
+                            },
+                            {
+                                "type": "section",
+                                "fields": [
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": (account === undefined) ? "*Credit Card:*\n Razorpay - " +card : "*Account:*\n Razorpay - " +account
+                                    },
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": (payee === undefined) ? " " : "*Payee:*\n" + payee
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "section",
+                                "fields": [
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "*Amount:*\n₹" + amount
+                                    },
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "*OTP:*\n" + OTP
+                                    }
+                                ]
+                            }
+                            
+                        ]
+                        break;
+                    default:
+                        channel = await this.channelService.findByType('Uncategorized');
+                        channelID = channel.channelID;
+                        break;
+                }
+                break;
             case 'TEST':
                 channel = await this.channelService.findByType('Test');
                 channelID = channel.channelID;
