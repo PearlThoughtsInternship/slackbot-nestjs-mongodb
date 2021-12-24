@@ -658,7 +658,7 @@ export class MessageController {
                 }
                 break;
             case 'ICICIB':
-                const regexICICIBankingFundTransfer = /(?<OTP>\d+).?is.*?OTP.*INR.(?<amount>(\d+(.*\,\d{0,})?)).*?.(?<account>(Acct|Card).*?XX\d+).*?to.(?<payee>.*?[.])/m;
+                const regexICICIBankingFundTransfer = /(?<OTP>\d+).?is.*?OTP.*INR.(?<amount>(\d+(.*\,\d{0,})?)).*?.(?<account>(Account|Acct|Card).*?XX\d+).*?to.(?<payee>.*?[.])/m;
                 const regexICICIBankingFundTransferCaseTwo = /(?<OTP>\d+).?is.*?OTP.*(?<account>(Acct|Card).*?XX\d+)/m;
                 const regexICICIBankingFundTransferCaseThree = /(?<OTP>\d+).?is.*?OTP.*?to pay.*?(?<payee>.*?[,]).*?(Rs |INR |USD )(?<amount>(\d+(.*\,\d{0,})?))/m;
                 const regexICICIBankingCreditCaseOne = /(?<account>Account.*?\d+).*credited.*?INR.(?<amount>(\d+(.*\,\d{0,})?)).*?Info:(?<ref>.*?[.]).*?Balance is.*?(?<balance>(\d+(\,\d.*[^.])))/m;
@@ -672,7 +672,7 @@ export class MessageController {
                 const regexICICIBankingCreditCaseFour = /(?<account>Acct.*?\d+).*credited.*?Rs.(?<amount>(\d+(.*\,\d{0,})?)).*?by (?<ref>.*?\d+)/m;
                 const regexICICIJioMobility = /Jio Mobility.*?ICICI Bank app/m;
                 const regexICICIPersonalCard = /ICICI Bank Credit Card 7003/m
-
+                const regexICICIBankingCreditCaseSix =/(?<ref>\d+).*?Rs.*?(?<amount>(\d+(.*\,\d{0,})?)).*?credited.to.*?(?<account>\w.*account)/m;
                 const regexICICIBCorpBanking = /(?<OTP>\d+).*?is.*?OTP.*?Corporate Internet Banking/m;
                 if (regexICICIBankingFundTransfer.test(message)) {
                     ({
@@ -733,6 +733,11 @@ export class MessageController {
                     ({
                         groups: { amount,account,ref }
                     } = regexICICIBankingCreditCaseFour.exec(message));
+                    notificationType = 'credit';
+                } else if (regexICICIBankingCreditCaseSix.test(message)) {
+                    ({
+                        groups: { amount,account,ref }
+                    } = regexICICIBankingCreditCaseSix.exec(message));
                     notificationType = 'credit';
                 } else if (regexICICIBankingCreditCaseFive.test(message)) {
                     ({
@@ -1550,6 +1555,65 @@ export class MessageController {
                                     }
                                 ]
                             }
+                        ]
+                        break;
+                    default:
+                        channel = await this.channelService.findByType('Uncategorized');
+                        channelID = channel.channelID;
+                        break;
+                }
+                break;
+            case 'RZRPAY':
+                const regexRZRPAYFundTransfer = /(?<OTP>\d+).?is.*OTP.*INR.(?<amount>(\d+(.*\,\d{0,})?)).*from.*?account.*?(?<account>X*\d+)/m;
+                if (regexRZRPAYFundTransfer.test(message)) {
+                    ({
+                        groups: { amount,OTP,account }
+                    } = regexRZRPAYFundTransfer.exec(message));
+                    notificationType = 'fundTransfer';
+                }
+
+                console.log('notification type: ' + notificationType);
+
+                switch (notificationType) {
+                    case 'fundTransfer':
+                        channel = await this.channelService.findByType('fund-transfer-otp');
+                        channelID = channel.channelID;
+                        icon_url = 'https://imgr.search.brave.com/446wUCKeQiktuGH_F_Tb9oJaLyssn3S6TuSWLJKgsBY/fit/175/175/ce/1/aHR0cHM6Ly9pbnZv/aWNlLm5nL2Fzc2V0/cy9pbWFnZXMvbG9n/by9wYXJ0bmVycy9y/YXpvcnBheS5wbmc';
+                        blocks = [
+                            {
+                                "type": "header",
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "Fund transfer / (NEFT/IMPS)"
+                                }
+                            },
+                            {
+                                "type": "section",
+                                "fields": [
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": (account === undefined) ? "*Credit Card:*\n Razorpay - " +card : "*Account:*\n Razorpay - " +account
+                                    },
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": (payee === undefined) ? " " : "*Payee:*\n" + payee
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "section",
+                                "fields": [
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "*Amount:*\n₹" + amount
+                                    },
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "*OTP:*\n" + OTP
+                                    }
+                                ]
+                            }
+                            
                         ]
                         break;
                     default:
