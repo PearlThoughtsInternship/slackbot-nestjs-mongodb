@@ -12,6 +12,7 @@ import { MessageModule } from './modules/message/message.module';
 // import { ChannelModule } from './modules/channel/channel.module';
 import { WhatsappModule } from './modules/whatsapp/whatsapp.module';
 import { ConfigService } from './shared/config.service';
+import { RollbarService } from './shared/rollbar.service';
 import { SlackApiModule } from './modules/slack/slack.module';
 import { WorkspaceModel } from './modules/workspace/workspace.model';
 import { MessageModel } from './modules/message/message.model';
@@ -51,6 +52,7 @@ import { OriginalButtonService } from 'src/providers/orgBtn.service';
   providers: [
     AppService,
     ConfigService,
+    RollbarService,
     SlackService,
     ChannelService,
     SlackApiService,
