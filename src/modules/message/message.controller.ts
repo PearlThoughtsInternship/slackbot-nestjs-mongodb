@@ -7,6 +7,19 @@ import { WhatsappService } from '../whatsapp/whatsapp.service';
 import { SlackApiService } from '../slack/slack.service';
 
 import { ConfigService } from '../../shared/config.service';
+import {
+    viewSbiinbLogin, viewSbiinbFundTransfer, viewSbiinbCredit, viewSbiinbTransaction,
+    viewSbicrdLogin, viewSbicrdFundTransfer, viewSbicrdCredit, viewSbicrdTransaction, viewSbicrdDevopsCloud, viewSbicrdLimit, viewSbicrdUdemyOtp, viewSbicrdCardFundTransfer, viewSbicrdCardLogin,
+    viewAxisbkBalance, viewAxisbkBeneficiary, viewAxisbkCredit, viewAxisbkFundTransfer, viewAxisbkTransaction,
+    viewIcicibCorpLogin, viewIcicibCredit, viewIcicibFundTransfer, viewIcicibPersonalMessage, viewIcicibTransaction,
+    viewSbipsgTransaction, viewSbipsgCredit,
+    viewWorknhireFundTransfer,
+    viewIpaytmPersonalMessage,
+    viewRzrpayFundTransfer,
+    viewCbssbiCredit,
+    viewCshfreUncategorized,
+    view57575701Uncategorized
+} from 'src/providers/blocks';
 
 @Controller('message')
 export class MessageController {
@@ -88,152 +101,26 @@ export class MessageController {
                         channelID = channel.channelID;
                         console.log('channel type: ' + channelID);
                         icon_url = 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/SBI-logo.svg/1200px-SBI-logo.svg.png';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "SBI Netbanking Login"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (card === undefined) ? "*SBI Internet banking*\n(Personal)" : "*SBI Card:*\n Ending "+card
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*OTP:*\n " + OTP
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewSbiinbLogin({ card,OTP });
                         console.log('blocksblocksblocksblocks: ' + JSON.stringify(blocks));
                         break;
                     case 'fundTransfer':
                         channel = await this.channelService.findByType('fund-transfer-otp');
                         channelID = channel.channelID;
                         icon_url = 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/SBI-logo.svg/1200px-SBI-logo.svg.png';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Fund transfer / (NEFT/IMPS)"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (account === undefined) ? "*Credit Card:*\n SBI - XXXX" +card : "*Account:*\n SBI - XXXX" +account
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Payee:*\n" + payee
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Amount:*\n₹" + amount
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*OTP:*\n" + OTP
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewSbiinbFundTransfer({ account,card,amount,payee,OTP });
                         break;
                     case 'credit':
                         channel = await this.channelService.findByType('service-alerts');
                         channelID = channel.channelID;
                         icon_url = 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/SBI-logo.svg/1200px-SBI-logo.svg.png';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Credit Alert"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (account === undefined) ? "*SBI Card:*\n Ending with " +card : "*Account:*\n SBI - " +account
-                                        
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (payee === undefined) ? " " :"*Payee:*\n" + payee
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Amount Credited:*\n₹" + amount
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewSbiinbCredit({ account,card,payee,amount  });
                         break;
                     case 'transaction':
                         channel = await this.channelService.findByType('service-alerts');
                         channelID = channel.channelID;
                         icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Transaction Alert"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (account === undefined && card === undefined) ? " " : ((account === undefined) ? "*SBI Card:*\n Ending with " +card : "*Account:*\n SBI - " +account)
-                                        
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Payee:*\n" + payee
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Amount debited:*\n₹" + amount
-                                    },
-                                    //Need to work on Date group
-                                    // ,{
-                                    //     "type": "mrkdwn",
-                                    //     "text": "*Date:*\n" + date
-                                    // }
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (utr === undefined) ? " " : "*UTR / REF:*\n" + utr
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewSbiinbTransaction({ account,card,utr,payee,amount  });
                         break;
                     default:
                         channel = await this.channelService.findByType('Uncategorized');
@@ -346,173 +233,31 @@ export class MessageController {
                         channel = await this.channelService.findByType('login-otp');
                         channelID = channel.channelID;
                         icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "SBI Netbanking Login"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (card === undefined) ? "*SBI Internet banking*\n(Personal)" : "*SBI Card:*\n Ending "+card
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*OTP:*\n " + OTP
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewSbicrdLogin({ card,OTP });
                         break;
                     case 'cardLogin':
                         channel = await this.channelService.findByType('login-otp');
                         channelID = channel.channelID;
                         icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "SBI Login"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (card === undefined) ? "*SBI Card *" : "*SBI Card:*\n Ending "+card
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*OTP:*\n " + OTP
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewSbicrdCardLogin({ card,OTP });
                         break;
                     case 'fundTransfer':
                         channel = await this.channelService.findByType('fund-transfer-otp');
                         channelID = channel.channelID;
                         icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Fund transfer / (NEFT/IMPS)"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (account === undefined) ? "*Credit Card:*\n SBI - XXXX" +card : "*Account:*\n SBI - XXXX" +account
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Payee:*\n" + payee
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Amount:*\n₹" + amount
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*OTP:*\n" + OTP
-                                    }
-                                ]
-                            }
-                            
-                        ]
+                        blocks = viewSbicrdFundTransfer({ account,card,payee,amount,OTP });
                         break;
                     case 'cardFundTransfer':
                         channel = await this.channelService.findByType('fund-transfer-otp');
                         channelID = channel.channelID;
                         icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Fund transfer / (NEFT/IMPS)"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (account === undefined) ? "*Credit Card:*\n SBI - XXXX" +card : "*Account:*\n SBI - XXXX" +account
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Payee:*\n" + payee
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Amount:*\n₹" + amount
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*OTP:*\n" + OTP
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewSbicrdCardFundTransfer({ account,card,payee,amount,OTP });
                         break;
                     case 'credit':
                         channel = await this.channelService.findByType('service-alerts');
                         channelID = channel.channelID;
                         icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Credit Alert"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (account === undefined) ? "*SBI Card:*\n Ending with " +card : "*Account:*\n SBI - " +account
-                                        
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (payee === undefined) ? " " :"*Payee:*\n" + payee
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Amount Credited:*\n₹" + amount
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewSbicrdCredit({ account,card,payee,amount });
                         break;
                     case 'devopsCloud':
                         channel = await this.channelService.findByType('DevopsAws');
@@ -523,129 +268,25 @@ export class MessageController {
                             icon_url = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_Ibkkrv62fZeInzvJP5WTRrKXXzWd0M9elnbVH0tG-gCsf5X8f0WOiEW1sJEgYN5xiS4&usqp=CAU';
                         }
                         
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": (cloudPayeeAWS) ? "AWS Account Sign-up" : "IBM Account Sign-up" 
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (account === undefined) ? "*Credit Card:*\n SBI - XXXX" +card : "*Account:*\n SBI - XXXX" +account
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*OTP : *\n" + OTP
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewSbicrdDevopsCloud({ account,card,cloudPayeeAWS,OTP });
                         break;
                     case 'transaction':
                         channel = await this.channelService.findByType('service-alerts');
                         channelID = channel.channelID;
                         icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Transaction Alert"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (account === undefined && card === undefined) ? " " : ((account === undefined) ? "*SBI Card:*\n Ending with " +card : "*Account:*\n SBI - " +account)
-                                        
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Payee:*\n" + payee
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": amount.includes('USD') ? "*Amount debited:*\n$" + amount.split('USD')[1] : amount.includes('Rs.') ? "*Amount debited:*\n₹" + amount.split('Rs.')[1] : "*Amount debited:*\n₹" + amount 
-                                    },
-                                    //Need to work on Date group
-                                    // ,{
-                                    //     "type": "mrkdwn",
-                                    //     "text": "*Date:*\n" + date
-                                    // }
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (utr === undefined) ? " " : "*UTR / REF:*\n" + utr
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewSbicrdTransaction({ account,card,payee,amount,utr });
                         break;
                     case 'limit':
                         channel = await this.channelService.findByType('service-alerts');
                         channelID = channel.channelID;
                         icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Card Limit Alert"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*SBI Card Limit Consumed :*\n " +limitConsumed
-                                        
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Current available limit :*\n₹ " + availableLimit
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewSbicrdLimit({ limitConsumed, availableLimit });
                         break;
                     case 'udemyOTP':
                         channel = await this.channelService.findByType('udemy-new-course-otp');
                         channelID = channel.channelID;
                         icon_url = 'https://media.glassdoor.com/sql/434871/udemy-squareLogo-1627922062697.png';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Udemy™"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Amount:*\n₹" + amount
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*OTP:*\n" + OTP
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewSbicrdUdemyOtp({ amount, OTP });
                         break;
                     case 'package-delivery':
                         channel = await this.channelService.findByType('Package-delivery');
@@ -761,176 +402,25 @@ export class MessageController {
                         channel = await this.channelService.findByType('fund-transfer-otp');
                         channelID = channel.channelID;
                         icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Fund transfer / (NEFT/IMPS)"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (account==undefined) ? " " : "*ICICI Bank :*\n " +  account
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*OTP:*\n" + OTP
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (amount === undefined) ? " " : "*Amount:*\n₹" + amount
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (payee === undefined) ? " " : "*Payee:*\n" + payee
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewIcicibFundTransfer({account,payee,amount,OTP})
                         break;
                     case 'credit':
                         channel = await this.channelService.findByType('service-alerts');
                         channelID = channel.channelID;
                         icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Credit Alert"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*ICICI Bank :*\n " +account
-                                        
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (ref === undefined) ? " "  : "*REF:*\n" + ref
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Amount Credited :*\n₹" + amount
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (balance === undefined) ? " " : "*Available Balance :*\n₹" + balance
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (payee === undefined) ? " " : "*Payee :*\n₹" + payee
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewIcicibCredit({account,ref,amount,balance,payee});
                         break;
                     case 'transaction':
                         channel = await this.channelService.findByType('service-alerts');
                         channelID = channel.channelID;
                         icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Transaction Alert"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*ICICI Bank :*\n" +account
-                                        
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Amount debited :*\n₹" + amount
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (ref === undefined) ? " " : "*Payee:*\n" + ref
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (balance === undefined) ? " " : "*Available Balance :*\n₹" + balance
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewIcicibTransaction({account,payee,ref,balance,amount});
                         break;
                     case 'personalMessage':
                         channel = await this.channelService.findByType('PersonalMessages');
                         channelID = channel.channelID;
                         icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": (message.includes('credited')) ? "Credit Alert" : "Transaction Alert"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*ICICI Bank :*\n" +account
-                                        
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": ((message.includes('debited'))&&(message.includes('credited')))  ?  (amount==undefined)?" ":"*Amount debited :*\n" + (amount.includes('USD')?amount.replace('USD ','$'):amount.replace('INR','₹'))  :  (amount==undefined)?" ":"*Amount Credited :*\n" + (amount.includes('USD')?amount.replace('USD ','$'):amount.replace('INR','₹'))
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (payee === undefined) ? " " : "*Payee:*\n" + payee
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (OTP===undefined) ? " " : "*OTP:*\n" + OTP
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (ref === undefined) ? " " : "*Ref:*\n" + ref
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (balance === undefined) ? " " : "*Available Balance :*\n₹" + balance
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,balance});
                         break;
                     case 'personalMessageNoBlock':
                         channel = await this.channelService.findByType('PersonalMessages');
@@ -941,25 +431,7 @@ export class MessageController {
                     channel = await this.channelService.findByType('login-otp');
                     channelID = channel.channelID;
                     icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                    blocks = [
-                        {
-                            "type": "header",
-                            "text": {
-                                "type": "plain_text",
-                                "text": "ICICI Bank Corporate Internet Banking"
-                            }
-                        },
-                        {
-                            "type": "section",
-                            "fields": [
-                                {
-                                    "type": "mrkdwn",
-                                    "text": "*OTP :*\n" +OTP
-                                    
-                                }
-                            ]
-                        }
-                    ]
+                    blocks = viewIcicibCorpLogin({OTP});
                     break;
                     default:
                         channel = await this.channelService.findByType('Uncategorized');
@@ -1014,68 +486,13 @@ export class MessageController {
                         channel = await this.channelService.findByType('fund-transfer-otp');
                         channelID = channel.channelID;
                         icon_url = 'https://www.searchpng.com/wp-content/uploads/2019/01/Axis-Bank-PNG-Logo--715x715.png';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Fund transfer / (NEFT/IMPS)"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Axis Bank :*\n " +account
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*OTP:*\n" + OTP
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (amount === undefined) ? " " : "*Amount:*\n₹" + amount
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (payee === undefined) ? " " : "*Payee:*\n" + payee
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewAxisbkFundTransfer({account,payee,amount,OTP});
                         break;
                     case 'beneficiary':
                         channel = await this.channelService.findByType('payee-otp');
                         channelID = channel.channelID;
                         icon_url = 'https://www.searchpng.com/wp-content/uploads/2019/01/Axis-Bank-PNG-Logo--715x715.png';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Beneficiary"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Axis Beneficiary to Add :*\n " +account
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*OTP:*\n" + OTP
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewAxisbkBeneficiary({account,OTP});
                         break;
                     case 'credit':
                         if(account.slice(-4)=="2879"){
@@ -1087,111 +504,19 @@ export class MessageController {
                         }
                         
                         icon_url = 'https://www.searchpng.com/wp-content/uploads/2019/01/Axis-Bank-PNG-Logo--715x715.png';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Credit Alert"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Axis Bank :*\n " +account
-                                        
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (ref === undefined) ? " "  : "*REF:*\n" + ref
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Amount Credited :*\n₹" + amount
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Available Balance :*\n₹" + balance
-                                    },
-                                ]
-                            }
-                        ]
+                        blocks = viewAxisbkCredit({account,ref,amount,balance});
                         break;
                     case 'transaction':
                         channel = await this.channelService.findByType('service-alerts');
                         channelID = channel.channelID;
                         icon_url = 'https://www.searchpng.com/wp-content/uploads/2019/01/Axis-Bank-PNG-Logo--715x715.png';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Transaction Alert"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Axis Bank :*\n " +account
-                                        
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (ref === undefined) ? " "  : "*REF:*\n" + ref
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Amount Credited :*\n₹" + amount
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Available Balance :*\n₹" + balance
-                                    },
-                                ]
-                            }
-                        ]
+                        blocks = viewAxisbkTransaction({account,ref,amount,balance});
                         break;
                     case 'balance':
                         channel = await this.channelService.findByType('BalanceAlert');
                         channelID = channel.channelID;
                         icon_url = 'https://www.searchpng.com/wp-content/uploads/2019/01/Axis-Bank-PNG-Logo--715x715.png';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Transaction Alert"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Axis Bank :*\n " +account
-                                        
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Available Balance :*\n₹" + balance
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewAxisbkBalance({account,balance});
                         break;
                     case 'personalMessage':
                         channel = await this.channelService.findByType('PersonalMessages');
@@ -1233,84 +558,13 @@ export class MessageController {
                         channel = await this.channelService.findByType('service-alerts');
                         channelID = channel.channelID;
                         icon_url = 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/SBI-logo.svg/1200px-SBI-logo.svg.png';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Credit Alert"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (account === undefined) ? "*SBI Card:*\n Ending with " +card : "*Account:*\n SBI - " +account
-                                        
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (payee === undefined) ? " " :"*Payee:*\n" + payee
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Amount Credited:*\n₹" + amount
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewSbipsgCredit({account,payee,amount,card});
                         break;
                     case 'transaction':
                         channel = await this.channelService.findByType('service-alerts');
                         channelID = channel.channelID;
                         icon_url = 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/SBI-logo.svg/1200px-SBI-logo.svg.png';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Transaction Alert"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (account === undefined && card === undefined) ? " " : ((account === undefined) ? "*SBI Card:*\n Ending with " +card : "*Account:*\n SBI - " +account)
-                                        
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Payee:*\n" + payee
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": amount.includes('USD') ? "*Amount debited:*\n$" + amount.split('USD')[1] : amount.includes('Rs.') ? "*Amount debited:*\n₹" + amount.split('Rs.')[1] : "*Amount debited:*\n₹" + amount 
-                                    },
-                                    //Need to work on Date group
-                                    // ,{
-                                    //     "type": "mrkdwn",
-                                    //     "text": "*Date:*\n" + date
-                                    // }
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (utr === undefined) ? " " : "*UTR / REF:*\n" + utr
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewSbipsgTransaction({account,card,payee,amount,utr});
                         break;
                     default:
                         channel = await this.channelService.findByType('Uncategorized');
@@ -1334,42 +588,7 @@ export class MessageController {
                         channel = await this.channelService.findByType('service-alerts');
                         channelID = channel.channelID;
                         icon_url = 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/SBI-logo.svg/1200px-SBI-logo.svg.png';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Credit Alert"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (account === undefined) ? "*SBI Card:*\n Ending with " +card : "*Account:*\n SBI - " +account
-                                        
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (payee === undefined) ? " " :"*Payee:*\n" + payee
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Amount Credited:*\n₹" + amount
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (balance === undefined) ? " " : "*Available Balance :*\n₹" + balance
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewCbssbiCredit({account,card,payee,amount,balance});
                         break;
                     default:
                         channel = await this.channelService.findByType('Uncategorized');
@@ -1393,24 +612,7 @@ export class MessageController {
                         channel = await this.channelService.findByType('fund-transfer-otp');
                         channelID = channel.channelID;
                         icon_url = 'https://media-exp1.licdn.com/dms/image/C560BAQHeKdeWlnZYRw/company-logo_200_200/0/1519882729303?e=2159024400&v=beta&t=9ztSYDXwdEN3djuaWApSyPafuPaxTDcVQQEOSR9XvjQ';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Worknhire"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*OTP:*\n" + OTP
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewWorknhireFundTransfer({OTP});
                         break;
                     default:
                         channel = await this.channelService.findByType('Uncategorized');
@@ -1434,24 +636,7 @@ export class MessageController {
                         channel = await this.channelService.findByType('Uncategorized');
                         channelID = channel.channelID;
                         icon_url = 'https://www.fintechfutures.com/files/2016/03/payoneer.png';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Payoneer"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*OTP:*\n" + OTP
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = view57575701Uncategorized({ OTP });
                         break;
                     default:
                         channel = await this.channelService.findByType('Uncategorized');
@@ -1475,24 +660,7 @@ export class MessageController {
                         channel = await this.channelService.findByType('Uncategorized');
                         channelID = channel.channelID;
                         icon_url = 'https://images.saasworthy.com/tr:w-150,h-0/cashfree_1995_logo_1597819642_ojxbr.png';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Cashfree"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*OTP:*\n" + OTP
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewCshfreUncategorized({OTP});
                         break;
                     default:
                         channel = await this.channelService.findByType('Uncategorized');
@@ -1516,46 +684,7 @@ export class MessageController {
                         channel = await this.channelService.findByType('PersonalMessages');
                         channelID = channel.channelID;
                         icon_url = 'https://scontent.famd4-1.fna.fbcdn.net/v/t1.6435-9/54433583_2270713066327585_4370000988841443328_n.png?_nc_cat=1&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=W0Ieb692IT4AX8CUYbE&_nc_ht=scontent.famd4-1.fna&oh=a0a5238fee7f8df4e8a50a37d3b659e4&oe=6193612B';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": message.includes('Paid') ? "Transaction Alert" :  "Credit Alert"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*iPaytm *\n"
-                                        
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": message.includes('Paid')  ?  (amount==undefined)?" ":"*Amount debited :*\n" + (amount.includes('USD')?amount.replace('USD ','$'):amount.replace('Rs','₹'))  :  (amount==undefined)?" ":"*Amount Credited :*\n₹" + amount
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (OTP===undefined) ? " " : "*OTP:*\n" + OTP
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (ref === undefined) ? " " : "*TxnId:*\n" + ref
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (balance === undefined) ? " " : "*Available Balance :*\n" + (balance.includes('USD')?balance.replace('USD ','$'):balance.replace('Rs','₹'))
-                                    }
-                                ]
-                            }
-                        ]
+                        blocks = viewIpaytmPersonalMessage({amount,OTP,ref,balance,message});
                         break;
                     default:
                         channel = await this.channelService.findByType('Uncategorized');
@@ -1579,42 +708,7 @@ export class MessageController {
                         channel = await this.channelService.findByType('fund-transfer-otp');
                         channelID = channel.channelID;
                         icon_url = 'https://imgr.search.brave.com/446wUCKeQiktuGH_F_Tb9oJaLyssn3S6TuSWLJKgsBY/fit/175/175/ce/1/aHR0cHM6Ly9pbnZv/aWNlLm5nL2Fzc2V0/cy9pbWFnZXMvbG9n/by9wYXJ0bmVycy9y/YXpvcnBheS5wbmc';
-                        blocks = [
-                            {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Fund transfer / (NEFT/IMPS)"
-                                }
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (account === undefined) ? "*Credit Card:*\n Razorpay - " +card : "*Account:*\n Razorpay - " +account
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": (payee === undefined) ? " " : "*Payee:*\n" + payee
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "section",
-                                "fields": [
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*Amount:*\n₹" + amount
-                                    },
-                                    {
-                                        "type": "mrkdwn",
-                                        "text": "*OTP:*\n" + OTP
-                                    }
-                                ]
-                            }
-                            
-                        ]
+                        blocks = viewRzrpayFundTransfer({account,card,payee,amount,OTP});
                         break;
                     default:
                         channel = await this.channelService.findByType('Uncategorized');
@@ -1653,43 +747,43 @@ export class MessageController {
             //add a action block in blocks which will show a button to see the actual message modal
             var a = {sender,message}
             var btn =   {
-                            "type": "actions",
-                            "block_id": "actionblock789",
-                            "elements": [
-                                {
-                                    "type": "button",
-                                    "text": {
-                                        "type": "plain_text",
-                                        "text": "Show Original Mesasge ✉"
-                                    },
-                                    "style": "danger",
-                                    "value": JSON.stringify(a),
-                                    "action_id": "orignal_message_button"
-                                },
-                                {
-                                    "type": "button",
-                                    "text": {
-                                        "type": "plain_text",
-                                        "text": "Subscribe 📲",
-                                        "emoji": true
-                                    },
-                                    "style": "primary",
-                                    "value": 'blank',
-                                    "action_id": "whatsapp_sub_button"
-                                },
-                                {
-                                    "type": "button",
-                                    "text": {
-                                        "type": "plain_text",
-                                        "text": "Unsubscribe 📲",
-                                        "emoji": true
-                                    },
-                                    "style": "danger",
-                                    "value": 'blank',
-                                    "action_id": "whatsapp_unsub_button"
-                                }
-                            ]
-                        }
+                "type": "actions",
+                "block_id": "actionblock789",
+                "elements": [
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Show Original Mesasge ✉"
+                        },
+                        "style": "danger",
+                        "value": JSON.stringify(a),
+                        "action_id": "orignal_message_button"
+                    },
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Subscribe 📲",
+                            "emoji": true
+                        },
+                        "style": "primary",
+                        "value": 'blank',
+                        "action_id": "whatsapp_sub_button"
+                    },
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Unsubscribe 📲",
+                            "emoji": true
+                        },
+                        "style": "danger",
+                        "value": 'blank',
+                        "action_id": "whatsapp_unsub_button"
+                    }
+                ]
+            }
 
             if(blocks ==undefined){
                 blocks =    [
