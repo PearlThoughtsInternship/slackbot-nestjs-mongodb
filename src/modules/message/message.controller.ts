@@ -7,7 +7,6 @@ import { WhatsappService } from '../whatsapp/whatsapp.service';
 import { SlackApiService } from '../slack/slack.service';
 
 import { ConfigService } from '../../shared/config.service';
-import { RollbarService } from '../../shared/rollbar.service';
 import {
     viewSbiinbLogin, viewSbiinbFundTransfer, viewSbiinbCredit, viewSbiinbTransaction,
     viewSbicrdLogin, viewSbicrdFundTransfer, viewSbicrdCredit, viewSbicrdTransaction, viewSbicrdDevopsCloud, viewSbicrdLimit, viewSbicrdUdemyOtp, viewSbicrdCardFundTransfer, viewSbicrdCardLogin,
@@ -31,12 +30,10 @@ export class MessageController {
         private slackService: SlackApiService,
         private messageService: MessageService,
         private whatsAppService: WhatsappService,
-        private rollbarLogger: RollbarService,
     ) {}
 
     @Post('/')
     async message(@Body() body, @Request() req, @Response() res) {
-        try {
             // ForwardedFrom is actually returned as Forwardedfrom
             var forwardedFrom = req.get('Forwardedfrom');
             /**
@@ -70,7 +67,6 @@ export class MessageController {
                     const regexSBINetBankingLogin = /.*OTP.*(?<OTP>\d{8}).*/m;
                     const regexSBIINBTransaction =/txn.*?Rs.(?<amount>(\d+(.*\,\d{0,})?)).*?A\/c.(?<account>X\d+).*?to.?(?<payee>.*?[.]).*Ref.(?<utr>.*? )/m;
 
-                    console.log(message);
                     console.log(regexSBINetBankingLogin.test(message));
                     if (regexSBINetBankingFundTransfer.test(message)) {
                         ({
@@ -745,7 +741,6 @@ export class MessageController {
             }
             console.log("workspaceworkspaceworkspaceworkspace");
             console.log(workspace);
-            try {
                 
                 //add a action block in blocks which will show a button to see the actual message modal
                 var a = {sender,message}
@@ -846,14 +841,6 @@ export class MessageController {
                 }else{
                     console.log(`No subscribers for ${channelID} channel.`);
                 }
-                
-            }
-            catch (error) {
-                this.rollbarLogger.error(error);
-            }
             res.send('yay!');
-        } catch (error) {
-            this.rollbarLogger.error(error);
         }
-    }
 }
