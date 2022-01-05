@@ -1,5 +1,8 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, HttpAdapterHost } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { RollbarLogger } from 'nestjs-rollbar';
+import { AllExceptionsFilter } from './exceptions/all.exception';
+
 const { ExpressReceiver } = require('@slack/bolt');
 
 const bootstrap = async() => {
@@ -7,7 +10,13 @@ const bootstrap = async() => {
     signingSecret: process.env.SLACK_SIGNING_SECRET,
     endpoints: { events: '/slack/events', interactive: '/slack/interactive' , commands: '/slack/command' },
   });
+
   const app = await NestFactory.create(AppModule);
+  const httpAdapter = app.get(HttpAdapterHost);
+
+  const rollbarLogger = app.get(RollbarLogger);
+  app.useGlobalFilters(new AllExceptionsFilter(httpAdapter, rollbarLogger));
+  
   const appModule = app.get(AppModule);
   appModule.initSlack(receiver);
   app.use(receiver.router);

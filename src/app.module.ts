@@ -26,6 +26,7 @@ import { SubscriptionService } from 'src/providers/subscription.service';
 import { UnsubscriptionService } from 'src/providers/unsubscription.service';
 import { OtpService } from 'src/providers/otp.service';
 import { OriginalButtonService } from 'src/providers/orgBtn.service';
+import { LoggerModule } from 'nestjs-rollbar';
 
 @Module({
   imports: [
@@ -39,6 +40,12 @@ import { OriginalButtonService } from 'src/providers/orgBtn.service';
       database: process.env.POSTGRES_DATABASE,
       entities: [WorkspaceModel, MessageModel, ChannelModel, WhatsappModel],
       synchronize: false,
+    }),
+    LoggerModule.forRoot({
+      accessToken: process.env.ROLLBAR_ACCESS_TOKEN,
+      captureUncaught: true,
+      captureUnhandledRejections: true,
+      ignoreDuplicateErrors: false,
     }),
     UserModule,
     WorkspaceModule,
