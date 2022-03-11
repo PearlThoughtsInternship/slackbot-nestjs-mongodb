@@ -129,7 +129,6 @@ export class MessageController {
                     break;
                 case 'SBICRD':
                     const regexSBICardFundTransfer = /.*?OTP.*?Rs. (?<amount>(\d+(\.\d{0,2})?)) .*?(?<account>\d+)\s+to\s+(?<payee>.*?)\s+is\s(?<OTP>\d+)/m;
-
                     const regexSBICreditCardTransfer = /(?<OTP>\d+).?is.OTP.*Rs. (?<amount>(\d+(.*\,\d{0,})?)).*at (?<payee>.+?)with.*Card ending (?<card>\d+)/m;
                     const regexSBICardLogin = /Card.*(?<card>XX\d+).*is.(?<OTP>\d{6,})/m;
                     const regexSBICardLoginCaseTwo = /OTP.*?login.*?is.(?<OTP>\d{6,})/m;
@@ -298,7 +297,8 @@ export class MessageController {
                     }
                     break;
                 case 'ICICIB':
-                    const regexICICIBankingFundTransfer = /(?<OTP>\d+).?is.*?OTP.*INR.(?<amount>(\d+(.*\,\d{0,})?)).*?.(?<account>(Account|Acct|Card).*?XX\d+).*?to.(?<payee>.*?[.])/m;
+                    const regexICICIBankingFundTransfer = /(?<OTP>\d+).?is.*?OTP.*INR.(?<amount>(\d+(.*\.\d{0,})?)).?at.*?(?<payee>\w{1,}).*?(?<account>(Account|Acct|Card).*?XX\d+)/m;
+                    const regexICICIBankingFundTransferCaseOne = /(?<OTP>\d+).?is.*?OTP.*INR.(?<amount>(\d+(.*\,\d{0,})?)).*?.(?<account>(Account|Acct|Card).*?XX\d+).*?to.(?<payee>.*?[.])/m;
                     const regexICICIBankingFundTransferCaseTwo = /(?<OTP>\d+).?is.*?OTP.*(?<account>(Acct|Card).*?XX\d+)/m;
                     const regexICICIBankingFundTransferCaseThree = /(?<OTP>\d+).?is.*?OTP.*?to pay.*?(?<payee>.*?[,]).*?(Rs |INR |USD )(?<amount>(\d+(.*\,\d{0,})?))/m;
                     const regexICICIBankingCreditCaseOne = /(?<account>Account.*?\d+).*credited.*?INR.(?<amount>(\d+(.*\,\d{0,})?)).*?Info:(?<ref>.*?[.]).*?Balance is.*?(?<balance>(\d+(\,\d.*[^.])))/m;
@@ -319,6 +319,11 @@ export class MessageController {
                             groups: { account, amount, payee, OTP }
                         } = regexICICIBankingFundTransfer.exec(message));
                         notificationType = 'fundTransfer';
+                    } else if (regexICICIBankingFundTransferCaseOne.test(message)) {
+                        ({
+                            groups: { account, amount, payee, OTP }
+                        } = regexICICIBankingFundTransferCaseOne.exec(message));
+                        notificationType = 'fundTransfer';    
                     } else if (regexICICIBankingFundTransferCaseTwo.test(message)) {
                         ({
                             groups: { account, OTP }
