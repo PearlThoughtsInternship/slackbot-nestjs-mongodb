@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from 'src/shared/config.service';
 import { WebClient, WebAPICallResult, ErrorCode, Block } from '@slack/web-api';
+import { channel } from 'diagnostics_channel';
 
 @Injectable()
 export class SlackApiService {
@@ -60,10 +61,9 @@ export class SlackApiService {
 
         return response;
     }
-    
+ 
     async postBlockMessage(token, channel, text, blocks, icon_url): Promise<WebAPICallResult> {
         const data = { token, channel, text, blocks, unfurl_links: false, icon_url };
-        console.log(data)
         let response;
         try {
             response = await this._webClient.chat.postMessage(data);
@@ -77,6 +77,7 @@ export class SlackApiService {
         console.log(response)
         return response;
     }
+
 
     async postEphemeral(token, channel, text, user, attachments, blocks, icon_url): Promise<WebAPICallResult> {
         const data = { token, channel, text, user, attachments, blocks, icon_url };

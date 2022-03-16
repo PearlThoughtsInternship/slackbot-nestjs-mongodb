@@ -29,7 +29,7 @@ export class MessageService {
             receivedOn: new Date(d.getTime() + ( 5.5 * 60 * 60 * 1000 )).toLocaleString(),
             forwardedFrom:data.forwardedFrom,
             notificationType:data.notificationType,
-            channelRouted:data.channelID,
+            channelRouted:data.channelId,
             blocks:data.blocks
         });
     }
