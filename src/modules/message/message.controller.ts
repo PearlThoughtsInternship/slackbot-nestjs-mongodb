@@ -673,21 +673,10 @@ export class MessageController {
                             break;
                     }
                     break;
-                    case 'ARAVND':            
-                    notificationType = 'personalMessageNoBlock';
-                    console.log('notification type: ' + notificationType);
-
-                    switch (notificationType) {
-                        case 'personalMessageNoBlock':
-                            channel = await this.channelService.findByType('PersonalMessages');
-                            channelID = channel.channelID;
-                            break;
-                            default:
-                            channel = await this.channelService.findByType('Uncategorized');
-                            channelID = channel.channelID;
-                            break;
-                        }   
-
+                    case 'ARAVND':  
+                    channel = await this.channelService.findByType('PersonalMessages');          
+                    break;
+                    
                     case 'TEST':
                     channel = await this.channelService.findByType('Test');
                     console.log('notification type: ' + notificationType);
