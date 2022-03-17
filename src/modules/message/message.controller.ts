@@ -295,7 +295,7 @@ export class MessageController {
                     const regexICICIBankingCreditCaseThree = /Payment.*?INR.*?(?<amount>(\d+(.*\,\d{0,})?)).*?Account.*?(?<account>xxx.*?\d+)/m;
                     const regexICICIBankingCreditCaseFour = /(?<account>Acct.*?\d+).*credited.*?Rs.(?<amount>(\d+(.*\,\d{0,})?)).*?by (?<ref>.*?\d+)/m;
                     const regexICICIJioMobility = /Jio Mobility.*?ICICI Bank app/m;
-                    const regexICICIPersonalCard = /ICICI Bank Credit Card 7003/m
+                    const regexICICIPersonalCard = /.*(?<account>(Acct|Card).*?XX\d+)/m;
                     const regexICICIBankingCreditCaseSix =/(?<ref>\d+).*?Rs.*?(?<amount>(\d+(.*\,\d{0,})?)).*?credited.to.*?(?<account>\w.*account)/m;
                     const regexICICIBCorpBanking = /(?<OTP>\d+).*?is.*?OTP.*?Corporate Internet Banking/m;
                     if (regexICICIBankingFundTransfer.test(message)) {
@@ -673,7 +673,11 @@ export class MessageController {
                             break;
                     }
                     break;
-                case 'TEST':
+                    case 'ARAVND':  
+                    channel = await this.channelService.findByType('PersonalMessages');          
+                    break;
+                    
+                    case 'TEST':
                     channel = await this.channelService.findByType('Test');
                     console.log('notification type: ' + notificationType);
                     break;
