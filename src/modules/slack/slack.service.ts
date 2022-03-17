@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from 'src/shared/config.service';
 import { WebClient, WebAPICallResult, ErrorCode, Block } from '@slack/web-api';
-import { channel } from 'diagnostics_channel';
 
 @Injectable()
 export class SlackApiService {

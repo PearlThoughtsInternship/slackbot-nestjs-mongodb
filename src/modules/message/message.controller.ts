@@ -748,14 +748,13 @@ export class MessageController {
                 
                 //POST A/C to SENDER ID TO PREVIOUS CHANNELS CONFIGURED
 
-                
+            if(channel && channel.length > 0){
                 for(let oneChannel of channel){
-                    if(channel && oneChannel.workspaceId) {
+                    if(oneChannel.workspaceId) {
                         workspace = await this.workspaceService.findById(oneChannel.workspaceId);     
                     } else {
                          await this.workspaceService.findByTeamId(process.env.DEFAULT_WORKSPACE_ID);
                     }
-                    let channelId:string = oneChannel.channelID;
                     await this.slackService.postBlockMessage(
                         workspace.accessToken,
                         oneChannel.channelID,
@@ -768,11 +767,14 @@ export class MessageController {
                         message,
                         forwardedFrom,
                         notificationType,
-                        channelId,
+                        channelID:oneChannel.channelID,
                         blocks:JSON.stringify(blocks)
                     }
                     const text = await this.messageService.log(data);
                 }
+            }else{
+                console.log("Channel Array is empty");
+            }
                  
                
                 //CREATE A LIST OF SUBSCRIBERS FOR PREVIOUS CHANNEL IDS
