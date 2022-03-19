@@ -3,7 +3,6 @@ import { Controller, Post, Request, Get, Response, HttpStatus, Res, Body } from 
 import { ChannelService } from '../channel/channel.service';
 import { WorkspaceService } from '../workspace/workspace.service';
 import { MessageService } from './message.service';
-import { WhatsappService } from '../whatsapp/whatsapp.service';
 import { SlackApiService } from '../slack/slack.service';
 
 import { ConfigService } from '../../shared/config.service';
@@ -29,7 +28,6 @@ export class MessageController {
         private configService: ConfigService,
         private slackService: SlackApiService,
         private messageService: MessageService,
-        private whatsAppService: WhatsappService,
     ) {}
 
     @Post('/')
@@ -710,28 +708,6 @@ export class MessageController {
                             "value": JSON.stringify(a),
                             "action_id": "orignal_message_button"
                         },
-                        {
-                            "type": "button",
-                            "text": {
-                                "type": "plain_text",
-                                "text": "Subscribe 📲",
-                                "emoji": true
-                            },
-                            "style": "primary",
-                            "value": 'blank',
-                            "action_id": "whatsapp_sub_button"
-                        },
-                        {
-                            "type": "button",
-                            "text": {
-                                "type": "plain_text",
-                                "text": "Unsubscribe 📲",
-                                "emoji": true
-                            },
-                            "style": "danger",
-                            "value": 'blank',
-                            "action_id": "whatsapp_unsub_button"
-                        }
                     ]
                 }
 
@@ -779,32 +755,6 @@ export class MessageController {
             }else{
                 console.log("Channel Array is empty");
             }
-                 
-               
-                //CREATE A LIST OF SUBSCRIBERS FOR PREVIOUS CHANNEL IDS
-                var activeSubscribers = await this.whatsAppService.channelSubscribers(channelID);
-                - console.log("activeSubscribersactiveSubscribersactiveSubscribers");
-                - console.log(activeSubscribers);
-                // Post messages to whatsapp subscribers--------------------
-                if(activeSubscribers.length>0){
-                    //Iterating over the list of subscribers for this channel
-                    for (let i=0;i<activeSubscribers.length;i++){
-                        this.messageService.sendAlerts(
-                            activeSubscribers[i]['fullname'],
-                            activeSubscribers[i]['whatsappnum'],
-                            activeSubscribers[i]['channelname'],
-                            sender,card,account,OTP,amount,
-                            payee,utr,limitConsumed,availableLimit,
-                            balance,ref,notificationType
-                        );
-                        
-                        console.log('\x1b[36m%s\x1b[0m',`Posted alerts to Subscirber:${activeSubscribers[i]['fullname']} | To:${activeSubscribers[i]['whatsappnum']} | For:#${activeSubscribers[i]['channelname']}`);
-                        
-                    }
-
-                }else{
-                    console.log(`No subscribers for ${channelID} channel.`);
-                }
             res.send('yay!');
         }
 }
