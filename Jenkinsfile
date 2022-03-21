@@ -1,5 +1,5 @@
 pipeline {
-  agent {label 'Message-Router-Server'}
+  agent {label 'Message-router-slave'}
   environment {
        Project_dir = '/srv/Message-Router-API3'
        pm2_process_name = 'Message-Router-3'
