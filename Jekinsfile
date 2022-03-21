@@ -1,0 +1,10 @@
+pipeline {
+  agent {label 'Message-Router-Server'}
+  stages {
+    stage('Git PULL') {
+      steps {
+        sh "cd /srv/Project_dir/ && git pull origin main && yarn install && yarn run build && pm2 restart" 
+        }
+    }
+}
+}
