@@ -1,4 +1,4 @@
-export function viewIpaytmPersonalMessage({amount,OTP,ref,balance,message}: any): any {
+export function viewIpaytmPersonalMessage({amount,purpose,OTP,ref,balance,message}: any): any {
     const blocks = [
         {
             "type": "header",
@@ -8,11 +8,16 @@ export function viewIpaytmPersonalMessage({amount,OTP,ref,balance,message}: any)
             }
         },
         {
+            "type": "mrkdwn",
+            "text": "*iPaytm *\n"
+        },
+        
+        {
             "type": "section",
             "fields": [
                 {
                     "type": "mrkdwn",
-                    "text": "*iPaytm *\n"
+                    "text": (purpose===undefined) ? " " : "*Purpose:*\n" + purpose
                     
                 },
                 {

@@ -55,7 +55,7 @@ export class MessageController {
             let blocks;
             let icon_url;
             let notificationType = 'uncategorized';
-            let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance;
+            let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose;
             let channel,channelID,workspace;
             console.log('sender: ' + sender);
             console.log('sender: ' + typeof(sender));
@@ -295,7 +295,7 @@ export class MessageController {
                     const regexICICIBankingCreditCaseThree = /Payment.*?INR.*?(?<amount>(\d+(.*\,\d{0,})?)).*?Account.*?(?<account>xxx.*?\d+)/m;
                     const regexICICIBankingCreditCaseFour = /(?<account>Acct.*?\d+).*credited.*?Rs.(?<amount>(\d+(.*\,\d{0,})?)).*?by (?<ref>.*?\d+)/m;
                     const regexICICIJioMobility = /Jio Mobility.*?ICICI Bank app/m;
-                    const regexICICIPersonalCard = /.*(?<account>(Acct|Card).*?XX\d+)/m;
+                    //const regexICICIPersonalCard = /.*(?<account>(Acct|Card).*?XX\d+)/m;
                     const regexICICIBankingCreditCaseSix =/(?<ref>\d+).*?Rs.*?(?<amount>(\d+(.*\,\d{0,})?)).*?credited.to.*?(?<account>\w.*account)/m;
                     const regexICICIBCorpBanking = /(?<OTP>\d+).*?is.*?OTP.*?Corporate Internet Banking/m;
                     if (regexICICIBankingFundTransfer.test(message)) {
@@ -375,9 +375,8 @@ export class MessageController {
                         notificationType = 'credit';
                     } else if (regexICICIJioMobility.test(message)) {
                         notificationType = 'personalMessageNoBlock';
-                    } else if (regexICICIPersonalCard.test(message)) {
-                        notificationType = 'personalMessageNoBlock';
                     }
+                   
 
                     if(account!=undefined && ( account.slice(-4) == "7003" || account.slice(-3) == "431" )  ){
                         notificationType = "personalMessage";
@@ -630,10 +629,10 @@ export class MessageController {
                     }
                     break;
                 case 'iPaytm':
-                    const regexiPaytmDebitCaseOne = /Paid.?.(?<amount>(Rs |INR |USD )(\d+(.*\,\d{0,})?)).*?.at.(?<payee>.*?[.]).*?.TxnId:(?<ref>.*?[.]).*?Bal.*?.(?<balance>(Rs |INR )(\d+(.*\,\d{0,})?))/m;
+                    const regexiPaytmDebitCaseOne = /Paid.?.(?<amount>(Rs |INR |USD )(\d+(.*\,\d{0,})?)).*?.for.(?<purpose>.*?[.]).*?.TxnId:(?<ref>.*?[.]).*?Bal.*?.(?<balance>(Rs |INR )(\d+(.*\,\d{0,})?))/m;
                     if (regexiPaytmDebitCaseOne.test(message)) {
                         ({
-                            groups: { amount,payee,ref,balance }
+                            groups: { amount,purpose,ref,balance }
                         } = regexiPaytmDebitCaseOne.exec(message));
                         notificationType = 'personalMessage';
                     }
@@ -644,7 +643,7 @@ export class MessageController {
                         case 'personalMessage':
                             channel = await this.channelService.findByType('PersonalMessages');
                             icon_url = 'https://scontent.famd4-1.fna.fbcdn.net/v/t1.6435-9/54433583_2270713066327585_4370000988841443328_n.png?_nc_cat=1&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=W0Ieb692IT4AX8CUYbE&_nc_ht=scontent.famd4-1.fna&oh=a0a5238fee7f8df4e8a50a37d3b659e4&oe=6193612B';
-                            blocks = viewIpaytmPersonalMessage({amount,OTP,ref,balance,message});
+                            blocks = viewIpaytmPersonalMessage({amount,purpose,OTP,ref,balance,message});
                             break;
                         default:
                             channel = await this.channelService.findByType('Uncategorized');
