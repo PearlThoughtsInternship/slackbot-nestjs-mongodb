@@ -281,7 +281,7 @@ export class MessageController {
                     }
                     break;
                 case 'ICICIB':
-                    const regexICICIBankingFundTransfer = /(?<OTP>\d+).?is.*?OTP.*INR.(?<amount>(\d+(.*\,include\d{0,})?)).?at.*?(?<payee>\w{1,}).*?(?<account>(Account|Acct|Card).*?XX\d+)/m;
+                    const regexICICIBankingFundTransfer = /(?<OTP>\d+).?is.*?OTP.*INR.(?<amount>(\d+(.*\,\d{0,})?)).?at.*?(?<payee>\w{1,}).*?(?<account>(Account|Acct|Card).*?XX\d+)/m;
                     const regexICICIBankingFundTransferCaseOne = /(?<OTP>\d+).?is.*?OTP.*INR.(?<amount>(\d+(.*\,\d{0,})?)).*?.(?<account>(Account|Acct|Card).*?XX\d+).*?to.(?<payee>.*?[.])/m;
                     const regexICICIBankingFundTransferCaseTwo = /(?<OTP>\d+).?is.*?OTP.*(?<account>(Acct|Card).*?XX\d+)/m;
                     const regexICICIBankingFundTransferCaseThree = /(?<OTP>\d+).?is.*?OTP.*?to pay.*?(?<payee>.*?[,]).*?(Rs |INR |USD )(?<amount>(\d+(.*\,\d{0,})?))/m;
@@ -295,7 +295,6 @@ export class MessageController {
                     const regexICICIBankingCreditCaseThree = /Payment.*?INR.*?(?<amount>(\d+(.*\,\d{0,})?)).*?Account.*?(?<account>xxx.*?\d+)/m;
                     const regexICICIBankingCreditCaseFour = /(?<account>Acct.*?\d+).*credited.*?Rs.(?<amount>(\d+(.*\,\d{0,})?)).*?by (?<ref>.*?\d+)/m;
                     const regexICICIJioMobility = /Jio Mobility.*?ICICI Bank app/m;
-                    //const regexICICIPersonalCard = /.*(?<account>(Acct|Card).*?XX\d+)/m;
                     const regexICICIBankingCreditCaseSix =/(?<ref>\d+).*?Rs.*?(?<amount>(\d+(.*\,\d{0,})?)).*?credited.to.*?(?<account>\w.*account)/m;
                     const regexICICIBCorpBanking = /(?<OTP>\d+).*?is.*?OTP.*?Corporate Internet Banking/m;
                     if (regexICICIBankingFundTransfer.test(message)) {
@@ -643,7 +642,7 @@ export class MessageController {
                         case 'personalMessage':
                             channel = await this.channelService.findByType('PersonalMessages');
                             icon_url = 'https://scontent.famd4-1.fna.fbcdn.net/v/t1.6435-9/54433583_2270713066327585_4370000988841443328_n.png?_nc_cat=1&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=W0Ieb692IT4AX8CUYbE&_nc_ht=scontent.famd4-1.fna&oh=a0a5238fee7f8df4e8a50a37d3b659e4&oe=6193612B';
-                            blocks = viewIpaytmPersonalMessage({amount,purpose,OTP,ref,balance,message});
+                            blocks = viewIpaytmPersonalMessage({amount,purpose,ref,balance,message});
                             break;
                         default:
                             channel = await this.channelService.findByType('Uncategorized');
