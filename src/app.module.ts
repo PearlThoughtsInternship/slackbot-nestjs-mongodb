@@ -10,21 +10,16 @@ import { WorkspaceModule } from './modules/workspace/workspace.module';
 import { MessageModule } from './modules/message/message.module';
 // import { MessageModule } from './modules/message/message.module';
 // import { ChannelModule } from './modules/channel/channel.module';
-import { WhatsappModule } from './modules/whatsapp/whatsapp.module';
 import { ConfigService } from './shared/config.service';
 import { SlackApiModule } from './modules/slack/slack.module';
 import { WorkspaceModel } from './modules/workspace/workspace.model';
 import { MessageModel } from './modules/message/message.model';
 import { ChannelModel } from './modules/channel/channel.model';
-import { WhatsappModel } from './modules/whatsapp/whatsapp.model';
 import { ChannelModule } from './modules/channel/channel.module';
 import { MessageController } from './modules/message/message.controller';
 import { WorkspaceService } from 'src/modules/workspace/workspace.service';
 import { ChannelService } from 'src/modules/channel/channel.service';
 import { SlackApiService } from './modules/slack/slack.service';
-import { SubscriptionService } from 'src/providers/subscription.service';
-import { UnsubscriptionService } from 'src/providers/unsubscription.service';
-import { OtpService } from 'src/providers/otp.service';
 import { OriginalButtonService } from 'src/providers/orgBtn.service';
 import { LoggerModule } from 'nestjs-rollbar';
 
@@ -38,7 +33,7 @@ import { LoggerModule } from 'nestjs-rollbar';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DATABASE,
-      entities: [WorkspaceModel, MessageModel, ChannelModel, WhatsappModel],
+      entities: [WorkspaceModel, MessageModel, ChannelModel],
       synchronize: false,
     }),
     LoggerModule.forRoot({
@@ -51,7 +46,6 @@ import { LoggerModule } from 'nestjs-rollbar';
     WorkspaceModule,
     MessageModule,
     ChannelModule,
-    WhatsappModule,
     SlackApiModule
   ],
   controllers: [AppController, MessageController],
@@ -61,9 +55,6 @@ import { LoggerModule } from 'nestjs-rollbar';
     SlackService,
     ChannelService,
     SlackApiService,
-    SubscriptionService,
-    UnsubscriptionService,
-    OtpService,
     OriginalButtonService
   ],
 })
