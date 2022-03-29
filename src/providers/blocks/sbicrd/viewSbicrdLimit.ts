@@ -1,4 +1,4 @@
-export function viewSbicrdLimit({limitConsumed,availableLimit}: any): any {
+export function viewSbicrdLimit({limitConsumed,availableLimit,account,totDue,minDue}: any): any {
     const blocks = [
         {
             "type": "header",
@@ -9,15 +9,37 @@ export function viewSbicrdLimit({limitConsumed,availableLimit}: any): any {
         },
         {
             "type": "section",
+        "fields": 
+            {
+                "type": "mrkdwn",
+                "text":  (account === undefined) ? " " :"*Card ending with:*\n " +account
+            } 
+        },
+        {
+            "type": "section",
             "fields": [
                 {
                     "type": "mrkdwn",
-                    "text": "*SBI Card Limit Consumed :*\n " +limitConsumed
+                    "text":  (limitConsumed === undefined) ? " " :"*SBI Card Limit Consumed :*\n " +limitConsumed
                     
                 },
                 {
                     "type": "mrkdwn",
-                    "text": "*Current available limit :*\n₹ " + availableLimit
+                    "text":  (availableLimit === undefined) ? " " :"*Current available limit :*\n₹ " + availableLimit
+                }
+            ]
+        },
+        {
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": (totDue === undefined) ? " " : "*Total Amt Due:*\n " +totDue
+                    
+                },
+                {
+                    "type": "mrkdwn",
+                    "text":  (minDue === undefined) ? " " :"*Min Amt Due:*\n₹ " + minDue
                 }
             ]
         }

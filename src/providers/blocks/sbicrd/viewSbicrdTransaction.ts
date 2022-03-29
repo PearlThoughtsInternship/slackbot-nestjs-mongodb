@@ -1,4 +1,4 @@
-export function viewSbicrdTransaction({account,card,payee,amount,utr}: any): any {
+export function viewSbicrdTransaction({account,card,payee,amount,utr,typeid,Status}: any): any {
     const blocks = [
         {
             "type": "header",
@@ -17,7 +17,7 @@ export function viewSbicrdTransaction({account,card,payee,amount,utr}: any): any
                 },
                 {
                     "type": "mrkdwn",
-                    "text": "*Payee:*\n" + payee
+                    "text": (payee === undefined) ? " " :"*Payee:*\n" + payee
                 }
             ]
         },
@@ -38,7 +38,20 @@ export function viewSbicrdTransaction({account,card,payee,amount,utr}: any): any
                     "text": (utr === undefined) ? " " : "*UTR / REF:*\n" + utr
                 }
             ]
-        }
+        },
+        {
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": (typeid === undefined) ? " " :"*Request for*\n " + typeid
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": (Status === undefined) ? " " :"*Status:*\n" + Status
+                }
+            ]
+        },
     ];
 
     return blocks;

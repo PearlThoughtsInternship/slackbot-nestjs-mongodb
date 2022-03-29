@@ -9,7 +9,7 @@ import { SlackApiService } from '../slack/slack.service';
 import { ConfigService } from '../../shared/config.service';
 import {
     viewSbiinbLogin, viewSbiinbFundTransfer, viewSbiinbCredit, viewSbiinbTransaction,
-    viewSbicrdLogin, viewSbicrdFundTransfer, viewSbicrdCredit, viewSbicrdTransaction, viewSbicrdDevopsCloud, viewSbicrdLimit, viewSbicrdUdemyOtp, viewSbicrdCardFundTransfer, viewSbicrdCardLogin,
+    viewSbicrdLogin, viewSbicrdFundTransfer, viewSbicrdCredit, viewSbicrdTransaction, viewSbicrdDevopsCloud, viewSbicrdLimit, viewSbicrdUdemyOtp, viewSbicrdCardFundTransfer, viewSbicrdCardLogin, 
     viewAxisbkBalance, viewAxisbkBeneficiary, viewAxisbkCredit, viewAxisbkFundTransfer, viewAxisbkTransaction,
     viewIcicibCorpLogin, viewIcicibCredit, viewIcicibFundTransfer, viewIcicibPersonalMessage, viewIcicibTransaction,
     viewSbipsgTransaction, viewSbipsgCredit,
@@ -55,7 +55,7 @@ export class MessageController {
             let blocks;
             let icon_url;
             let notificationType = 'uncategorized';
-            let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,payment_service;
+            let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,payment_service,Type,Status,totDue,minDue;
             let channel,channelID,workspace;
             console.log('sender: ' + sender);
             console.log('sender: ' + typeof(sender));
@@ -137,6 +137,9 @@ export class MessageController {
                     const regexSBICreditCaseThree = /Rs. (?<amount>(\d+(.*\,\d{0,})?)).*?credited.*?Card.(?<card>xxxx\d+).*?from.(?<payee>.*  )/m;
                     const regexSBICardLimit = /consumed.*?(?<limitConsumed>\d.*?%).*?credit.*limit.*available.*?(?<availableLimit>(\d+(.*\,\d{0,})?))/m;
                     const regexCardPINDelivery = /.*?PIN of your SBI Card.*?delivered/m;
+                    const regexSBIEStatement = /(ending with)(?<account>.*?XX\d+).*?.Total Amt Due.*?(Rs |INR |USD )(?<totDue>(\d+(.*\,\d{0,})?)).*?.Min Amt Due.*?(Rs |INR |USD )(?<minDue>(\d+(.*\,\d{0,})?))/m; //E-Statement
+                    const regexSBICardReversal =/request for.*?(?<typeid>\w{0,}.*?.+?(?=of Rs)).*?Rs.(?<amount>\d+(.*\,\d{0,})?).*?.ending.*?(?<card>.*?\d+).*?.has been(?<status>.*?\w{1,}[.])/m; //reversal
+                    const regexSBISI =/Trxn.*?(USD|INR|Rs)(?<amount>\d+(.*\.\d{1,})).*?.Card ending(?<card>.*?\d+).at(?<payee>.*?\w{0,}.*?.+?(?=on)).*?.has been(?<status>.*?\w{1,})/m; //SI-Standard Instruction
 
                     if (regexSBICardFundTransfer.test(message)) {
                         ({
@@ -212,6 +215,21 @@ export class MessageController {
                         notificationType = 'transaction';
                     } else if(regexCardPINDelivery.test(message)) {
                         notificationType = 'package-delivery';
+                    } else if (regexSBIEStatement.test(message)){
+                        ({
+                            groups: {account ,totDue,minDue}
+                        } = regexSBIEStatement.exec(message));
+                        notificationType = 'limit';
+                    } else if (regexSBICardReversal.test(message)){
+                        ({
+                            groups: {Type ,amount,card,Status}
+                        } =regexSBICardReversal.exec(message));
+                        notificationType = 'transaction';
+                    } else if (regexSBISI.test(message)){
+                        ({
+                            groups: {amount,card , payee,Status}
+                        } =regexSBISI.exec(message));
+                        notificationType = 'transaction';
                     }
 
                     //Custom Payee : Udemy to route to diff channel
@@ -260,12 +278,12 @@ export class MessageController {
                         case 'transaction':
                             channel = await this.channelService.findByType('service-alerts');
                             icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
-                            blocks = viewSbicrdTransaction({ account,card,payee,amount,utr });
+                            blocks = viewSbicrdTransaction({ account,card,payee,amount,utr,Type,Status });
                             break;
                         case 'limit':
                             channel = await this.channelService.findByType('service-alerts');
                             icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
-                            blocks = viewSbicrdLimit({ limitConsumed, availableLimit });
+                            blocks = viewSbicrdLimit({ limitConsumed, availableLimit,account,totDue,minDue });
                             break;
                         case 'udemyOTP':
                             channel = await this.channelService.findByType('udemy-new-course-otp');
@@ -300,6 +318,7 @@ export class MessageController {
                     const regexICICIBFundTransfer1 = /(?<account>(Acct|Card).*?XX\d+).*?.\OTP is.*?(?<OTP>\d+)/m;
                     const regexICICIBTransaction1 =/INR.*?(?<amount>(\d+(.*\,\d{0,})?)).*?(?<account>(Acct|Card).*?XX\d+).*?through.*?(?<payment_service>\w{1,}\s+.+?(?=on))/m;
                     const regexICICIBTransaction2 =/INR.*?(?<amount>(\d+(.*\,\d{0,})?)).*?spent.*?(?<account>(Acct|Card).*?XX\d+).*?at.*?(?<payee>\w{1,}).*?Avl Lmt.*?INR.*?(?<balance>(\d+(.*\,\d{0,})[.]))/m;
+                    const regexICICIBRefundCredit =/Customer,.*?(?<Type>.*?\w{0,}.*?.+?(?=of)).*?(?<amount>(INR |USD |Rs )(\d+(.*\,\d{0,})?)).*?(from |by )(?<payee>.*?\w{0,}.*?.+?(?=has)).*?(?<account>(Account|Acct|Card).*?XX\d+)/m;
                     if (regexICICIBankingFundTransfer.test(message)) {
                         ({
                             groups: { account, amount, payee, OTP }
@@ -387,8 +406,12 @@ export class MessageController {
                         notificationType = 'credit';
                     } else if (regexICICIJioMobility.test(message)) {
                         notificationType = 'personalMessageNoBlock';
+                    }else if (regexICICIBRefundCredit.test(message)) {
+                        ({
+                            groups: { Type,amount,payee,account }
+                        } = regexICICIBRefundCredit.exec(message));
+                        notificationType = 'credit';
                     }else if (regexICICIBTransaction1.test(message)) {
-                        console.log("i am in regexicicibtransaction1");
                         ({
                             groups: { amount , account , payment_service }
                         } = regexICICIBTransaction1.exec(message));
@@ -411,7 +434,7 @@ export class MessageController {
                         case 'credit':
                             channel = await this.channelService.findByType('service-alerts');
                             icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                            blocks = viewIcicibCredit({account,ref,amount,balance,payee});
+                            blocks = viewIcicibCredit({Type,account,ref,amount,balance,payee});
                             break;
                         case 'transaction':
                             channel = await this.channelService.findByType('service-alerts');

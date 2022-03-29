@@ -1,4 +1,6 @@
-export function viewIcicibCredit({account,ref,amount,balance,payee}: any): any {
+import { type } from "os";
+
+export function viewIcicibCredit({Type,account,ref,amount,balance,payee}: any): any {
     const blocks = [
         {
             "type": "header",
@@ -17,7 +19,12 @@ export function viewIcicibCredit({account,ref,amount,balance,payee}: any): any {
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (ref === undefined) ? " "  : "*REF:*\n" + ref
+                    "text": (Type === undefined) ? " "  :"*Type:*\n " + Type
+                    
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": (payee === undefined) ? " " : "*Payee :*\n₹" + payee
                 }
             ]
         },
@@ -34,7 +41,7 @@ export function viewIcicibCredit({account,ref,amount,balance,payee}: any): any {
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (payee === undefined) ? " " : "*Payee :*\n₹" + payee
+                    "text": (ref === undefined) ? " "  : "*REF:*\n" + ref
                 }
             ]
         }
