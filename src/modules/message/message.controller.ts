@@ -53,7 +53,7 @@ export class MessageController {
             let blocks;
             let icon_url;
             let notificationType = 'uncategorized';
-            let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,payment_service,Type,Status,totDue,minDue;
+            var OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,payment_service,Type,Status,totDue,minDue;
             let channel,channelID,workspace;
             console.log('sender: ' + sender);
             console.log('sender: ' + typeof(sender));
@@ -135,8 +135,8 @@ export class MessageController {
                     const regexSBICreditCaseThree = /Rs. (?<amount>(\d+(.*\,\d{0,})?)).*?credited.*?Card.(?<card>xxxx\d+).*?from.(?<payee>.*  )/m;
                     const regexSBICardLimit = /consumed.*?(?<limitConsumed>\d.*?%).*?credit.*limit.*available.*?(?<availableLimit>(\d+(.*\,\d{0,})?))/m;
                     const regexCardPINDelivery = /.*?PIN of your SBI Card.*?delivered/m;
-                    const regexSBIEStatement = /(ending with)(?<account>.*?XX\d+).*?.Total Amt Due.*?(Rs |INR |USD )(?<totDue>(\d+(.*\,\d{0,})?)).*?.Min Amt Due.*?(Rs |INR |USD )(?<minDue>(\d+(.*\,\d{0,})?))/m; //E-Statement
-                    const regexSBICardReversal =/request for.*?(?<typeid>\w{0,}.*?.+?(?=of Rs)).*?Rs.(?<amount>\d+(.*\,\d{0,})?).*?.ending.*?(?<card>.*?\d+).*?.has been(?<status>.*?\w{1,}[.])/m; //reversal
+                    const regexSBIEStatement = /(ending with)(?<card>.*?XX\d+).*?.Total Amt Due.*?(Rs |INR |USD )(?<totDue>(\d+(.*\,\d{0,})?)).*?.Min Amt Due.*?(Rs |INR |USD )(?<minDue>(\d+(.*\,\d{0,})?))/m; //E-Statement
+                    const regexSBICardReversal =/request for.*?(?<Type>\w{0,}.*?.+?(?=of Rs)).*?Rs.(?<amount>\d+(.*\,\d{0,})?).*?.ending.*?(?<card>.*?\d+).*?.has been(?<status>.*?\w{1,}[.])/m; //reversal request
                     const regexSBISI =/Trxn.*?(USD|INR|Rs)(?<amount>\d+(.*\.\d{1,})).*?.Card ending(?<card>.*?\d+).at(?<payee>.*?\w{0,}.*?.+?(?=on)).*?.has been(?<status>.*?\w{1,})/m; //SI-Standard Instruction
 
                     if (regexSBICardFundTransfer.test(message)) {
@@ -215,9 +215,9 @@ export class MessageController {
                         notificationType = 'package-delivery';
                     } else if (regexSBIEStatement.test(message)){
                         ({
-                            groups: {account ,totDue,minDue}
+                            groups: {card,totDue,minDue}
                         } = regexSBIEStatement.exec(message));
-                        notificationType = 'limit';
+                        notificationType = 'transaction';
                     } else if (regexSBICardReversal.test(message)){
                         ({
                             groups: {Type ,amount,card,Status}
@@ -276,7 +276,7 @@ export class MessageController {
                         case 'transaction':
                             channel = await this.channelService.findByType('service-alerts');
                             icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
-                            blocks = viewSbicrdTransaction({ account,card,payee,amount,utr,Type,Status });
+                            blocks = viewSbicrdTransaction({ account,card,payee,amount,utr,Type,Status,totDue,minDue });
                             break;
                         case 'limit':
                             channel = await this.channelService.findByType('service-alerts');
