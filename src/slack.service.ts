@@ -3,9 +3,6 @@ import { Injectable } from '@nestjs/common';
 // import { orgBtn, subBtn, unSubBtn, subModal, otpModal, unsubModal } from 'src/providers/blocks';
 // import { orgBtn, subBtn } from 'src/providers/blocks';
 
-import { SubscriptionService } from 'src/providers/subscription.service';
-import { UnsubscriptionService } from 'src/providers/unsubscription.service';
-import { OtpService } from 'src/providers/otp.service';
 import { OriginalButtonService } from 'src/providers/orgBtn.service';
 
 // const actionMap = {
@@ -23,9 +20,6 @@ import { OriginalButtonService } from 'src/providers/orgBtn.service';
 @Injectable()
 export class SlackService {
     constructor(
-        private subscriptionService: SubscriptionService,
-        private unsubscriptionService: UnsubscriptionService,
-        private otpService: OtpService,
         private originalButtonService: OriginalButtonService,
     ) {}
 
@@ -51,31 +45,6 @@ export class SlackService {
         boltApp.action("orignal_message_button", async ({ body,client, ack, say }) => {
             var request = { body,client, ack, say };
             this.originalButtonService.initOriginalMessageModal(request);
-        });
-
-        boltApp.action("whatsapp_sub_button", async ({body,client, ack, say }) => {
-            var request = {body,client, ack, say };
-            this.subscriptionService.initSubBtn(request);
-        });
-
-        boltApp.action("whatsapp_unsub_button", async ({body,client, ack, say }) => {
-            var request = {body,client, ack, say };
-            this.unsubscriptionService.initUnsubBtn(request);
-        });
-
-        boltApp.view("view_whatsapp_sub_modal", async ({ ack, body, view, client }) => {
-            var request = {ack, body, view, client};
-            this.subscriptionService.initSubModal(request);
-        });
-
-        boltApp.view("view_otp_modal", async ({ ack, body, view, client}) => {
-            var request = {ack, body, view, client};
-            this.otpService.initOtpModal(request);
-        });
-    
-        boltApp.view("view_whatsapp_unsub_modal", async ({ ack, body, view, client}) => {
-            var request = {ack, body, view, client};
-            this.unsubscriptionService.initUnsubModal(request);
         });
     }
 }
