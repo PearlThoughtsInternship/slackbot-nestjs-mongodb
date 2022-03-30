@@ -1,4 +1,4 @@
-export function viewIpaytmPersonalMessage({amount,OTP,ref,balance,message}: any): any {
+export function viewIpaytmPersonalMessage({amount,purpose,ref,balance,message}: any): any {
     const blocks = [
         {
             "type": "header",
@@ -7,22 +7,26 @@ export function viewIpaytmPersonalMessage({amount,OTP,ref,balance,message}: any)
                 "text": message.includes('Paid') ? "Transaction Alert" :  "Credit Alert"
             }
         },
-        {
-            "type": "section",
+        {   "type": "section",
             "fields": [
                 {
                     "type": "mrkdwn",
                     "text": "*iPaytm *\n"
-                    
-                },
+                }
+            ]
+        },
+        {
+            "type": "section",
+            "fields": [
                 {
                     "type": "mrkdwn",
                     "text": message.includes('Paid')  ?  (amount==undefined)?" ":"*Amount debited :*\n" + (amount.includes('USD')?amount.replace('USD ','$'):amount.replace('Rs','₹'))  :  (amount==undefined)?" ":"*Amount Credited :*\n₹" + amount
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (OTP===undefined) ? " " : "*OTP:*\n" + OTP
-                }
+                    "text": (purpose===undefined) ? " " : "*Purpose:*\n" + purpose
+                    
+                },
             ]
         },
         {
