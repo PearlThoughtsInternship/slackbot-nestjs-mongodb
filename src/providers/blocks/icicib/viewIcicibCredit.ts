@@ -24,7 +24,7 @@ export function viewIcicibCredit({Type,account,ref,amount,balance,payee}: any): 
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (payee === undefined) ? " " : "*Payee :*\n₹" + payee
+                    "text": (payee === undefined) ? " " : "*Payee :*\n" + payee
                 }
             ]
         },
@@ -33,11 +33,11 @@ export function viewIcicibCredit({Type,account,ref,amount,balance,payee}: any): 
             "fields": [
                 {
                     "type": "mrkdwn",
-                    "text": "*Amount Credited :*\n₹" + amount
+                    "text": "*Amount Credited :*\n" + amount
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (balance === undefined) ? " " : "*Available Balance :*\n₹" + balance
+                    "text": (balance === undefined) ? " " : "*Available Balance :*\n" + balance
                 },
                 {
                     "type": "mrkdwn",
