@@ -1,5 +1,3 @@
-import { type } from "os";
-
 export function viewIcicibCredit({Type,account,ref,amount,balance,payee}: any): any {
     const blocks = [
         {
