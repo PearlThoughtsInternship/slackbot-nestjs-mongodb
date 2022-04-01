@@ -53,11 +53,7 @@ export class MessageController {
             let blocks;
             let icon_url;
             let notificationType = 'uncategorized';
-<<<<<<< HEAD
             var OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,payment_service,Type,Status,totDue,minDue;
-=======
-            let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance, purpose;
->>>>>>> fef75a9dddfe05e8be59698620cdfeabb8f68d2c
             let channel,channelID,workspace;
             console.log('sender: ' + sender);
             console.log('sender: ' + typeof(sender));
@@ -301,11 +297,7 @@ export class MessageController {
                     }
                     break;
                 case 'ICICIB':
-<<<<<<< HEAD
                     const regexICICIBankingFundTransfer = /(?<OTP>\d+).?is.*?OTP.*INR.(?<amount>(\d+(.*\,\d{0,})?)).?at.*?(?<payee>\w{1,}).*?(?<account>(Account|Acct|Card).*?XX\d+)/m;
-=======
-                    const regexICICIBankingFundTransfer = /(?<OTP>\d+).?is.*?OTP.*INR.(?<amount>(\d+(.*\.\d{0,})?)).?at.*?(?<payee>\w{1,}).*?(?<account>(Account|Acct|Card).*?XX\d+)/m;
->>>>>>> fef75a9dddfe05e8be59698620cdfeabb8f68d2c
                     const regexICICIBankingFundTransferCaseOne = /(?<OTP>\d+).?is.*?OTP.*INR.(?<amount>(\d+(.*\,\d{0,})?)).*?.(?<account>(Account|Acct|Card).*?XX\d+).*?to.(?<payee>.*?[.])/m;
                     const regexICICIBankingFundTransferCaseTwo = /(?<OTP>\d+).?is.*?OTP.*(?<account>(Acct|Card).*?XX\d+)/m;
                     const regexICICIBankingFundTransferCaseThree = /(?<OTP>\d+).?is.*?OTP.*?to pay.*?(?<payee>.*?[,]).*?(Rs |INR |USD )(?<amount>(\d+(.*\,\d{0,})?))/m;
