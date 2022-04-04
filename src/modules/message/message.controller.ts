@@ -53,7 +53,7 @@ export class MessageController {
             let blocks;
             let icon_url;
             let notificationType = 'uncategorized';
-            var OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,payment_service,Type,Status,totDue,minDue;
+            let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,paymentService,type,status,totDue,minDue;
             let channel,channelID,workspace;
             console.log('sender: ' + sender);
             console.log('sender: ' + typeof(sender));
@@ -220,12 +220,12 @@ export class MessageController {
                         notificationType = 'transaction';
                     } else if (regexSBICardReversal.test(message)){
                         ({
-                            groups: {Type ,amount,card,Status}
+                            groups: {Type: type ,amount,card,Status: status}
                         } =regexSBICardReversal.exec(message));
                         notificationType = 'transaction';
                     } else if (regexSBISI.test(message)){
                         ({
-                            groups: {amount,card , payee,Status}
+                            groups: {amount,card , payee,Status: status}
                         } =regexSBISI.exec(message));
                         notificationType = 'transaction';
                     }
@@ -276,12 +276,12 @@ export class MessageController {
                         case 'transaction':
                             channel = await this.channelService.findByType('service-alerts');
                             icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
-                            blocks = viewSbicrdTransaction({ account,card,payee,amount,utr,Type,Status,totDue,minDue });
+                            blocks = viewSbicrdTransaction({ account,card,payee,amount,utr,Type: type,Status: status,totDue,minDue });
                             break;
                         case 'limit':
                             channel = await this.channelService.findByType('service-alerts');
                             icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
-                            blocks = viewSbicrdLimit({ limitConsumed, availableLimit,account,totDue,minDue });
+                            blocks = viewSbicrdLimit({ limitConsumed, availableLimit });
                             break;
                         case 'udemyOTP':
                             channel = await this.channelService.findByType('udemy-new-course-otp');
@@ -406,12 +406,12 @@ export class MessageController {
                         notificationType = 'personalMessageNoBlock';
                     }else if (regexICICIBRefundCredit.test(message)) {
                         ({
-                            groups: { Type,amount,payee,account }
+                            groups: { Type: type,amount,payee,account }
                         } = regexICICIBRefundCredit.exec(message));
                         notificationType = 'credit';
                     }else if (regexICICIBTransaction1.test(message)) {
                         ({
-                            groups: { amount , account , payment_service }
+                            groups: { amount , account , payment_service: paymentService }
                         } = regexICICIBTransaction1.exec(message));
                         notificationType = 'transaction';
                     } 
@@ -432,12 +432,12 @@ export class MessageController {
                         case 'credit':
                             channel = await this.channelService.findByType('service-alerts');
                             icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                            blocks = viewIcicibCredit({Type,account,ref,amount,balance,payee});
+                            blocks = viewIcicibCredit({Type: type,account,ref,amount,balance,payee});
                             break;
                         case 'transaction':
                             channel = await this.channelService.findByType('service-alerts');
                             icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                            blocks = viewIcicibTransaction({account,payee,ref,balance,amount,payment_service});
+                            blocks = viewIcicibTransaction({account,payee,ref,balance,amount,payment_service: paymentService});
                             break;
                         case 'personalMessage':
                             channel = await this.channelService.findByType('PersonalMessages');
