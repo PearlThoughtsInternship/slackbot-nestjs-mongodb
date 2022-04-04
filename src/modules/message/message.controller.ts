@@ -53,7 +53,7 @@ export class MessageController {
             let blocks;
             let icon_url;
             let notificationType = 'uncategorized';
-            let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,payment_service;
+            let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,paymentService;
             let channel,channelID,workspace;
             console.log('sender: ' + sender);
             console.log('sender: ' + typeof(sender));
@@ -388,7 +388,7 @@ export class MessageController {
                     }else if (regexICICIBTransaction1.test(message)) {
                         console.log("i am in regexicicibtransaction1");
                         ({
-                            groups: { amount , account , payment_service }
+                            groups: { amount , account , payment_service: paymentService }
                         } = regexICICIBTransaction1.exec(message));
                         notificationType = 'transaction';
                     } 
@@ -414,7 +414,7 @@ export class MessageController {
                         case 'transaction':
                             channel = await this.channelService.findByType('service-alerts');
                             icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                            blocks = viewIcicibTransaction({account,payee,ref,balance,amount,payment_service});
+                            blocks = viewIcicibTransaction({account,payee,ref,balance,amount,payment_service: paymentService});
                             break;
                         case 'personalMessage':
                             channel = await this.channelService.findByType('PersonalMessages');
@@ -646,10 +646,16 @@ export class MessageController {
                     break;
                 case 'iPaytm':
                     const regexiPaytmDebitCaseOne = /Paid.?.(?<amount>(Rs |INR |USD )(\d+(.*\,\d{0,})?)).*?.for.(?<purpose>.*?.+?(?=on)).*?.TxnId:(?<ref>.*?[.]).*?Bal.*?.(?<balance>(Rs |INR )(\d+(.*\,\d{0,})?))/m;
+                    const regexiPaytmDebitCaseTwo = /Paid.(Rs.|INR).*?(?<amount>\d+(.*\,\d{0,})?).to.(?<payee>.+?(?=from))from.(?<paymentService>\w{0,}.*?[.]).*?Paytm Wallet-.(Rs|INR).*?(?<balance>\d+(.*\,\d{0,)?)/m;
                     if (regexiPaytmDebitCaseOne.test(message)) {
                         ({
                             groups: { amount,purpose,ref,balance }
                         } = regexiPaytmDebitCaseOne.exec(message));
+                        notificationType = 'personalMessage';
+                    } else   if (regexiPaytmDebitCaseTwo.test(message)) {
+                        ({
+                            groups: { amount,payee,paymentService,balance }
+                        } = regexiPaytmDebitCaseTwo.exec(message));
                         notificationType = 'personalMessage';
                     }
 
@@ -659,7 +665,7 @@ export class MessageController {
                         case 'personalMessage':
                             channel = await this.channelService.findByType('PersonalMessages');
                             icon_url = 'https://scontent.famd4-1.fna.fbcdn.net/v/t1.6435-9/54433583_2270713066327585_4370000988841443328_n.png?_nc_cat=1&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=W0Ieb692IT4AX8CUYbE&_nc_ht=scontent.famd4-1.fna&oh=a0a5238fee7f8df4e8a50a37d3b659e4&oe=6193612B';
-                            blocks = viewIpaytmPersonalMessage({amount,purpose,ref,balance,message});
+                            blocks = viewIpaytmPersonalMessage({amount,purpose,payee,paymentService,ref,balance,message});
                             break;
                         default:
                             channel = await this.channelService.findByType('Uncategorized');

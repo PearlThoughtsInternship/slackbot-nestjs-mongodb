@@ -1,4 +1,4 @@
-export function viewIpaytmPersonalMessage({amount,purpose,ref,balance,message}: any): any {
+export function viewIpaytmPersonalMessage({amount,purpose,payee,paymentService,ref,balance,message}: any): any {
     const blocks = [
         {
             "type": "header",
@@ -28,6 +28,18 @@ export function viewIpaytmPersonalMessage({amount,purpose,ref,balance,message}: 
                     
                 },
             ]
+        },
+        {       "type": "section",
+        "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": (payee===undefined) ? " " : "*Payee:*\n" + payee
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": (paymentService===undefined) ? " " : "*PaymentService:*\n" + paymentService
+                },
+           ]
         },
         {
             "type": "section",
