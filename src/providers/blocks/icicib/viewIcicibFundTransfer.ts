@@ -1,4 +1,4 @@
-export function viewIcicibFundTransfer({account,payee,amount,OTP}: any): any {
+export function viewIcicibFundTransfer({account,payee,amount,OTP,upiId}: any): any {
     const blocks = [
         {
             "type": "header",
@@ -16,8 +16,12 @@ export function viewIcicibFundTransfer({account,payee,amount,OTP}: any): any {
                 },
                 {
                     "type": "mrkdwn",
-                    "text": "*OTP:*\n" + OTP
-                }
+                    "text": (OTP==undefined) ? " " :"*OTP:*\n" + OTP
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": (upiId==undefined) ? " " :"*UPI-ID:*\n" + upiId
+                },
             ]
         },
         {
