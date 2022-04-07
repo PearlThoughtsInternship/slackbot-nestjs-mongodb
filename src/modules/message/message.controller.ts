@@ -136,7 +136,7 @@ export class MessageController {
                     const regexSBICardLimit = /consumed.*?(?<limitConsumed>\d.*?%).*?credit.*limit.*available.*?(?<availableLimit>(\d+(.*\,\d{0,})?))/m;
                     const regexCardPINDelivery = /.*?PIN of your SBI Card.*?delivered/m;
                     const regexSBIEStatement = /(ending with)(?<card>.*?XX\d+).*?.Total Amt Due.*?(Rs |INR |USD )(?<totDue>(\d+(.*\,\d{0,})?)).*?.Min Amt Due.*?(Rs |INR |USD )(?<minDue>(\d+(.*\,\d{0,})?))/m; //E-Statement
-                    const regexSBICardReversal =/request for.*?(?<Type>\w{0,}.*?.+?(?=of Rs)).*?Rs.(?<amount>\d+(.*\,\d{0,})?).*?.ending.*?(?<card>.*?\d+).*?.has been(?<status>.*?\w{1,}[.])/m; //reversal request
+                    const regexSBICardReversal =/request for.*?(?<type>\w{0,}.*?.+?(?=of Rs)).*?Rs.(?<amount>\d+(.*\,\d{0,})?).*?.ending.*?(?<card>.*?\d+).*?.has been(?<status>.*?\w{1,}[.])/m; //reversal request
                     const regexSBISI =/Trxn.*?(USD|INR|Rs)(?<amount>\d+(.*\.\d{1,})).*?.Card ending(?<card>.*?\d+).at(?<payee>.*?\w{0,}.*?.+?(?=on)).*?.has been(?<status>.*?\w{1,})/m; //SI-Standard Instruction
 
                     if (regexSBICardFundTransfer.test(message)) {

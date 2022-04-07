@@ -24,9 +24,8 @@ export function viewIpaytmPersonalMessage({amount,purpose,payee,paymentService,r
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (purpose===undefined) ? " " : "*Purpose:*\n" + purpose
-                    
-                },
+                    "text": (balance === undefined) ? " " : "*Available Balance :*\n" + (balance.includes('USD')?balance.replace('USD ','$'):balance.replace('Rs','₹'))
+                }
             ]
         },
         {       "type": "section",
@@ -50,7 +49,7 @@ export function viewIpaytmPersonalMessage({amount,purpose,payee,paymentService,r
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (balance === undefined) ? " " : "*Available Balance :*\n" + (balance.includes('USD')?balance.replace('USD ','$'):balance.replace('Rs','₹'))
+                    "text": (purpose===undefined) ? " " : "*Purpose:*\n" + purpose
                 }
             ]
         }
