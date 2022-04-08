@@ -1,4 +1,4 @@
-export function viewSbicrdTransaction({account,card,payee,amount,utr,Type,Status,totDue,minDue}: any): any {
+export function viewSbicrdTransaction({account,card,payee,amount,utr,type,status,totDue,minDue}: any): any {
     const blocks = [
         {
             "type": "header",
@@ -35,7 +35,7 @@ export function viewSbicrdTransaction({account,card,payee,amount,utr,Type,Status
                 // }
                 {
                     "type": "mrkdwn",
-                    "text": (Type === undefined) ? " " :"*Request for*\n " + Type
+                    "text": (type === undefined) ? " " :"*Request for*\n " + type
                 }
             ]
         },
@@ -48,7 +48,7 @@ export function viewSbicrdTransaction({account,card,payee,amount,utr,Type,Status
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (Status === undefined) ? " " :"*Status:*\n" + Status
+                    "text": (status === undefined) ? " " :"*Status:*\n" + status
                 }
             ]
         },

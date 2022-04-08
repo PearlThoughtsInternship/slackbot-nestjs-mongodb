@@ -136,7 +136,7 @@ export class MessageController {
                     const regexSBICardLimit = /consumed.*?(?<limitConsumed>\d.*?%).*?credit.*limit.*available.*?(?<availableLimit>(\d+(.*\,\d{0,})?))/m;
                     const regexCardPINDelivery = /.*?PIN of your SBI Card.*?delivered/m;
                     const regexSBIEStatement = /(ending with)(?<card>.*?XX\d+).*?.Total Amt Due.*?(Rs |INR |USD )(?<totDue>(\d+(.*\,\d{0,})?)).*?.Min Amt Due.*?(Rs |INR |USD )(?<minDue>(\d+(.*\,\d{0,})?))/m; //E-Statement
-                    const regexSBICardReversal =/request for.*?(?<Type>\w{0,}.*?.+?(?=of Rs)).*?Rs.(?<amount>\d+(.*\,\d{0,})?).*?.ending.*?(?<card>.*?\d+).*?.has been(?<status>.*?\w{1,}[.])/m; //reversal request
+                    const regexSBICardReversal =/request for.*?(?<type>\w{0,}.*?.+?(?=of Rs)).*?Rs.(?<amount>\d+(.*\,\d{0,})?).*?.ending.*?(?<card>.*?\d+).*?.has been(?<status>.*?\w{1,}[.])/m; //reversal request
                     const regexSBISI =/Trxn.*?(USD|INR|Rs)(?<amount>\d+(.*\.\d{1,})).*?.Card ending(?<card>.*?\d+).at(?<payee>.*?\w{0,}.*?.+?(?=on)).*?.has been(?<status>.*?\w{1,})/m; //SI-Standard Instruction
 
                     if (regexSBICardFundTransfer.test(message)) {
@@ -220,12 +220,12 @@ export class MessageController {
                         notificationType = 'transaction';
                     } else if (regexSBICardReversal.test(message)){
                         ({
-                            groups: {Type: type ,amount,card,Status: status}
+                            groups: {type ,amount,card,status}
                         } =regexSBICardReversal.exec(message));
                         notificationType = 'transaction';
                     } else if (regexSBISI.test(message)){
                         ({
-                            groups: {amount,card , payee,Status: status}
+                            groups: {amount,card , payee,status}
                         } =regexSBISI.exec(message));
                         notificationType = 'transaction';
                     }
@@ -276,7 +276,7 @@ export class MessageController {
                         case 'transaction':
                             channel = await this.channelService.findByType('service-alerts');
                             icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
-                            blocks = viewSbicrdTransaction({ account,card,payee,amount,utr,Type: type,Status: status,totDue,minDue });
+                            blocks = viewSbicrdTransaction({ account,card,payee,amount,utr,type,status,totDue,minDue });
                             break;
                         case 'limit':
                             channel = await this.channelService.findByType('service-alerts');
@@ -406,12 +406,12 @@ export class MessageController {
                         notificationType = 'personalMessageNoBlock';
                     }else if (regexICICIBRefundCredit.test(message)) {
                         ({
-                            groups: { Type: type,amount,payee,account }
+                            groups: { type,amount,payee,account }
                         } = regexICICIBRefundCredit.exec(message));
                         notificationType = 'credit';
                     }else if (regexICICIBTransaction1.test(message)) {
                         ({
-                            groups: { amount , account , payment_service: paymentService }
+                            groups: { amount , account , paymentService }
                         } = regexICICIBTransaction1.exec(message));
                         notificationType = 'transaction';
                     } 
@@ -432,12 +432,12 @@ export class MessageController {
                         case 'credit':
                             channel = await this.channelService.findByType('service-alerts');
                             icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                            blocks = viewIcicibCredit({Type: type,account,ref,amount,balance,payee});
+                            blocks = viewIcicibCredit({type,account,ref,amount,balance,payee});
                             break;
                         case 'transaction':
                             channel = await this.channelService.findByType('service-alerts');
                             icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                            blocks = viewIcicibTransaction({account,payee,ref,balance,amount,payment_service: paymentService});
+                            blocks = viewIcicibTransaction({account,payee,ref,balance,amount,paymentService});
                             break;
                         case 'personalMessage':
                             channel = await this.channelService.findByType('PersonalMessages');
@@ -669,10 +669,16 @@ export class MessageController {
                     break;
                 case 'iPaytm':
                     const regexiPaytmDebitCaseOne = /Paid.?.(?<amount>(Rs |INR |USD )(\d+(.*\,\d{0,})?)).*?.for.(?<purpose>.*?.+?(?=on)).*?.TxnId:(?<ref>.*?[.]).*?Bal.*?.(?<balance>(Rs |INR )(\d+(.*\,\d{0,})?))/m;
+                    const regexiPaytmDebitCaseTwo = /Paid.(Rs.|INR).*?(?<amount>\d+(.*\,\d{0,})?).to.(?<payee>.+?(?=from))from.(?<paymentService>\w{0,}.*?[.]).*?Paytm Wallet-.(Rs|INR).*?(?<balance>\d+(.*\,\d{0,)?)/m;
                     if (regexiPaytmDebitCaseOne.test(message)) {
                         ({
                             groups: { amount,purpose,ref,balance }
                         } = regexiPaytmDebitCaseOne.exec(message));
+                        notificationType = 'personalMessage';
+                    } else   if (regexiPaytmDebitCaseTwo.test(message)) {
+                        ({
+                            groups: { amount,payee,paymentService,balance }
+                        } = regexiPaytmDebitCaseTwo.exec(message));
                         notificationType = 'personalMessage';
                     }
 
@@ -682,7 +688,7 @@ export class MessageController {
                         case 'personalMessage':
                             channel = await this.channelService.findByType('PersonalMessages');
                             icon_url = 'https://scontent.famd4-1.fna.fbcdn.net/v/t1.6435-9/54433583_2270713066327585_4370000988841443328_n.png?_nc_cat=1&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=W0Ieb692IT4AX8CUYbE&_nc_ht=scontent.famd4-1.fna&oh=a0a5238fee7f8df4e8a50a37d3b659e4&oe=6193612B';
-                            blocks = viewIpaytmPersonalMessage({amount,purpose,ref,balance,message});
+                            blocks = viewIpaytmPersonalMessage({amount,purpose,payee,paymentService,ref,balance,message});
                             break;
                         default:
                             channel = await this.channelService.findByType('Uncategorized');

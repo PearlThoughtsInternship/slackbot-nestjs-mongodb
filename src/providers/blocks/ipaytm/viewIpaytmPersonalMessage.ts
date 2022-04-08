@@ -1,4 +1,4 @@
-export function viewIpaytmPersonalMessage({amount,purpose,ref,balance,message}: any): any {
+export function viewIpaytmPersonalMessage({amount,purpose,payee,paymentService,ref,balance,message}: any): any {
     const blocks = [
         {
             "type": "header",
@@ -24,10 +24,21 @@ export function viewIpaytmPersonalMessage({amount,purpose,ref,balance,message}: 
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (purpose===undefined) ? " " : "*Purpose:*\n" + purpose
-                    
-                },
+                    "text": (balance === undefined) ? " " : "*Available Balance :*\n" + (balance.includes('USD')?balance.replace('USD ','$'):balance.replace('Rs','₹'))
+                }
             ]
+        },
+        {       "type": "section",
+        "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": (payee===undefined) ? " " : "*Payee:*\n" + payee
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": (paymentService===undefined) ? " " : "*PaymentService:*\n" + paymentService
+                },
+           ]
         },
         {
             "type": "section",
@@ -38,7 +49,7 @@ export function viewIpaytmPersonalMessage({amount,purpose,ref,balance,message}: 
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (balance === undefined) ? " " : "*Available Balance :*\n" + (balance.includes('USD')?balance.replace('USD ','$'):balance.replace('Rs','₹'))
+                    "text": (purpose===undefined) ? " " : "*Purpose:*\n" + purpose
                 }
             ]
         }
