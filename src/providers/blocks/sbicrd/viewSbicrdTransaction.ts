@@ -1,4 +1,4 @@
-export function viewSbicrdTransaction({account,card,payee,amount,utr}: any): any {
+export function viewSbicrdTransaction({account,card,payee,amount,utr,type,status,totDue,minDue}: any): any {
     const blocks = [
         {
             "type": "header",
@@ -17,7 +17,7 @@ export function viewSbicrdTransaction({account,card,payee,amount,utr}: any): any
                 },
                 {
                     "type": "mrkdwn",
-                    "text": "*Payee:*\n" + payee
+                    "text": (payee === undefined) ? " " :"*Payee:*\n" + payee
                 }
             ]
         },
@@ -26,7 +26,7 @@ export function viewSbicrdTransaction({account,card,payee,amount,utr}: any): any
             "fields": [
                 {
                     "type": "mrkdwn",
-                    "text": amount.includes('USD') ? "*Amount debited:*\n$" + amount.split('USD')[1] : amount.includes('Rs.') ? "*Amount debited:*\n₹" + amount.split('Rs.')[1] : "*Amount debited:*\n₹" + amount 
+                    "text": (amount === undefined) ? " " :amount.includes('USD') ? "*Amount debited:*\n$" + amount.split('USD')[1] : amount.includes('Rs.') ? "*Amount debited:*\n₹" + amount.split('Rs.')[1] : "*Amount debited:*\n₹" + amount 
                 },
                 //Need to work on Date group
                 // ,{
@@ -35,10 +35,36 @@ export function viewSbicrdTransaction({account,card,payee,amount,utr}: any): any
                 // }
                 {
                     "type": "mrkdwn",
-                    "text": (utr === undefined) ? " " : "*UTR / REF:*\n" + utr
+                    "text": (type === undefined) ? " " :"*Request for*\n " + type
                 }
             ]
-        }
+        },
+        {
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": (utr === undefined) ? " " : "*UTR / REF:*\n" + utr
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": (status === undefined) ? " " :"*Status:*\n" + status
+                }
+            ]
+        },
+        {
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": (totDue === undefined) ? " " :"*Total Due Amount:*\n " + totDue
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": (minDue === undefined) ? " " :"*Minimum Due Amount:*\n" + minDue
+                }
+            ]
+        },
     ];
 
     return blocks;
