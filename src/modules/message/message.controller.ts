@@ -648,15 +648,20 @@ export class MessageController {
                             break;
                     }
                     break;
-                case '57575701':
+                case '57575711':
                     const regexPayoneerFundTransfer = /(?<OTP>\d+).?is.*?verification.*? code/m;
+                    const regexPayoneerFundTransferCase1 = /(?<OTP>\d+).?is.*?your.*? code/m;
                     if (regexPayoneerFundTransfer.test(message)) {
                         ({
                             groups: { OTP }
                         } = regexPayoneerFundTransfer.exec(message));
                         notificationType = 'Uncategorized';
+                    } else if (regexPayoneerFundTransferCase1.test(message)) {
+                        ({
+                            groups: { OTP }
+                        } = regexPayoneerFundTransferCase1.exec(message));
+                        notificationType = 'Uncategorized';
                     }
-
                     console.log('notification type: ' + notificationType);
 
                     switch (notificationType) {
