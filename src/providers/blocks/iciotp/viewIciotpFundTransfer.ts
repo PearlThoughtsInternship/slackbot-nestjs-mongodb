@@ -34,6 +34,5 @@ export function viewIciotpFundTransfer({OTP,amount,account,payee}: any): any {
             ]
         }
     ];
-
-    return blocks;
+   return blocks;
 }
