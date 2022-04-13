@@ -17,9 +17,9 @@ import {
     viewRzrpayFundTransfer,
     viewCbssbiCredit,
     viewCshfreUncategorized,
-    view57575701Uncategorized
+    view57575701Uncategorized,
+    viewIciotpFundTransfer
 } from 'src/providers/blocks';
-import {viewIciotpFundTransfer} from 'src/providers/blocks';
 
 @Controller('message')
 export class MessageController {
