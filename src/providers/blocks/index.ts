@@ -39,3 +39,5 @@ export * from './cbssbi/viewCbssbiCredit';
 export * from './cshfre/viewCshfreUncategorized';
 
 export * from './57575701/view57575701Uncategorized';
+
+export * from './iciotp/viewIciotpFundTransfer';

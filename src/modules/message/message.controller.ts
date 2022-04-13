@@ -17,7 +17,8 @@ import {
     viewRzrpayFundTransfer,
     viewCbssbiCredit,
     viewCshfreUncategorized,
-    view57575701Uncategorized
+    view57575701Uncategorized,
+    viewIciotpFundTransfer
 } from 'src/providers/blocks';
 
 @Controller('message')
@@ -461,6 +462,25 @@ export class MessageController {
                         default:
                             channel = await this.channelService.findByType('Uncategorized');
                             break;
+                    }
+                    break;
+                case 'ICIOTP':
+                    const regexICIOTPCase1 = /(?<OTP>\d+).?is.*?OTP.*INR.(?<amount>(\d+(.*\,\d{0,})?)).*(?<account>(Acct|Card).*?XX\d+).*.to.(?<payee>.*?[.])/m;
+                    if (regexICIOTPCase1.test(message)) {
+                        ({
+                            groups: { OTP, amount,account,payee }
+                        } = regexICIOTPCase1.exec(message));
+                        notificationType = 'fundTransfer';
+                    }
+                    switch (notificationType) {
+                        case 'fundTransfer':
+                            channel = await this.channelService.findByType('fund-transfer-otp');
+                            icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
+                            blocks = viewIciotpFundTransfer({account,payee,amount,OTP,upiId})
+                            break;
+                            default:
+                                channel = await this.channelService.findByType('Uncategorized');
+                                break;
                     }
                     break;
                 case 'AxisBk':
