@@ -18,7 +18,6 @@ import {
     viewCbssbiCredit,
     viewCshfreUncategorized,
     view57575701Uncategorized,
-    viewIciotpFundTransfer
 } from 'src/providers/blocks';
 
 @Controller('message')
@@ -298,6 +297,7 @@ export class MessageController {
                     }
                     break;
                 case 'ICICIB':
+                case 'ICIOTP':
                     const regexICICIBankingFundTransfer = /(?<OTP>\d+).?is.*?OTP.*INR.(?<amount>(\d+(.*\,\d{0,})?)).?at.*?(?<payee>\w{1,}).*?(?<account>(Account|Acct|Card).*?XX\d+)/m;
                     const regexICICIBankingFundTransferCaseOne = /(?<OTP>\d+).?is.*?OTP.*INR.(?<amount>(\d+(.*\,\d{0,})?)).*?at.(?<payee>.*?.+?(?=on)).*?.(?<account>(Account|Acct|Card).*?XX\d+)/m;
                     const regexICICIBankingFundTransferCaseTwo = /(?<OTP>\d+).?is.*?OTP.*(?<account>(Acct|Card).*?XX\d+)/m;
@@ -462,25 +462,6 @@ export class MessageController {
                         default:
                             channel = await this.channelService.findByType('Uncategorized');
                             break;
-                    }
-                    break;
-                case 'ICIOTP':
-                    const regexICIOTPCase1 = /(?<OTP>\d+).?is.*?OTP.*INR.(?<amount>(\d+(.*\,\d{0,})?)).*(?<account>(Acct|Card).*?XX\d+).*.to.(?<payee>.*?[.])/m;
-                    if (regexICIOTPCase1.test(message)) {
-                        ({
-                            groups: { OTP, amount,account,payee }
-                        } = regexICIOTPCase1.exec(message));
-                        notificationType = 'fundTransfer';
-                    }
-                    switch (notificationType) {
-                        case 'fundTransfer':
-                            channel = await this.channelService.findByType('fund-transfer-otp');
-                            icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                            blocks = viewIciotpFundTransfer({account,payee,amount,OTP,upiId})
-                            break;
-                            default:
-                                channel = await this.channelService.findByType('Uncategorized');
-                                break;
                     }
                     break;
                 case 'AxisBk':
@@ -649,24 +630,25 @@ export class MessageController {
                     }
                     break;
                 case '57575711':
+                case '57575701':
                     const regexPayoneerFundTransfer = /(?<OTP>\d+).?is.*?verification.*? code/m;
                     const regexPayoneerFundTransferCase1 = /(?<OTP>\d+).?is.*?your.*? code/m;
                     if (regexPayoneerFundTransfer.test(message)) {
                         ({
                             groups: { OTP }
                         } = regexPayoneerFundTransfer.exec(message));
-                        notificationType = 'Uncategorized';
+                        notificationType = 'login-otp';
                     } else if (regexPayoneerFundTransferCase1.test(message)) {
                         ({
                             groups: { OTP }
                         } = regexPayoneerFundTransferCase1.exec(message));
-                        notificationType = 'Uncategorized';
+                        notificationType = 'login-otp';
                     }
                     console.log('notification type: ' + notificationType);
 
                     switch (notificationType) {
-                        case 'Uncategorized':
-                            channel = await this.channelService.findByType('Uncategorized');
+                        case 'login-otp':
+                            channel = await this.channelService.findByType('login-otp');
                             icon_url = 'https://www.fintechfutures.com/files/2016/03/payoneer.png';
                             blocks = view57575701Uncategorized({ OTP });
                             break;
