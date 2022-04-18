@@ -17,7 +17,7 @@ import {
     viewRzrpayFundTransfer,
     viewCbssbiCredit,
     viewCshfreUncategorized,
-    view57575701Uncategorized
+    view57575701Uncategorized,
 } from 'src/providers/blocks';
 
 @Controller('message')
@@ -53,7 +53,7 @@ export class MessageController {
             let blocks;
             let icon_url;
             let notificationType = 'uncategorized';
-            let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,paymentService,type,status,totDue,minDue;
+            let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,paymentService,type,status,totDue,minDue,upiId;
             let channel,channelID,workspace;
             console.log('sender: ' + sender);
             console.log('sender: ' + typeof(sender));
@@ -297,8 +297,9 @@ export class MessageController {
                     }
                     break;
                 case 'ICICIB':
+                case 'ICIOTP':
                     const regexICICIBankingFundTransfer = /(?<OTP>\d+).?is.*?OTP.*INR.(?<amount>(\d+(.*\,\d{0,})?)).?at.*?(?<payee>\w{1,}).*?(?<account>(Account|Acct|Card).*?XX\d+)/m;
-                    const regexICICIBankingFundTransferCaseOne = /(?<OTP>\d+).?is.*?OTP.*INR.(?<amount>(\d+(.*\,\d{0,})?)).*?.(?<account>(Account|Acct|Card).*?XX\d+).*?to.(?<payee>.*?[.])/m;
+                    const regexICICIBankingFundTransferCaseOne = /(?<OTP>\d+).?is.*?OTP.*INR.(?<amount>(\d+(.*\,\d{0,})?)).*?at.(?<payee>.*?.+?(?=on)).*?.(?<account>(Account|Acct|Card).*?XX\d+)/m;
                     const regexICICIBankingFundTransferCaseTwo = /(?<OTP>\d+).?is.*?OTP.*(?<account>(Acct|Card).*?XX\d+)/m;
                     const regexICICIBankingFundTransferCaseThree = /(?<OTP>\d+).?is.*?OTP.*?to pay.*?(?<payee>.*?[,]).*?(Rs |INR |USD )(?<amount>(\d+(.*\,\d{0,})?))/m;
                     const regexICICIBankingCreditCaseOne = /(?<account>Account.*?\d+).*credited.*?INR.(?<amount>(\d+(.*\,\d{0,})?)).*?Info:(?<ref>.*?[.]).*?Balance is.*?(?<balance>(\d+(\,\d.*[^.])))/m;
@@ -314,7 +315,8 @@ export class MessageController {
                     const regexICICIBankingCreditCaseSix =/(?<ref>\d+).*?Rs.*?(?<amount>(\d+(.*\,\d{0,})?)).*?credited.to.*?(?<account>\w.*account)/m;
                     const regexICICIBCorpBanking = /(?<OTP>\d+).*?is.*?OTP.*?Corporate Internet Banking/m;
                     const regexICICIBFundTransfer1 = /(?<account>(Acct|Card).*?XX\d+).*?.\OTP is.*?(?<OTP>\d+)/m;
-                    const regexICICIBTransaction1 =/INR.*?(?<amount>(\d+(.*\,\d{0,})?)).*?(?<account>(Acct|Card).*?XX\d+).*?through.*?(?<payment_service>\w{1,}\s+.+?(?=on))/m;
+                    const regexICICIBfundTransfer2 = /(?<account>(Acc|Card).*?XX\d+).*debited.*?(INR|Rs).(?<amount>(\d+(.*\,\d{0,})?)).*?.;.(?<payee>\w{1,}\s+.+?(?=credited)).*?.UPI.(?<upiId>\d+\d{0,})/m;
+                    const regexICICIBTransaction1 =/INR.*?(?<amount>(\d+(.*\,\d{0,})?)).*?(?<account>(Acct|Card).*?XX\d+).*?through.*?(?<paymentService>\w{1,}\s+.+?(?=on))/m;
                     const regexICICIBTransaction2 =/INR.*?(?<amount>(\d+(.*\,\d{0,})?)).*?spent.*?(?<account>(Acct|Card).*?XX\d+).*?at.*?(?<payee>\w{1,}).*?Avl Lmt.*?INR.*?(?<balance>(\d+(.*\,\d{0,})[.]))/m;
                     const regexICICIBRefundCredit =/Customer,.*?(?<Type>.*?\w{0,}.*?.+?(?=of)).*?(?<amount>(INR |USD |Rs )(\d+(.*\,\d{0,})?)).*?(from |by )(?<payee>.*?\w{0,}.*?.+?(?=has)).*?(?<account>(Account|Acct|Card).*?XX\d+)/m;
                     if (regexICICIBankingFundTransfer.test(message)) {
@@ -326,7 +328,7 @@ export class MessageController {
                         ({
                             groups: { account, amount, payee, OTP }
                         } = regexICICIBankingFundTransferCaseOne.exec(message));
-                        notificationType = 'fundTransfer';    
+                        notificationType = 'fundTransfer'; 
                     } else if (regexICICIBankingFundTransferCaseTwo.test(message)) {
                         ({
                             groups: { account, OTP }
@@ -337,7 +339,12 @@ export class MessageController {
                             groups: { account, OTP }
                         } = regexICICIBFundTransfer1.exec(message));
                         notificationType = 'fundTransfer';
-                    } else if (regexICICIBankingFundTransferCaseThree.test(message)) {
+                    } else if(regexICICIBfundTransfer2.test(message)) {
+                        ({
+                            groups: { account , amount , payee ,upiId  }
+                        } = regexICICIBfundTransfer2.exec(message));
+                        notificationType = 'fundTransfer';
+                       } else if (regexICICIBankingFundTransferCaseThree.test(message)) {
                         ({
                             groups: { amount , OTP, payee }
                         } = regexICICIBankingFundTransferCaseThree.exec(message));
@@ -401,7 +408,7 @@ export class MessageController {
                         ({
                             groups: { amount,account,ref,payee }
                         } = regexICICIBankingCreditCaseFive.exec(message));
-                        notificationType = 'credit';
+                        notificationType = 'credit';    
                     } else if (regexICICIJioMobility.test(message)) {
                         notificationType = 'personalMessageNoBlock';
                     }else if (regexICICIBRefundCredit.test(message)) {
@@ -415,8 +422,7 @@ export class MessageController {
                         } = regexICICIBTransaction1.exec(message));
                         notificationType = 'transaction';
                     } 
-                   
-
+        
                     if(account!=undefined && ( account.slice(-4) == "7003" || account.slice(-3) == "431" )  ){
                         notificationType = "personalMessage";
                     }
@@ -427,7 +433,7 @@ export class MessageController {
                         case 'fundTransfer':
                             channel = await this.channelService.findByType('fund-transfer-otp');
                             icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                            blocks = viewIcicibFundTransfer({account,payee,amount,OTP})
+                            blocks = viewIcicibFundTransfer({account,payee,amount,OTP,upiId})
                             break;
                         case 'credit':
                             channel = await this.channelService.findByType('service-alerts');
@@ -442,7 +448,7 @@ export class MessageController {
                         case 'personalMessage':
                             channel = await this.channelService.findByType('PersonalMessages');
                             icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                            blocks = viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,balance});
+                            blocks = viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,balance,upiId});
                             break;
                         case 'personalMessageNoBlock':
                             channel = await this.channelService.findByType('PersonalMessages');
@@ -623,20 +629,26 @@ export class MessageController {
                             break;
                     }
                     break;
+                case '57575711':
                 case '57575701':
                     const regexPayoneerFundTransfer = /(?<OTP>\d+).?is.*?verification.*? code/m;
+                    const regexPayoneerFundTransferCase1 = /(?<OTP>\d+).?is.*?your.*? code/m;
                     if (regexPayoneerFundTransfer.test(message)) {
                         ({
                             groups: { OTP }
                         } = regexPayoneerFundTransfer.exec(message));
-                        notificationType = 'Uncategorized';
+                        notificationType = 'login-otp';
+                    } else if (regexPayoneerFundTransferCase1.test(message)) {
+                        ({
+                            groups: { OTP }
+                        } = regexPayoneerFundTransferCase1.exec(message));
+                        notificationType = 'login-otp';
                     }
-
                     console.log('notification type: ' + notificationType);
 
                     switch (notificationType) {
-                        case 'Uncategorized':
-                            channel = await this.channelService.findByType('Uncategorized');
+                        case 'login-otp':
+                            channel = await this.channelService.findByType('login-otp');
                             icon_url = 'https://www.fintechfutures.com/files/2016/03/payoneer.png';
                             blocks = view57575701Uncategorized({ OTP });
                             break;
@@ -720,7 +732,6 @@ export class MessageController {
                     case 'ARAVND':  
                     channel = await this.channelService.findByType('PersonalMessages');          
                     break;
-                    
                     case 'TEST':
                     channel = await this.channelService.findByType('Test');
                     console.log('notification type: ' + notificationType);
@@ -732,6 +743,7 @@ export class MessageController {
                         channel = await this.channelService.findByType('PersonalMessages');
                     }
                     console.log('notification type: ' + notificationType);
+                    channel = await this.channelService.findByType('Uncategorized');
                     break;
             }
 

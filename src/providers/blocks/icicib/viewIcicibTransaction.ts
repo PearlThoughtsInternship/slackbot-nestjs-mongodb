@@ -1,4 +1,4 @@
-export function viewIcicibTransaction({account,payee,ref,balance,amount,payment_service}: any): any {
+export function viewIcicibTransaction({account,payee,ref,balance,amount,paymentService}: any): any {
     const blocks = [
         {
             "type": "header",
@@ -26,7 +26,7 @@ export function viewIcicibTransaction({account,payee,ref,balance,amount,payment_
             "fields": [
                 {
                     "type": "mrkdwn",
-                    "text": (payment_service === undefined) ? " " :"*Payment_service :*\n" + payment_service
+                    "text": (paymentService === undefined) ? " " :"*Payment Service :*\n" + paymentService
                     
                 },
                 {
