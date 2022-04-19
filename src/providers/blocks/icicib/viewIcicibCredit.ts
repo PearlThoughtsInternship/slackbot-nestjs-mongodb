@@ -1,4 +1,4 @@
-export function viewIcicibCredit({Type,account,ref,amount,balance,payee}: any): any {
+export function viewIcicibCredit({type,account,ref,amount,balance,payee}: any): any {
     const blocks = [
         {
             "type": "header",
@@ -17,7 +17,7 @@ export function viewIcicibCredit({Type,account,ref,amount,balance,payee}: any): 
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (Type === undefined) ? " "  :"*Type:*\n " + Type
+                    "text": (type === undefined) ? " "  :"*Type:*\n " + type
                     
                 },
                 {

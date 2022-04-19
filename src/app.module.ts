@@ -72,5 +72,6 @@ export class AppModule {
     });
     this.slackService.initSlackCommand(boltApp);
     this.slackService.initSlackInteractive(boltApp);
+    this.slackService.initAppHome(boltApp);
   }
 }

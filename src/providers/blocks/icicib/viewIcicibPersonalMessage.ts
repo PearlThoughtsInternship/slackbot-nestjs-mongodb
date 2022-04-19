@@ -1,10 +1,10 @@
-export function viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,balance}: any): any {
+export function viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,balance,upiId}: any): any {
     const blocks = [
         {
             "type": "header",
             "text": {
                 "type": "plain_text",
-                "text": (message.includes('credited')) ? "Credit Alert" : "Transaction Alert"
+                "text": (message.includes('credited'&&'debited')) ?"Fund transfer":(message.includes('credited')) ? "Credit Alert" : "Transaction Alert"
             }
         },
         {
@@ -32,6 +32,10 @@ export function viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,
         {
             "type": "section",
             "fields": [
+                  {
+                    "type": "mrkdwn",
+                    "text": (upiId==undefined) ? " " :"*UPI-ID:*\n" + upiId
+                },
                 {
                     "type": "mrkdwn",
                     "text": (ref === undefined) ? " " : "*Ref:*\n" + ref
