@@ -47,4 +47,51 @@ export class SlackService {
             this.originalButtonService.initOriginalMessageModal(request);
         });
     }
+
+    initAppHome(boltApp: any) {
+        boltApp.event('app_home_opened', async ({ event, client, context }) => {
+            
+            try {
+              /* view.publish is the method that your app uses to push a view to the Home tab */
+              const result = await client.views.publish({
+          
+                /* the user that opened your app's app home */
+                user_id: event.user,
+                
+          
+                /* the view object that appears in the app home*/
+                view: {
+                  type: 'home',
+                  callback_id: 'home_view',
+          
+                  /* body of the view */
+                  blocks: [
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "Add channels where you wish to receive notification"
+                        },
+                        "accessory": {
+                            "type": "button",
+                            "text": {
+                                "type": "plain_text",
+                                "text": "Add channels",
+                                "emoji": true
+                            },
+                            "value": "add_channels",
+                            "action_id": "button-action"
+                        }
+                    }
+                ]
+                }
+              });
+            }
+            catch (error) {
+              console.error(error);
+            }
+          });
+    }
+
+    
 }
