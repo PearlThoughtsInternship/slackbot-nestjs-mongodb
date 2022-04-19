@@ -737,13 +737,14 @@ export class MessageController {
                     console.log('notification type: ' + notificationType);
                     break;
                 default:
-                    channelID = process.env.CHANNEL_ID_UNCATEGORIZED;
                     if(sender.length > 9){
-                        //Undefined message
                         channel = await this.channelService.findByType('PersonalMessages');
                     }
-                    console.log('notification type: ' + notificationType);
-                    channel = await this.channelService.findByType('Uncategorized');
+                    else{
+                        console.log('notification type: ' + notificationType);
+                        channel = await this.channelService.findByType('Uncategorized');
+                    }
+
                     break;
             }
 
