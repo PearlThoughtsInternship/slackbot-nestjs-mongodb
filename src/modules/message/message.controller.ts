@@ -257,8 +257,8 @@ export class MessageController {
                             channel = await this.channelService.findByType('fund-transfer-otp');                          
                             if(subNotificationType == 'devopsCloud'){
                             subChannels= await this.channelService.findByType('DevopsAws');
-                            }
                             channel = channel.concat(subChannels);
+                            }
                             icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
                             blocks = viewSbicrdCardFundTransfer({ account,card,payee,amount,OTP });
                             break;
