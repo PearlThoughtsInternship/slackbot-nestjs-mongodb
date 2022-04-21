@@ -57,6 +57,10 @@ export class MessageController {
             let channel,channelID,workspace;
             console.log('sender: ' + sender);
             console.log('sender: ' + typeof(sender));
+
+            notificationType = this.checkPersonalTxnSms(sender,message);
+
+
             switch (sender) {
                 case 'SBIINB':
                     console.log("SBIINBSBIINBSBIINB");
@@ -815,5 +819,13 @@ export class MessageController {
                 console.log("Channel Array is empty");
             }
             res.send('yay!');
+        }
+
+        private checkPersonalTxnSms(sender:string,message:string):string {
+            let notificationType
+                if(((sender == "ICICIB") || (sender == "ICIOTP")) && (message.includes("Card XX7003") || (message.includes("Card XXX431")))){
+                    notificationType = "personalMessageNoBlock";
+                }
+                return notificationType;
         }
 }
