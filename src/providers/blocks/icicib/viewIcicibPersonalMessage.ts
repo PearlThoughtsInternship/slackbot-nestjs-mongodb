@@ -1,4 +1,4 @@
-export function viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,balance,upiId}: any): any {
+export function viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,balance,upiId,availableLimit}: any): any {
     const blocks = [
         {
             "type": "header",
@@ -26,13 +26,7 @@ export function viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,
                 {
                     "type": "mrkdwn",
                     "text": (OTP===undefined) ? " " : "*OTP:*\n" + OTP
-                }
-            ]
-        },
-        {
-            "type": "section",
-            "fields": [
-                  {
+                },{
                     "type": "mrkdwn",
                     "text": (upiId==undefined) ? " " :"*UPI-ID:*\n" + upiId
                 },
@@ -42,10 +36,15 @@ export function viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,
                 },
                 {
                     "type": "mrkdwn",
+                    "text": (availableLimit === undefined) ? " " : "*Available Credit Limit :*\n₹" + availableLimit
+                },
+                {
+                    "type": "mrkdwn",
                     "text": (balance === undefined) ? " " : "*Available Balance :*\n₹" + balance
-                }
+                },
             ]
-        }
+        },
+       
     ];
 
     return blocks;
