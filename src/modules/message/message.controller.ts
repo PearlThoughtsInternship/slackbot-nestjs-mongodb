@@ -366,7 +366,7 @@ export class MessageController {
                         notificationType = 'transaction';
                     } else if(regexICICIBTransaction2.test(message)) {
                             ({
-                                groups: { amount,account, balance , payee }
+                                groups: { amount,account, balance , payee,availableLimit }
                             } = regexICICIBTransaction2.exec(message));
                             notificationType = 'transaction';
                     } else if (regexICICIBTransactionCaseThree.test(message)) {
