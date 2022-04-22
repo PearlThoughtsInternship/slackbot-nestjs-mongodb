@@ -322,7 +322,7 @@ export class MessageController {
                     const regexICICIBfundTransfer2 = /(?<account>(Acc|Card).*?XX\d+).*debited.*?(INR|Rs).(?<amount>(\d+(.*\,\d{0,})?)).*?.;.(?<payee>\w{1,}\s+.+?(?=credited)).*?.UPI.(?<upiId>\d+\d{0,})/m;
                     const regexICICIBTransaction1 =/INR.*?(?<amount>(\d+(.*\,\d{0,})?)).*?(?<account>(Acct|Card).*?XX\d+).*?through.*?(?<paymentService>\w{1,}\s+.+?(?=on))/m;
                     const regexICICIBTransaction2 =/(?<amount>(INR|USD).+(\d+(.\,\d{0,})?)).*?spent.*?(?<account>(Acct|Card).*?XX\d+).*?at.*?(?<payee>\w{1,}).*?Avl Lmt.*?INR.*?(?<availableLimit>(\d+(.*\,\d{0,})[.]\d+))/m;
-                    const regexICICIBRefundCredit =/Customer,.*?(?<Type>.*?\w{0,}.*?.+?(?=of)).*?(?<amount>(INR |USD |Rs )(\d+(.*\,\d{0,})?)).*?(from |by )(?<payee>.*?\w{0,}.*?.+?(?=has)).*?(?<account>(Account|Acct|Card).*?XX\d+)/m;
+                    const regexICICIBRefundCredit =/Dear Customer,(?<Type>.*?\w{0,}(?=of)).*?(?<amount>(INR |USD |Rs )(\d+(.*\,\d{0,})?)).*?(from |by )(?<payee>.*?\w{0,}(?=has)).*?(?<account>(Account|Acct|Card).*?XX\d+)/m;
                     if (regexICICIBankingFundTransfer.test(message)) {
                         ({
                             groups: { account, amount, payee, OTP }
