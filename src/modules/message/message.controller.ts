@@ -4,6 +4,7 @@ import { ChannelService } from '../channel/channel.service';
 import { WorkspaceService } from '../workspace/workspace.service';
 import { MessageService } from './message.service';
 import { SlackApiService } from '../slack/slack.service';
+import { ReqParserService } from '../reqparser/reqparser.service';
 
 import { ConfigService } from '../../shared/config.service';
 import {
@@ -28,33 +29,23 @@ export class MessageController {
         private configService: ConfigService,
         private slackService: SlackApiService,
         private messageService: MessageService,
+        private reqParserService : ReqParserService
     ) {}
 
     @Post('/')
     async message(@Body() body, @Request() req, @Response() res) {
-            // ForwardedFrom is actually returned as Forwardedfrom
-            var forwardedFrom = req.get('Forwardedfrom');
-            /**
-             * Dissecting Sender IDs in SMS
-             * BZ-SBIINB
-             * B - BSNL (Network Operator)
-             * Z - Maharashtra (Location)
-             * SBIINB - Brand or Company name - SBI INternet Banking
-             * Source: https://qr.ae/pGGgFu
-             */
-            let regexSenderID = /[A-Za-z]{2}-[A-Za-z]{6}/m;
-            var sender;
-            if (regexSenderID.test(req.get('From'))) {
-                sender = req.get('From').split('-')[1]; //Extracts the 6-char Org ID
-            } else {
-                sender = req.get('From'); // Take the mobile number as it is
-            }
-            var message = req.body.data;
+
+        var parsedResult = await this.reqParserService.parse(req);
+        let sender = parsedResult.sender;
+        let message = parsedResult.message;
+        let forwardedFrom = parsedResult.forwardedFrom
+
             let blocks;
             let icon_url;
             let notificationType = 'uncategorized';
             let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,paymentService,type,status,totDue,minDue,upiId;
             let channel,channelID,workspace;
+            
             console.log('sender: ' + sender);
             console.log('sender: ' + typeof(sender));
 
