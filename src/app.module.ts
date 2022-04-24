@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { SlackService } from './slack.service';
 import { ConfigModule } from '@nestjs/config';
 const { App } = require('@slack/bolt');
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserModule } from './modules/user/user.module';
 import { WorkspaceModule } from './modules/workspace/workspace.module';
 import { MessageModule } from './modules/message/message.module';
@@ -24,6 +24,8 @@ import { OriginalButtonService } from 'src/providers/orgBtn.service';
 import { LoggerModule } from 'nestjs-rollbar';
 import { ReqParserModule } from './modules/reqparser/reqparser.module';
 import { ReqParserService } from './modules/reqparser/reqparser.service';
+import { SmsParserModule } from './modules/smsparser/smsparser.module';
+import { SmsParserService } from './modules/smsparser/smsparser.service';
 
 @Module({
   imports: [
@@ -49,7 +51,8 @@ import { ReqParserService } from './modules/reqparser/reqparser.service';
     MessageModule,
     ChannelModule,
     SlackApiModule,
-    ReqParserModule
+    ReqParserModule,
+    SmsParserModule
   ],
   controllers: [AppController, MessageController],
   providers: [
@@ -59,7 +62,8 @@ import { ReqParserService } from './modules/reqparser/reqparser.service';
     ChannelService,
     SlackApiService,
     OriginalButtonService,
-    ReqParserService
+    ReqParserService,
+    SmsParserService
   ],
 })
 export class AppModule {

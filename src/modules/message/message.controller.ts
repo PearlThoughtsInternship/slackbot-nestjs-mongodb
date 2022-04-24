@@ -40,6 +40,9 @@ export class MessageController {
         let message = parsedResult.message;
         let forwardedFrom = parsedResult.forwardedFrom
 
+
+
+        
             let blocks;
             let icon_url;
             let notificationType = 'uncategorized';
