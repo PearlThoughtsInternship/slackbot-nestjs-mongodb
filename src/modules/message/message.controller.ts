@@ -5,6 +5,7 @@ import { WorkspaceService } from '../workspace/workspace.service';
 import { MessageService } from './message.service';
 import { SlackApiService } from '../slack/slack.service';
 import { ReqParserService } from '../reqparser/reqparser.service';
+import { SmsParserService } from '../smsparser/smsparser.service';
 
 import { ConfigService } from '../../shared/config.service';
 import {
@@ -29,7 +30,8 @@ export class MessageController {
         private configService: ConfigService,
         private slackService: SlackApiService,
         private messageService: MessageService,
-        private reqParserService : ReqParserService
+        private reqParserService : ReqParserService,
+        private smsParserService : SmsParserService
     ) {}
 
     @Post('/')
@@ -39,6 +41,10 @@ export class MessageController {
         let sender = parsedResult.sender;
         let message = parsedResult.message;
         let forwardedFrom = parsedResult.forwardedFrom
+
+        let response = await this.smsParserService.senderIdCategorizer(parsedResult);
+
+
 
 
 
