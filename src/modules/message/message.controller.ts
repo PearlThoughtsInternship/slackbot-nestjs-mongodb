@@ -323,6 +323,7 @@ export class MessageController {
                     const regexICICIBTransaction1 =/INR.*?(?<amount>(\d+(.*\,\d{0,})?)).*?(?<account>(Acct|Card).*?XX\d+).*?through.*?(?<paymentService>\w{1,}\s+.+?(?=on))/m;
                     const regexICICIBTransaction2 =/(?<amount>(INR|USD).+(\d+(.\,\d{0,})?)).*?spent.*?(?<account>(Acct|Card).*?XX\d+).*?at.*?(?<payee>\w{1,}).*?Avl Lmt.*?INR.*?(?<availableLimit>(\d+(.*\,\d{0,})[.]\d+))/m;
                     const regexICICIBRefundCredit =/Dear Customer,(?<Type>.*?\w{0,}(?=of)).*?(?<amount>(INR |USD |Rs )(\d+(.*\,\d{0,})?)).*?(from |by )(?<payee>.*?\w{0,}(?=has)).*?(?<account>(Account|Acct|Card).*?XX\d+)/m;
+                    const regexICICIBFundTransfer3 = /(?<OTP>\d+) .*? OTP.*?INR (?<amount>(\d+(.\d{0,})?)).*?(?<account>(Account|acct).*?\d+) to (?<payee>\w.*?[.])/m;
                     if (regexICICIBankingFundTransfer.test(message)) {
                         ({
                             groups: { account, amount, payee, OTP }
@@ -425,6 +426,11 @@ export class MessageController {
                             groups: { amount , account , paymentService }
                         } = regexICICIBTransaction1.exec(message));
                         notificationType = 'transaction';
+                    }else if (regexICICIBFundTransfer3.test(message)) {
+                        ({
+                            groups: { account, amount, payee, OTP }
+                        } = regexICICIBFundTransfer3.exec(message));
+                        notificationType = 'fundTransfer'; 
                     } 
         
                     if(account!=undefined && ( account.slice(-4) == "7003" || account.slice(-3) == "431" )  ){
