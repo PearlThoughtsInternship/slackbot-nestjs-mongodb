@@ -10,7 +10,8 @@ pipeline {
                                 cd /srv/Message-Router-API3 && \
                                 git pull && \
                                 yarn install && \
-                                yarn build
+                                yarn build && \
+                                pm2 restart all
                                 exit 
                                 EOF"""
                     }
