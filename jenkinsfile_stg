@@ -1,0 +1,22 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Deploy') {
+            steps {
+                script {
+                    sshagent(['messagerouter-stg']) {
+                            sh """ssh -t -t ubuntu@3.111.192.220 -o StrictHostKeyChecking=no << EOF 
+                                cd /srv/Message-Router-API3 && \
+                                git pull && \
+                                yarn install && \
+                                yarn build && \
+                                pm2 restart all
+                                exit 
+                                EOF"""
+                    }
+              }
+            }
+        }
+    }
+}
