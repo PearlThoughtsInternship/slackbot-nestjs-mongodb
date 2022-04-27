@@ -5,7 +5,7 @@ describe('SmsParserServiceTests', () => {
     let reqParserService:ReqParserService;
     var method = 'POST';
     var url ='/message';
-    var host ='msg-rtr.visaga.plts.dev';
+    var host ='visage.in.ngrok.io';
     var forwardedFrom = "8056176073";
     var serviceProvider = "ICICIB";
     var personalSender = '8790675900';
@@ -15,7 +15,7 @@ describe('SmsParserServiceTests', () => {
       reqParserService = new ReqParserService();
       method = 'POST';
       url ='/message';
-      host ='msg-rtr.visaga.plts.dev';
+      host ='visage.in.ngrok.io';
       forwardedFrom = "8056176073";
       serviceProvider = "ICICIB";
       message = "ICICI BANK NEFT Transaction with reference number 274552152 for Rs. 1000.00 has been credited to the beneficiary account on 07-12-2021 at 11:32:14";

@@ -5,8 +5,6 @@ import { WorkspaceService } from '../workspace/workspace.service';
 import { MessageService } from './message.service';
 import { SlackApiService } from '../slack/slack.service';
 import { ReqParserService } from '../reqparser/reqparser.service';
-import { SmsParserService } from '../smsparser/smsparser.service';
-
 import { ConfigService } from '../../shared/config.service';
 import {
     viewSbiinbLogin, viewSbiinbFundTransfer, viewSbiinbCredit, viewSbiinbTransaction,
@@ -31,7 +29,6 @@ export class MessageController {
         private slackService: SlackApiService,
         private messageService: MessageService,
         private reqParserService : ReqParserService,
-        private smsParserService : SmsParserService
     ) {}
 
     @Post('/')
@@ -41,24 +38,16 @@ export class MessageController {
         let sender = parsedResult.sender;
         let message = parsedResult.message;
         let forwardedFrom = parsedResult.forwardedFrom
-
-        let response = await this.smsParserService.senderIdCategorizer(parsedResult);
-
-
-
-
-
+        let blocks;
+        let icon_url;
+        let notificationType = 'uncategorized';
+        let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,paymentService,type,status,totDue,minDue,upiId;
+        let channel,channelID,workspace;
         
-            let blocks;
-            let icon_url;
-            let notificationType = 'uncategorized';
-            let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,paymentService,type,status,totDue,minDue,upiId;
-            let channel,channelID,workspace;
-            
-            console.log('sender: ' + sender);
-            console.log('sender: ' + typeof(sender));
+        console.log('sender: ' + sender);
+        console.log('sender: ' + typeof(sender));
 
-            notificationType = this.checkPersonalTxnSms(sender,message);
+        notificationType = this.checkPersonalTxnSms(sender,message);
 
 
             switch (sender) {

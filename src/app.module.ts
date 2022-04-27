@@ -24,8 +24,7 @@ import { OriginalButtonService } from 'src/providers/orgBtn.service';
 import { LoggerModule } from 'nestjs-rollbar';
 import { ReqParserModule } from './modules/reqparser/reqparser.module';
 import { ReqParserService } from './modules/reqparser/reqparser.service';
-import { SmsParserModule } from './modules/smsparser/smsparser.module';
-import { SmsParserService } from './modules/smsparser/smsparser.service';
+
 
 @Module({
   imports: [
@@ -51,8 +50,7 @@ import { SmsParserService } from './modules/smsparser/smsparser.service';
     MessageModule,
     ChannelModule,
     SlackApiModule,
-    ReqParserModule,
-    SmsParserModule
+    ReqParserModule
   ],
   controllers: [AppController, MessageController],
   providers: [
@@ -62,8 +60,7 @@ import { SmsParserService } from './modules/smsparser/smsparser.service';
     ChannelService,
     SlackApiService,
     OriginalButtonService,
-    ReqParserService,
-    SmsParserService
+    ReqParserService
   ],
 })
 export class AppModule {
