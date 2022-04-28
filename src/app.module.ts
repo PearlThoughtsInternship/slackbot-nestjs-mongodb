@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { SlackService } from './slack.service';
 import { ConfigModule } from '@nestjs/config';
 const { App } = require('@slack/bolt');
-import { TypeOrmModule } from "@nestjs/typeorm";
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user/user.module';
 import { WorkspaceModule } from './modules/workspace/workspace.module';
 import { MessageModule } from './modules/message/message.module';
