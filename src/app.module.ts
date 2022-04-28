@@ -22,6 +22,9 @@ import { ChannelService } from 'src/modules/channel/channel.service';
 import { SlackApiService } from './modules/slack/slack.service';
 import { OriginalButtonService } from 'src/providers/orgBtn.service';
 import { LoggerModule } from 'nestjs-rollbar';
+import { ReqParserModule } from './modules/reqparser/reqparser.module';
+import { ReqParserService } from './modules/reqparser/reqparser.service';
+
 
 @Module({
   imports: [
@@ -46,7 +49,8 @@ import { LoggerModule } from 'nestjs-rollbar';
     WorkspaceModule,
     MessageModule,
     ChannelModule,
-    SlackApiModule
+    SlackApiModule,
+    ReqParserModule
   ],
   controllers: [AppController, MessageController],
   providers: [
@@ -55,7 +59,8 @@ import { LoggerModule } from 'nestjs-rollbar';
     SlackService,
     ChannelService,
     SlackApiService,
-    OriginalButtonService
+    OriginalButtonService,
+    ReqParserService
   ],
 })
 export class AppModule {
