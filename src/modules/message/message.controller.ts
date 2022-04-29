@@ -42,7 +42,7 @@ export class MessageController {
         let icon_url;
         let notificationType = 'uncategorized';
         let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,paymentService,type,status,totDue,minDue,upiId;
-        let channel,channelID,workspace;
+        let channel,channelID,workspace,subNotificationType,subChannels;
         
         console.log('sender: ' + sender);
         console.log('sender: ' + typeof(sender));
@@ -146,8 +146,8 @@ export class MessageController {
                         var cloudPayeeAWS = payee.toLowerCase().includes('amazon');
                         var cloudPayeeIBM = payee.toLowerCase().includes('ibm');
                         //if cc used is ending with 65 or 89 for specif amounts
-                        if ((card == 65 || card==89) && ( cloudPayeeAWS || cloudPayeeIBM  ) && (amount==2.00 || amount==1.00) ){
-                            notificationType = 'devopsCloud';
+                        if ((card == 33) && ( cloudPayeeAWS || cloudPayeeIBM  ) && (amount==2.00 || amount==1.00) ){
+                            subNotificationType = 'devopsCloud';
                         }
                     } else if (regexSBICardLogin.test(message)) {
                         ({
@@ -248,6 +248,10 @@ export class MessageController {
                             break;
                         case 'cardFundTransfer':
                             channel = await this.channelService.findByType('fund-transfer-otp');
+                                if(subNotificationType == 'devopsCloud'){
+                                subChannels= await this.channelService.findByType('DevopsAws');
+                                channel = channel.concat(subChannels);
+                                }
                             icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
                             blocks = viewSbicrdCardFundTransfer({ account,card,payee,amount,OTP });
                             break;
@@ -256,16 +260,15 @@ export class MessageController {
                             icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
                             blocks = viewSbicrdCredit({ account,card,payee,amount });
                             break;
-                        case 'devopsCloud':
-                            channel = await this.channelService.findByType('DevopsAws');
-                            if (cloudPayeeAWS){
-                                icon_url = 'https://res.cloudinary.com/wagon/image/upload/v1585091640/ntgefujscihnprq2a9bb.png';
-                            } else if (cloudPayeeIBM) {
-                                icon_url = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_Ibkkrv62fZeInzvJP5WTRrKXXzWd0M9elnbVH0tG-gCsf5X8f0WOiEW1sJEgYN5xiS4&usqp=CAU';
-                            }
-                            
-                            blocks = viewSbicrdDevopsCloud({ account,card,cloudPayeeAWS,OTP });
-                            break;
+                        // case 'devopsCloud':
+                        //     channel = await this.channelService.findByType('DevopsAws');
+                        //     if (cloudPayeeAWS){
+                        //         icon_url = 'https://res.cloudinary.com/wagon/image/upload/v1585091640/ntgefujscihnprq2a9bb.png';
+                        //     } else if (cloudPayeeIBM) {
+                        //         icon_url = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_Ibkkrv62fZeInzvJP5WTRrKXXzWd0M9elnbVH0tG-gCsf5X8f0WOiEW1sJEgYN5xiS4&usqp=CAU';
+                        //     } 
+                        //     blocks = viewSbicrdDevopsCloud({ account,card,cloudPayeeAWS,OTP });
+                        //    break;
                         case 'transaction':
                             channel = await this.channelService.findByType('service-alerts');
                             icon_url = 'https://store-images.s-microsoft.com/image/apps.44630.9007199267039834.05d8736a-dbe9-43f9-9deb-f91aec0eeef6.45f47847-50cc-4360-8915-0a7510b6cad0?mode=scale&q=90&h=300&w=300';
