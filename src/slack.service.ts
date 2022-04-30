@@ -52,19 +52,11 @@ export class SlackService {
         boltApp.event('app_home_opened', async ({ event, client, context }) => {
             
             try {
-              /* view.publish is the method that your app uses to push a view to the Home tab */
               const result = await client.views.publish({
-          
-                /* the user that opened your app's app home */
                 user_id: event.user,
-                
-          
-                /* the view object that appears in the app home*/
                 view: {
                   type: 'home',
                   callback_id: 'home_view',
-          
-                  /* body of the view */
                   blocks: [
                     {
                         "type": "section",
