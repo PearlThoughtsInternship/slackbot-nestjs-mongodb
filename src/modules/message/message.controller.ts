@@ -755,8 +755,8 @@ export class MessageController {
                     break;
             }
 
-            //represent as join
-            console.log("workspaceIdworkspaceIdworkspaceIdworkspaceId");
+          
+        
            
                 //add a action block in blocks which will show a button to see the actual message modal
                 var a = {sender,message}
