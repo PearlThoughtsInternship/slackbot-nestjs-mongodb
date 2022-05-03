@@ -742,11 +742,16 @@ export class MessageController {
                     if(sender.length > 9){
                         channel = await this.channelService.findByType('PersonalMessages');
                     }
+                    else if(message.includes("SendGrid"))
+                    {
+                        channel = await this.channelService.findByType('sendgrid-otp');
+                        notificationType="SendGridOTP";
+                        icon_url="https://pbs.twimg.com/profile_images/1153335496795414530/Af2RRy1K_400x400.jpg";
+                    }
                     else{
                         console.log('notification type: ' + notificationType);
                         channel = await this.channelService.findByType('Uncategorized');
                     }
-
                     break;
             }
 
@@ -827,3 +832,6 @@ export class MessageController {
                 return notificationType;
         }
 }
+
+
+
