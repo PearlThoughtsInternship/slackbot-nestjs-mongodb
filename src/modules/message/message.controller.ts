@@ -633,6 +633,7 @@ export class MessageController {
                     break;
                 case '57575711':
                 case '57575701':
+
                     const regexPayoneerFundTransfer = /(?<OTP>\d+).?is.*?verification.*? code/m;
                     const regexPayoneerFundTransferCase1 = /(?<OTP>\d+).?is.*?your.*? code/m;
                     if (regexPayoneerFundTransfer.test(message)) {
@@ -655,7 +656,15 @@ export class MessageController {
                             blocks = view57575701Uncategorized({ OTP });
                             break;
                         default:
+                            if(message.includes('SendGrid'))
+                            {
+                                channel = await this.channelService.findByType('sendgrid-otp');
+                                notificationType = "SendGridOTP";
+                                icon_url = "https://pbs.twimg.com/profile_images/1153335496795414530/Af2RRy1K_400x400.jpg";
+                            }
+                            else{
                             channel = await this.channelService.findByType('Uncategorized');
+                            }
                             break;
                     }
                     break;
@@ -745,8 +754,8 @@ export class MessageController {
                     else if(message.includes("SendGrid"))
                     {
                         channel = await this.channelService.findByType('sendgrid-otp');
-                        notificationType="SendGridOTP";
-                        icon_url="https://pbs.twimg.com/profile_images/1153335496795414530/Af2RRy1K_400x400.jpg";
+                        notificationType = "SendGridOTP";
+                        icon_url = "https://pbs.twimg.com/profile_images/1153335496795414530/Af2RRy1K_400x400.jpg";
                     }
                     else{
                         console.log('notification type: ' + notificationType);
@@ -822,6 +831,7 @@ export class MessageController {
                 console.log("Channel Array is empty");
             }
             res.send('yay!');
+
         }
 
         private checkPersonalTxnSms(sender:string,message:string):string {
