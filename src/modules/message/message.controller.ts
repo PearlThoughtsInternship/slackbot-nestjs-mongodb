@@ -757,6 +757,11 @@ export class MessageController {
                         notificationType = "SendGridOTP";
                         icon_url = "https://pbs.twimg.com/profile_images/1153335496795414530/Af2RRy1K_400x400.jpg";
                     }
+                    else if((message.includes("Instagram account") || message.includes("Facebook") ||  message.includes("Google verification code"))){
+                        notificationType = "personalMessageNoBlock";
+                        channel = await this.channelService.findByType('PersonalMessages');
+                        
+                    }
                     else{
                         console.log('notification type: ' + notificationType);
                         channel = await this.channelService.findByType('Uncategorized');
