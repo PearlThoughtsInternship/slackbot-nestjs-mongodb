@@ -19,7 +19,6 @@ import {
     viewCshfreUncategorized,
     view57575701Uncategorized,
 } from 'src/providers/blocks';
-import { channel } from 'diagnostics_channel';
 
 @Controller('message')
 export class MessageController {
