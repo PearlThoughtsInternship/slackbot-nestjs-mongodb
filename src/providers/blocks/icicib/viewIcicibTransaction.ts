@@ -1,4 +1,4 @@
-export function viewIcicibTransaction({account,payee,ref,balance,amount,paymentService}: any): any {
+export function viewIcicibTransaction({account,payee,ref,balance,amount,paymentService,availableLimit}: any): any {
     const blocks = [
         {
             "type": "header",
@@ -17,8 +17,10 @@ export function viewIcicibTransaction({account,payee,ref,balance,amount,paymentS
                 },
                 {
                     "type": "mrkdwn",
-                    "text": "*Amount debited :*\n₹" + amount
-                }
+                    "text": "*Amount debited :*\n" + amount
+                },
+
+
             ]
         },
         {
@@ -31,7 +33,7 @@ export function viewIcicibTransaction({account,payee,ref,balance,amount,paymentS
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (payee === undefined) ? " " :"*Payee :*\n₹" + payee
+                    "text": (payee === undefined) ? " " :"*Payee :*\n" + payee
                 }
             ]
         },
@@ -45,7 +47,11 @@ export function viewIcicibTransaction({account,payee,ref,balance,amount,paymentS
                 {
                     "type": "mrkdwn",
                     "text": (balance === undefined) ? " " : "*Available Balance :*\n₹" + balance
-                }
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": (availableLimit === undefined) ? " " : "*Available Credit limit :*\n₹" + availableLimit
+                },
             ]
         }
     ];
