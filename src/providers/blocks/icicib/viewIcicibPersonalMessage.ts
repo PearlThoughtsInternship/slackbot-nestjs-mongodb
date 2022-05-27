@@ -1,10 +1,11 @@
 export function viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,balance,upiId,availableLimit}: any): any {
+
     const blocks = [
         {
             "type": "header",
             "text": {
                 "type": "plain_text",
-                "text": (message.includes('credited'&&'debited')) ?"Fund transfer":(message.includes('credited')) ? "Credit Alert" : "Transaction Alert"
+                "text": (message.includes('credited'&&'debited')) ? "Fund transfer":(message.includes('credited')) ? "Credit Alert" : (message.includes("OTP")) ? "Fund Transfer OTP" : "Transaction Alert"
             }
         },
         {
