@@ -425,7 +425,8 @@ export class MessageController {
                         notificationType = 'fundTransfer'; 
                     } 
         
-                    if(account!=undefined && ( account.slice(-4) == "7003" || account.slice(-3) == "431" ) || account.slice(-4) == "9364"  ){
+                    if(account!=undefined && ( account.slice(-4) == "7003" || account.slice(-3) == "431" || account.slice(-4) == "9364" ))
+                    {
                         notificationType = "personalMessage";
                     }
 
