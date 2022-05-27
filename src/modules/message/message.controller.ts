@@ -295,7 +295,7 @@ export class MessageController {
                 case 'ICICIB':
                 case 'ICIOTP':
                     const regexICICIBankingFundTransfer = /(?<OTP>\d+).?is.*?OTP.*INR.(?<amount>(\d+(.*\,\d{0,})?)).?at.*?(?<payee>\w{1,}).*?(?<account>(Account|Acct|Card).*?XX\d+)/m;
-                    const regexICICIBankingFundTransferCaseOne = /(?<OTP>\d+).?is.*?OTP.*INR.(?<amount>(\d+(.*\,\d{0,})?)).*?at.(?<payee>.*?.+?(?=on)).*?.(?<account>(Account|Acct|Card).*?XX\d+)/m;
+                    const regexICICIBankingFundTransferCaseOne = /(?<OTP>\d+).?is.*?OTP.*(?<amount>(INR|USD).+(\d+(.\,\d{0,})?)).*?at.(?<payee>\w{1,}.*?(?=on)).*?.(?<account>(Account|Acct|Card).*?XX\d+)/m;
                     const regexICICIBankingFundTransferCaseTwo = /(?<OTP>\d+).?is.*?OTP.*(?<account>(Acct|Card).*?XX\d+)/m;
                     const regexICICIBankingFundTransferCaseThree = /(?<OTP>\d+).?is.*?OTP.*?to pay.*?(?<payee>.*?[,]).*?(Rs |INR |USD )(?<amount>(\d+(.*\,\d{0,})?))/m;
                     const regexICICIBankingCreditCaseOne = /(?<account>Account.*?\d+).*credited.*?INR.(?<amount>(\d+(.*\,\d{0,})?)).*?Info:(?<ref>.*?[.]).*?Balance is.*?(?<balance>(\d+(\,\d.*[^.])))/m;
@@ -425,7 +425,8 @@ export class MessageController {
                         notificationType = 'fundTransfer'; 
                     } 
         
-                    if(account!=undefined && ( account.slice(-4) == "7003" || account.slice(-3) == "431" )  ){
+                    if(account!=undefined && ( account.slice(-4) == "7003" || account.slice(-3) == "431" || account.slice(-4) == "9364" ))
+                    {
                         notificationType = "personalMessage";
                     }
 
@@ -841,7 +842,7 @@ export class MessageController {
 
         private checkPersonalTxnSms(sender:string,message:string):string {
             let notificationType
-                if(((sender == "ICICIB") || (sender == "ICIOTP")) && (message.includes("Card XX7003") || (message.includes("Card XXX431")))){
+                if(((sender == "ICICIB") || (sender == "ICIOTP")) && (message.includes("Card XX7003") || (message.includes("Card XXX431")) || (message.includes("Card XX9364")))){
                     notificationType = "personalMessageNoBlock";
                 }
                 return notificationType;
