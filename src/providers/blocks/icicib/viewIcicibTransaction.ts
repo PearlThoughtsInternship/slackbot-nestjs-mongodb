@@ -17,7 +17,7 @@ export function viewIcicibTransaction({account,payee,ref,balance,amount,paymentS
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (amount === undefined) ? " " : ("*Transaction Value :*\n" + (amount.includes('USD')?amount.replace('USD ','$'):amount.replace('INR','₹')))
+                    "text": (amount === undefined) ? " " : ("*Transaction Value :*\n" + (amount.includes('USD')?amount.replace('USD ','$'):amount.includes('INR') ? amount.replace('INR','₹'): amount.replace('Rs ','₹')))
                 },
                 {
                     "type": "mrkdwn",

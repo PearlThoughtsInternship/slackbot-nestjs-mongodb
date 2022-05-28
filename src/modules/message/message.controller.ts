@@ -302,9 +302,9 @@ export class MessageController {
                     const regexICICIBankingCreditCaseOne = /(?<account>Account.*?\d+).*credited.*?INR.(?<amount>(\d+(.*\,\d{0,})?)).*?Info:(?<ref>.*?[.]).*?Balance is.*?(?<balance>(\d+(\,\d.*[^.])))/m;
                     const regexICICIBankingCreditCaseTwo = /Rs.*?(?<amount>(\d+(.*\,\d{0,})?)).*credited.*?account.(?<account>.*?\d+).*?Bal.*?Rs.(?<balance>(\d+(.*\,\d{0,})?))/m;
                     const regexICICIBankingCreditCaseFive = /(?<account>Account.*?\d+).*credited.*?(?<amount>(INR |USD |Rs )(\d+(.*\,\d{0,})?)).*?(from |by )(?<payee>.*?[.]).*?Ref. no..*?.(?<ref>.*?[.])/m;
-                    const regexICICIBTransactionCaseOne = /(?<account>Acc.*?\d+).*debited.*?INR.(?<amount>(\d+(.*\,\d{0,})?)).*?Info:(?<ref>.*?[.]).*?Balance is.*?(?<balance>(\d+(.*\,\d{0,})?))/m;
+                    const regexICICIBTransactionCaseOne = /(?<account>Acc.*?\d+).*(?<transactionType>debited).*?(?<amount>INR (\d+(.*\,\d{0,})?)(\.[0-9]+ |)).*?Info:(?<ref>.*?[.]).*?Balance is.*?(?<balance>INR (\d+(.*\,\d{0,})?)(\.[0-9]+|))/m;
                     const regexICICIBTransactionCaseThree = /.*?(?<amount>(USD |INR )(\d+(.*\,\d{0,})?)(\.[0-9]+ |)).*?(?<transactionType>debited).*?(?<account>(Acct|Card).*?XX\d+).*?Info:(?<ref>.*?[.]).*?Available Limit.*?(?<balance> INR (\d+(.*\,\d{0,}).\d.?))/m;
-                    const regexICICIBTransactionCaseFour = /(?<account>(Acct|Account).*?\d+).*debited.*?.(?<amount>(Rs |USD |INR )(\d+(.*\,\d{0,})?))/m;
+                    const regexICICIBTransactionCaseFour = /(?<account>(Acct|Account).*?\d+).*(?<transactionType>debited).*?.(?<amount>(Rs |USD |INR )(\d+(.*\,\d{0,})?)(\.[0-9]+ |)).*? (?<format>and|&) (?<payee>.*?) credited./m;
                     const regexICICIBTransactionCaseFive = /.*?(?<amount>(INR |USD )(\d+(.*\,\d{0,})?)).*?done.*?(?<account>(Acc|Card).*?XX\d+).*?Info:(?<ref>.*?[.]).*?Available Balance.*?(?<balance>(\d+(.*\,\d{0,})?))/m;
                     const regexICICIBankingCreditCaseThree = /Payment.*?INR.*?(?<amount>(\d+(.*\,\d{0,})?)).*?Account.*?(?<account>xxx.*?\d+)/m;
                     const regexICICIBankingCreditCaseFour = /(?<account>Acct.*?\d+).*credited.*?Rs.(?<amount>(\d+(.*\,\d{0,})?)).*?by (?<ref>.*?\d+)/m;
@@ -365,7 +365,7 @@ export class MessageController {
                         notificationType = 'credit';
                     } else if (regexICICIBTransactionCaseOne.test(message)){
                         ({
-                            groups: { amount,account, balance , ref }
+                            groups: { amount,account, balance , ref ,transactionType}
                         } = regexICICIBTransactionCaseOne.exec(message));
                         notificationType = 'transaction';
                     } else if(regexICICIBTransaction2.test(message)) {
@@ -385,7 +385,7 @@ export class MessageController {
                         notificationType = 'CorpLogin';
                     } else if (regexICICIBTransactionCaseFour.test(message)) {
                         ({
-                            groups: { account , amount }
+                            groups: { account , amount ,payee,transactionType}
                         } = regexICICIBTransactionCaseFour.exec(message));
                         notificationType = 'transaction';
                     } else if (regexICICIBTransactionCaseFive.test(message)) {
