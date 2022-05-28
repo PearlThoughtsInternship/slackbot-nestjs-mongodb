@@ -1,4 +1,4 @@
-export function viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,balance,upiId,availableLimit}: any): any {
+export function viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,balance,upiId,availableLimit,transactionType}: any): any {
 
     const blocks = [
         {
@@ -18,7 +18,11 @@ export function viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,
                 },
                 {
                     "type": "mrkdwn",
-                    "text": ((message.includes('debited'))&&(message.includes('credited')))  ?  (amount==undefined)?" ":"*Amount debited :*\n" + (amount.includes('USD')?amount.replace('USD ','$'):amount.replace('INR','₹'))  :  (amount==undefined)?" ":"*Amount Credited :*\n" + (amount.includes('USD')?amount.replace('USD ','$'):amount.replace('INR','₹'))
+                    "text": (amount === undefined) ? " " : "*Transaction Value :*\n" + (amount.includes('USD')?amount.replace('USD ','$'):amount.replace('INR','₹'))  
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": (transactionType === undefined) ? " " : (transactionType === "debited") ? "*Transaction Type :*\n" + "Debit" : "*Transaction Type :*\n" + transactionType
                 },
                 {
                     "type": "mrkdwn",
@@ -37,11 +41,11 @@ export function viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (availableLimit === undefined) ? " " : "*Available Credit Limit :*\n₹" + availableLimit
+                    "text": (availableLimit === undefined) ? " " : "*Available Credit Limit :*\n" + (availableLimit.includes('USD')?availableLimit.replace('USD ','$'):availableLimit.replace('INR','₹'))
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (balance === undefined) ? " " : "*Available Balance :*\n₹" + balance
+                    "text": (balance === undefined) ? " " : "*Available Balance :*\n" + (balance.includes('USD')?balance.replace('USD ','$'):balance.replace('INR','₹'))
                 },
             ]
         },

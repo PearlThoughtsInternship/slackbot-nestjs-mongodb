@@ -41,7 +41,7 @@ export class MessageController {
         let blocks;
         let icon_url;
         let notificationType = 'uncategorized';
-        let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,paymentService,type,status,totDue,minDue,upiId;
+        let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,paymentService,transactionType,type,status,totDue,minDue,upiId;
         let channel,channelID,workspace,subNotificationType,subChannels;
         
         console.log('sender: ' + sender);
@@ -303,7 +303,7 @@ export class MessageController {
                     const regexICICIBankingCreditCaseTwo = /Rs.*?(?<amount>(\d+(.*\,\d{0,})?)).*credited.*?account.(?<account>.*?\d+).*?Bal.*?Rs.(?<balance>(\d+(.*\,\d{0,})?))/m;
                     const regexICICIBankingCreditCaseFive = /(?<account>Account.*?\d+).*credited.*?(?<amount>(INR |USD |Rs )(\d+(.*\,\d{0,})?)).*?(from |by )(?<payee>.*?[.]).*?Ref. no..*?.(?<ref>.*?[.])/m;
                     const regexICICIBTransactionCaseOne = /(?<account>Acc.*?\d+).*debited.*?INR.(?<amount>(\d+(.*\,\d{0,})?)).*?Info:(?<ref>.*?[.]).*?Balance is.*?(?<balance>(\d+(.*\,\d{0,})?))/m;
-                    const regexICICIBTransactionCaseThree = /.*?(?<amount>(USD |INR )(\d+(.*\,\d{0,})?)(\.[0-9]+ |)).*?debited.*?(?<account>(Acct|Card).*?XX\d+).*?Info:(?<ref>.*?[.]).*?Available Limit.*?(?<balance>(\d+(.*\,\d{0,})?))/m;
+                    const regexICICIBTransactionCaseThree = /.*?(?<amount>(USD |INR )(\d+(.*\,\d{0,})?)(\.[0-9]+ |)).*?(?<transactionType>debited).*?(?<account>(Acct|Card).*?XX\d+).*?Info:(?<ref>.*?[.]).*?Available Limit.*?(?<balance> INR (\d+(.*\,\d{0,}).\d.?))/m;
                     const regexICICIBTransactionCaseFour = /(?<account>(Acct|Account).*?\d+).*debited.*?.(?<amount>(Rs |USD |INR )(\d+(.*\,\d{0,})?))/m;
                     const regexICICIBTransactionCaseFive = /.*?(?<amount>(INR |USD )(\d+(.*\,\d{0,})?)).*?done.*?(?<account>(Acc|Card).*?XX\d+).*?Info:(?<ref>.*?[.]).*?Available Balance.*?(?<balance>(\d+(.*\,\d{0,})?))/m;
                     const regexICICIBankingCreditCaseThree = /Payment.*?INR.*?(?<amount>(\d+(.*\,\d{0,})?)).*?Account.*?(?<account>xxx.*?\d+)/m;
@@ -375,7 +375,7 @@ export class MessageController {
                             notificationType = 'transaction';
                     } else if (regexICICIBTransactionCaseThree.test(message)) {
                         ({
-                            groups: { amount,account, ref , balance}
+                            groups: { amount,account, ref , balance, transactionType}
                         } = regexICICIBTransactionCaseThree.exec(message));
                         notificationType = 'transaction';
                     } else if (regexICICIBCorpBanking.test(message)) {
@@ -430,16 +430,10 @@ export class MessageController {
                             groups: { account, amount, payee, OTP }
                         } = regexICICIBFundTransfer3.exec(message));
                         notificationType = 'fundTransfer'; 
-<<<<<<< HEAD
-                    }
-                    
-                    if(account!=undefined && ( account.slice(-4) == "7003" || account.slice(-3) == "431" ) || account.slice(-4) == "9364"  ){
-=======
                     } 
         
                     if(account!=undefined && ( account.slice(-4) == "7003" || account.slice(-3) == "431" || account.slice(-4) == "9364" ))
                     {
->>>>>>> 17aac2b3272753ddd0e6a428326844b9b068e757
                         notificationType = "personalMessage";
                     }
 
@@ -459,12 +453,12 @@ export class MessageController {
                         case 'transaction':
                             channel = await this.channelService.findByType('service-alerts');
                             icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                            blocks = viewIcicibTransaction({account,payee,ref,balance,amount,paymentService,availableLimit});
+                            blocks = viewIcicibTransaction({account,payee,ref,balance,amount,paymentService,availableLimit,transactionType});
                             break;
                         case 'personalMessage':
                             channel = await this.channelService.findByType('PersonalMessages');
                             icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                            blocks = viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,balance,upiId,availableLimit});
+                            blocks = viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,balance,upiId,availableLimit,transactionType});
                             break;
                         case 'personalMessageNoBlock':
                             channel = await this.channelService.findByType('PersonalMessages');

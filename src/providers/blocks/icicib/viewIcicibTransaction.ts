@@ -1,4 +1,4 @@
-export function viewIcicibTransaction({account,payee,ref,balance,amount,paymentService,availableLimit}: any): any {
+export function viewIcicibTransaction({account,payee,ref,balance,amount,paymentService,availableLimit,transactionType}: any): any {
     const blocks = [
         {
             "type": "header",
@@ -17,9 +17,12 @@ export function viewIcicibTransaction({account,payee,ref,balance,amount,paymentS
                 },
                 {
                     "type": "mrkdwn",
-                    "text": "*Amount debited :*\n" + amount
+                    "text": (amount === undefined) ? " " : ("*Transaction Value :*\n" + (amount.includes('USD')?amount.replace('USD ','$'):amount.replace('INR','₹')))
                 },
-
+                {
+                    "type": "mrkdwn",
+                    "text": (transactionType === undefined) ? " " : ((transactionType === "debited") ? "*Transaction Type :*\n" + "Debit" : transactionType )
+                }
 
             ]
         },
@@ -46,11 +49,11 @@ export function viewIcicibTransaction({account,payee,ref,balance,amount,paymentS
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (balance === undefined) ? " " : "*Available Balance :*\n₹" + balance
+                    "text": (balance === undefined) ? " " : "*Available Balance :*\n" + (balance.includes('USD')?balance.replace('USD ','$'):balance.replace('INR','₹'))
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (availableLimit === undefined) ? " " : "*Available Credit limit :*\n₹" + availableLimit
+                    "text": (availableLimit === undefined) ? " " : "*Available Credit limit :*\n" + (availableLimit.includes('USD')?availableLimit.replace('USD ','$'):availableLimit.replace('INR','₹'))
                 },
             ]
         }
