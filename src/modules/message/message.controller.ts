@@ -430,9 +430,16 @@ export class MessageController {
                             groups: { account, amount, payee, OTP }
                         } = regexICICIBFundTransfer3.exec(message));
                         notificationType = 'fundTransfer'; 
+<<<<<<< HEAD
                     }
                     
                     if(account!=undefined && ( account.slice(-4) == "7003" || account.slice(-3) == "431" ) || account.slice(-4) == "9364"  ){
+=======
+                    } 
+        
+                    if(account!=undefined && ( account.slice(-4) == "7003" || account.slice(-3) == "431" || account.slice(-4) == "9364" ))
+                    {
+>>>>>>> 17aac2b3272753ddd0e6a428326844b9b068e757
                         notificationType = "personalMessage";
                     }
 
