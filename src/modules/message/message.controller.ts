@@ -296,6 +296,7 @@ export class MessageController {
                 case 'ICIOTP':
                     const regexICICIBankingFundTransfer = /(?<OTP>\d+).?is.*?OTP.*INR.(?<amount>(\d+(.*\,\d{0,})?)).?at.*?(?<payee>\w{1,}).*?(?<account>(Account|Acct|Card).*?XX\d+)/m;
                     const regexICICIBankingFundTransferCaseOne = /(?<OTP>\d+).?is.*?OTP.*(?<amount>(INR|USD).+(\d+(.\,\d{0,})?)).*?at.(?<payee>\w{1,}.*?(?=on)).*?.(?<account>(Account|Acct|Card).*?XX\d+)/m;
+                    const regexICICIBFundTransfer4 = /(?<OTP>\d+).? is .*?OTP for NEFT.*?(?<amount>(INR | USD)(\d+(.\d{0,})?)).*?(?<account>(Account|Acct).*?\d+) to (?<payee>\w.*?[.])/m;
                     const regexICICIBankingFundTransferCaseTwo = /(?<OTP>\d+).?is.*?OTP.*(?<account>(Acct|Card).*?XX\d+)/m;
                     const regexICICIBankingFundTransferCaseThree = /(?<OTP>\d+).?is.*?OTP.*?to pay.*?(?<payee>.*?[,]).*?(Rs |INR |USD )(?<amount>(\d+(.*\,\d{0,})?))/m;
                     const regexICICIBankingCreditCaseOne = /(?<account>Account.*?\d+).*credited.*?INR.(?<amount>(\d+(.*\,\d{0,})?)).*?Info:(?<ref>.*?[.]).*?Balance is.*?(?<balance>(\d+(\,\d.*[^.])))/m;
@@ -316,6 +317,7 @@ export class MessageController {
                     const regexICICIBTransaction2 =/(?<amount>(INR|USD).+(\d+(.\,\d{0,})?)).*?spent.*?(?<account>(Acct|Card).*?XX\d+).*?at.*?(?<payee>\w{1,}.*?). Avl Lmt.*?INR.*?(?<availableLimit>(\d+(.*\,\d{0,})[.]\d+))/m;
                     const regexICICIBRefundCredit =/Dear Customer,(?<Type>.*?\w{0,}(?=of)).*?(?<amount>(INR |USD |Rs )(\d+(.*\,\d{0,})?)).*?(from |by )(?<payee>.*?\w{0,}(?=has)).*?(?<account>(Account|Acct|Card).*?XX\d+)/m;
                     const regexICICIBFundTransfer3 = /(?<OTP>\d+) .*? OTP.*?INR (?<amount>(\d+(.\d{0,})?)).*?(?<account>(Account|acct).*?\d+) to (?<payee>\w.*?[.])/m;
+                    
                     if (regexICICIBankingFundTransfer.test(message)) {
                         ({
                             groups: { account, amount, payee, OTP }
@@ -326,7 +328,12 @@ export class MessageController {
                             groups: { account, amount, payee, OTP }
                         } = regexICICIBankingFundTransferCaseOne.exec(message));
                         notificationType = 'fundTransfer'; 
-                    } else if (regexICICIBankingFundTransferCaseTwo.test(message)) {
+                    } else if (regexICICIBFundTransfer4.test(message)) {
+                        ({
+                            groups: { account, OTP ,payee,amount}
+                        } = regexICICIBFundTransfer4.exec(message));
+                        notificationType = 'fundTransfer';
+                    }else if (regexICICIBankingFundTransferCaseTwo.test(message)) {
                         ({
                             groups: { account, OTP }
                         } = regexICICIBankingFundTransferCaseTwo.exec(message));
@@ -423,10 +430,9 @@ export class MessageController {
                             groups: { account, amount, payee, OTP }
                         } = regexICICIBFundTransfer3.exec(message));
                         notificationType = 'fundTransfer'; 
-                    } 
-        
-                    if(account!=undefined && ( account.slice(-4) == "7003" || account.slice(-3) == "431" || account.slice(-4) == "9364" ))
-                    {
+                    }
+
+                    if(account!=undefined && ( account.slice(-4) == "7003" || account.slice(-3) == "431" || account.slice(-4) == "9364" )) {
                         notificationType = "personalMessage";
                     }
 
