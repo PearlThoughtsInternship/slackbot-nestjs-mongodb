@@ -1,18 +1,20 @@
-_metadata:
-  major_version: 1
-  minor_version: 1
 display_information:
-  name: Message Router
-  description: Message Router
+  name: Message Router-local
+  description: Message Router-local
   background_color: '#004492'
 features:
   app_home:
     home_tab_enabled: true
-    messages_tab_enabled: true
-    messages_tab_read_only_enabled: false
+    messages_tab_enabled: false
+    messages_tab_read_only_enabled: true
   bot_user:
-    display_name: Message Router
-    always_online: false
+    display_name: Message Router - local
+    always_online: true
+  slash_commands:
+    - command: /echo
+      url: <your-domain-url>/slack/events
+      description: Echos
+      should_escape: false
 oauth_config:
   redirect_urls:
     - <your-domain-url>/slack/oauth_redirect
@@ -25,15 +27,14 @@ oauth_config:
       - identify
       - im:write
       - mpim:write
-      - team:read
       - users:read
+      - team:read
     bot:
       - app_mentions:read
       - channels:history
       - channels:join
       - channels:manage
       - chat:write
-      - chat:write.customize
       - chat:write.public
       - commands
       - conversations.connect:manage
@@ -42,16 +43,17 @@ oauth_config:
       - mpim:write
       - users:read
       - users:write
+      - chat:write.customize
 settings:
   event_subscriptions:
-    request_url: <your-domain-url>/slack/event
+    request_url: <your-domain-url>/slack/events
     bot_events:
       - app_home_opened
-      - app_uninstalled
-      - team_join
+      - app_mention
+      - message.channels
   interactivity:
     is_enabled: true
-    request_url: <your-domain-url>/slack/interactive
+    request_url: <your-domain-url>/slack/events
   org_deploy_enabled: false
   socket_mode_enabled: false
   token_rotation_enabled: false
