@@ -305,7 +305,7 @@ export class MessageController {
                     const regexICICIBTransactionCaseOne = /(?<account>Acc.*?\d+).*(?<transactionType>debited).*?(?<amount>INR (\d+(.*\,\d{0,})?)(\.[0-9]+ |)).*?Info:(?<ref>.*?[.]).*?Balance is.*?(?<balance>INR (\d+(.*\,\d{0,})?)(\.[0-9]+|))/m;
                     const regexICICIBTransactionCaseThree = /.*?(?<amount>(USD |INR )(\d+(.*\,\d{0,})?)(\.[0-9]+ |)).*?(?<transactionType>debited).*?(?<account>(Acct|Card).*?XX\d+).*?Info:(?<ref>.*?[.]).*?Available Limit.*?(?<balance> INR (\d+(.*\,\d{0,}).\d.?))/m;
                     const regexICICIBTransactionCaseFour = /(?<account>(Acct|Account).*?\d+).*(?<transactionType>debited).*?.(?<amount>(Rs |USD |INR )(\d+(.*\,\d{0,})?)(\.[0-9]+ |)).*? (?<format>and|&) (?<payee>.*?) credited./m;
-                    const regexICICIBTransactionCaseFive = /.*?(?<amount>(INR |USD )(\d+(.*\,\d{0,})?)).*?done.*?(?<account>(Acc|Card).*?XX\d+).*?Info:(?<ref>.*?[.]).*?Available Balance.*?(?<balance>(\d+(.*\,\d{0,})?))/m;
+                    const regexICICIBTransactionCaseFive = /.*? (?<transactionType>transcation) of (?<amount>(INR |USD )(\d+(.*\,\d{0,})?)(\.[0-9]+ |)).*?done.*?(?<account>(Account|Acc|Card).*?XX\d+).*?Info:(?<ref>.*?[.]).*?Available Balance.*?(?<balance>INR (\d+(.*\,\d{0,})?)(\.[0-9]+|))/m;
                     const regexICICIBankingCreditCaseThree = /Payment.*?INR.*?(?<amount>(\d+(.*\,\d{0,})?)).*?Account.*?(?<account>xxx.*?\d+)/m;
                     const regexICICIBankingCreditCaseFour = /(?<account>Acct.*?\d+).*credited.*?Rs.(?<amount>(\d+(.*\,\d{0,})?)).*?by (?<ref>.*?\d+)/m;
                     const regexICICIJioMobility = /Jio Mobility.*?ICICI Bank app/m;
@@ -314,7 +314,7 @@ export class MessageController {
                     const regexICICIBFundTransfer1 = /(?<account>(Acct|Card).*?XX\d+).*?.\OTP is.*?(?<OTP>\d+)/m;
                     const regexICICIBfundTransfer2 = /(?<account>(Acc|Card).*?XX\d+).*debited.*?(INR|Rs).(?<amount>(\d+(.*\,\d{0,})?)).*?.;.(?<payee>\w{1,}\s+.+?(?=credited)).*?.UPI.(?<upiId>\d+\d{0,})/m;
                     const regexICICIBTransaction1 =/INR.*?(?<amount>(\d+(.*\,\d{0,})?)).*?(?<account>(Acct|Card).*?XX\d+).*?through.*?(?<paymentService>\w{1,}\s+.+?(?=on))/m;
-                    const regexICICIBTransaction2 =/(?<amount>(INR|USD).+(\d+(.\,\d{0,})?)).*?spent.*?(?<account>(Acct|Card).*?XX\d+).*?at.*?(?<payee>\w{1,}.*?). Avl Lmt.*?INR.*?(?<availableLimit>(\d+(.*\,\d{0,})[.]\d+))/m;
+                    const regexICICIBTransaction2 =/(?<amount>(INR|USD).+(\d+(.\,\d{0,})?)).*?(?<transactionType>spent).*?(?<account>(Acct|Card).*?XX\d+).*?at (?<payee>\w{1,}.*?). Avl Lmt.*?(?<availableLimit> INR (\d+(.*\,\d{0,})[.]\d+))/m;
                     const regexICICIBRefundCredit =/Dear Customer,(?<Type>.*?\w{0,}(?=of)).*?(?<amount>(INR |USD |Rs )(\d+(.*\,\d{0,})?)).*?(from |by )(?<payee>.*?\w{0,}(?=has)).*?(?<account>(Account|Acct|Card).*?XX\d+)/m;
                     const regexICICIBFundTransfer3 = /(?<OTP>\d+) .*? OTP.*?INR (?<amount>(\d+(.\d{0,})?)).*?(?<account>(Account|acct).*?\d+) to (?<payee>\w.*?[.])/m;
                     
@@ -370,7 +370,7 @@ export class MessageController {
                         notificationType = 'transaction';
                     } else if(regexICICIBTransaction2.test(message)) {
                             ({
-                                groups: { amount,account,payee,availableLimit }
+                                groups: { amount,account,payee,availableLimit,transactionType}
                             } = regexICICIBTransaction2.exec(message));
                             notificationType = 'transaction';
                     } else if (regexICICIBTransactionCaseThree.test(message)) {
@@ -390,7 +390,7 @@ export class MessageController {
                         notificationType = 'transaction';
                     } else if (regexICICIBTransactionCaseFive.test(message)) {
                         ({
-                            groups: { amount,account, balance , ref }
+                            groups: { amount,account, balance , ref ,transactionType}
                         } = regexICICIBTransactionCaseFive.exec(message));
                         notificationType = 'transaction';
                     } else if (regexICICIBankingCreditCaseThree.test(message)) {

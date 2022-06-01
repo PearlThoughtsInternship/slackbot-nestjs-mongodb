@@ -18,11 +18,11 @@ export function viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (amount === undefined) ? " " : "*Transaction Value :*\n" + (amount.includes('USD')?amount.replace('USD ','$'):amount.replace('INR','₹'))  
+                    "text": (amount === undefined) ? " " : "*Transaction Value :*\n" + (amount.includes('USD') ? amount.replace('USD ','$'):amount.includes('Rs') ? amount.replace('Rs','₹') : amount.replace('INR','₹'))  
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (transactionType === undefined) ? " " : (transactionType === "debited") ? "*Transaction Type :*\n" + "Debit" : "*Transaction Type :*\n" + transactionType
+                    "text": (transactionType === undefined) ? " " : ((transactionType === "spent") || (transactionType === "debited") || (transactionType === "transcation") ) ? "*Transaction Type :*\n" + "Debit" : "*Transaction Type :*\n" + transactionType
                 },
                 {
                     "type": "mrkdwn",
