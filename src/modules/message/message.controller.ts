@@ -10,7 +10,7 @@ import {
     viewSbiinbLogin, viewSbiinbFundTransfer, viewSbiinbCredit, viewSbiinbTransaction,
     viewSbicrdLogin, viewSbicrdFundTransfer, viewSbicrdCredit, viewSbicrdTransaction, viewSbicrdDevopsCloud, viewSbicrdLimit, viewSbicrdUdemyOtp, viewSbicrdCardFundTransfer, viewSbicrdCardLogin, 
     viewAxisbkBalance, viewAxisbkBeneficiary, viewAxisbkCredit, viewAxisbkFundTransfer, viewAxisbkTransaction,
-    viewIcicibCorpLogin, viewIcicibCredit, viewIcicibFundTransfer, viewIcicibPersonalMessage, viewIcicibTransaction,
+    viewIcicibCorpLogin, viewIcicibCredit, viewIcicibFundTransfer, viewIcicibPersonalMessage, viewIcicibTransaction,viewIcicibDueReminder,
     viewSbipsgTransaction, viewSbipsgCredit,
     viewWorknhireFundTransfer,
     viewIpaytmPersonalMessage,
@@ -41,7 +41,7 @@ export class MessageController {
         let blocks;
         let icon_url;
         let notificationType = 'uncategorized';
-        let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,paymentService,type,status,totDue,minDue,upiId;
+        let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,paymentService,type,status,totDue,minDue,upiId,transactionType,dueDate;
         let channel,channelID,workspace,subNotificationType,subChannels;
         
         console.log('sender: ' + sender);
@@ -317,6 +317,7 @@ export class MessageController {
                     const regexICICIBTransaction2 =/(?<amount>(INR|USD).+(\d+(.\,\d{0,})?)).*?spent.*?(?<account>(Acct|Card).*?XX\d+).*?at.*?(?<payee>\w{1,}.*?). Avl Lmt.*?INR.*?(?<availableLimit>(\d+(.*\,\d{0,})[.]\d+))/m;
                     const regexICICIBRefundCredit =/Dear Customer,(?<Type>.*?\w{0,}(?=of)).*?(?<amount>(INR |USD |Rs )(\d+(.*\,\d{0,})?)).*?(from |by )(?<payee>.*?\w{0,}(?=has)).*?(?<account>(Account|Acct|Card).*?XX\d+)/m;
                     const regexICICIBFundTransfer3 = /(?<OTP>\d+) .*? OTP.*?INR (?<amount>(\d+(.\d{0,})?)).*?(?<account>(Account|acct).*?\d+) to (?<payee>\w.*?[.])/m;
+                    const regexICICIBDueReminder = /.*?(?<transactionType>Amount Due).*? ICICI Bank (?<account>Credit Card XX\d+) is (?<amount>(INR )(\d+(.*\,\d{0,})?)(\.[0-9]+|)). Amount will be debited from your bank account on or before (?<dueDate>(\d{2}[-]\w{3,}[-]\d{2}))./m;
                     
                     if (regexICICIBankingFundTransfer.test(message)) {
                         ({
@@ -430,6 +431,11 @@ export class MessageController {
                             groups: { account, amount, payee, OTP }
                         } = regexICICIBFundTransfer3.exec(message));
                         notificationType = 'fundTransfer'; 
+                    }else if(regexICICIBDueReminder.test(message)){
+                        ({
+                            groups:{ transactionType,account,amount,dueDate}
+                        } = regexICICIBDueReminder.exec(message))
+                        notificationType = 'dueReminder';
                     }
 
                     if(account!=undefined && ( account.slice(-4) == "7003" || account.slice(-3) == "431" || account.slice(-4) == "9364" )) {
@@ -468,6 +474,11 @@ export class MessageController {
                         icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
                         blocks = viewIcicibCorpLogin({OTP});
                         break;
+                        case 'dueReminder':
+                            channel = await this.channelService.findByType('fund-transfer-otp');
+                            icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
+                            blocks = viewIcicibDueReminder({account,amount,transactionType,dueDate})
+                            break;
                         default:
                             channel = await this.channelService.findByType('Uncategorized');
                             break;
