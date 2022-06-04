@@ -1,11 +1,11 @@
-export function viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,balance,upiId,availableLimit,transactionType}: any): any {
+export function viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,balance,upiId,availableLimit,transactionType,dueDate}: any): any {
 
     const blocks = [
         {
             "type": "header",
             "text": {
                 "type": "plain_text",
-                "text": (message.includes('credited'&&'debited')) ? "Fund transfer":(message.includes('credited')) ? "Credit Alert" : (message.includes("OTP")) ? "Fund Transfer OTP" : "Transaction Alert"
+                "text": (message.includes('credited'&&'debited')) ? "Fund transfer":(message.includes('credited')) ? "Credit Alert" : (message.includes("OTP")) ? "Fund Transfer OTP" : (message.includes("Amount Due")) ? "Due Reminder": "Transaction Alert"
             }
         },
         {
@@ -22,7 +22,7 @@ export function viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (transactionType === undefined) ? " " : ((transactionType === "spent") || (transactionType === "debited") || (transactionType === "transcation") ) ? "*Transaction Type :*\n" + "Debit" : "*Transaction Type :*\n" + transactionType
+                    "text": (transactionType === undefined) ? " " : ((transactionType === "spent") || (transactionType === "debited") || (transactionType === "transcation") ) ? "*Transaction Type :*\n" + "Debit" : (transactionType == "Amount Due") ? "*Transaction Type :*\n" + "Due Reminder":"*Transaction Type :*\n" + transactionType
                 },
                 {
                     "type": "mrkdwn",
@@ -46,6 +46,10 @@ export function viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,
                 {
                     "type": "mrkdwn",
                     "text": (balance === undefined) ? " " : "*Available Balance :*\n" + (balance.includes('USD')?balance.replace('USD ','$'):balance.replace('INR','₹'))
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": (dueDate === undefined) ? " " : "*Due Date :*\n" + dueDate
                 },
             ]
         },

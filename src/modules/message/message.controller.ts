@@ -41,11 +41,7 @@ export class MessageController {
         let blocks;
         let icon_url;
         let notificationType = 'uncategorized';
-<<<<<<< HEAD
         let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,paymentService,type,status,totDue,minDue,upiId,transactionType,dueDate;
-=======
-        let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,paymentService,transactionType,type,status,totDue,minDue,upiId;
->>>>>>> 28144894cc503624fc8f15d6b73fc4b666dbaf1d
         let channel,channelID,workspace,subNotificationType,subChannels;
         
         console.log('sender: ' + sender);
@@ -467,7 +463,7 @@ export class MessageController {
                         case 'personalMessage':
                             channel = await this.channelService.findByType('PersonalMessages');
                             icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                            blocks = viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,balance,upiId,availableLimit,transactionType});
+                            blocks = viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,balance,upiId,availableLimit,transactionType,dueDate});
                             break;
                         case 'personalMessageNoBlock':
                             channel = await this.channelService.findByType('PersonalMessages');
