@@ -1,9 +1,11 @@
-import { Controller, Post, Request, Get, Response, HttpStatus, Res } from '@nestjs/common';
+import { Controller, Post, Request, Get, Response, HttpStatus, Res, Body } from '@nestjs/common';
 import { ConfigService } from '../../shared/config.service';
 import { WorkspaceService } from 'src/modules/workspace/workspace.service';
 import { SlackApiService } from './slack.service';
 import { stringify } from 'querystring';
 import { OauthAccessDto } from './dto/OauthAccessDto';
+import { viewAxisbkCredit, viewSbicrdCardFundTransfer } from 'src/providers/blocks';
+import { ACTION_SHOW_OTP } from 'src/common/constants/action';
 
 @Controller('slack')
 export class SlackController {
@@ -59,4 +61,17 @@ export class SlackController {
             res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(`Something went wrong! error: ${data.error}`);
         }
     }
+
+    // @Post('interactive')
+    // async interactive(@Body() body){
+    //     const payload = JSON.parse(body.payload)
+    //     console.log(payload);
+    //     const {type,user,channel,teamId} = payload;
+    //     if(type == 'interactive_message'){
+    //         let {value} = payload.actions[0];
+    //         if(value == ACTION_SHOW_OTP){
+                
+    //         }
+    //     }
+    // }
 }

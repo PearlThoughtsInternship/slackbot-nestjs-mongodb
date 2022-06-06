@@ -4,6 +4,8 @@ import { Injectable } from '@nestjs/common';
 // import { orgBtn, subBtn } from 'src/providers/blocks';
 
 import { OriginalButtonService } from 'src/providers/orgBtn.service';
+import { ShowOtpButtonService } from './providers/showOtpBtn.service';
+import { MessageService } from './modules/message/message.service';
 
 // const actionMap = {
 //     'orignal_message_button': orgBtn
@@ -21,6 +23,8 @@ import { OriginalButtonService } from 'src/providers/orgBtn.service';
 export class SlackService {
     constructor(
         private originalButtonService: OriginalButtonService,
+        private showOtpButtonService:ShowOtpButtonService,
+        private messageService:MessageService
     ) {}
 
     initSlackCommand(boltApp: any): void {
@@ -42,11 +46,30 @@ export class SlackService {
     }
 
     initSlackInteractive(boltApp: any) {
+
+        boltApp.action("show_otp",async({body,client,ack,say}) =>{
+            var request = { body,client, ack, say };
+            var channelName = body.channel.name;
+            var userId = body.user.id;
+            var userName = body.user.name;
+            var originalMessage = body.original_message;
+            console.log(JSON.stringify(originalMessage));
+
+            
+            this.showOtpButtonService.initShowOtpModal(request);
+            //this.messageService.storeUserDetails({userName:userName});
+
+        })
+
         boltApp.action("orignal_message_button", async ({ body,client, ack, say }) => {
             var request = { body,client, ack, say };
             this.originalButtonService.initOriginalMessageModal(request);
         });
+
+
     }
+
+
 
     initAppHome(boltApp: any) {
         boltApp.event('app_home_opened', async ({ event, client, context }) => {

@@ -21,6 +21,7 @@ import { WorkspaceService } from 'src/modules/workspace/workspace.service';
 import { ChannelService } from 'src/modules/channel/channel.service';
 import { SlackApiService } from './modules/slack/slack.service';
 import { OriginalButtonService } from 'src/providers/orgBtn.service';
+import { ShowOtpButtonService } from './providers/showOtpBtn.service';
 import { LoggerModule } from 'nestjs-rollbar';
 import { ReqParserModule } from './modules/reqparser/reqparser.module';
 import { ReqParserService } from './modules/reqparser/reqparser.service';
@@ -60,6 +61,7 @@ import { ReqParserService } from './modules/reqparser/reqparser.service';
     ChannelService,
     SlackApiService,
     OriginalButtonService,
+    ShowOtpButtonService,
     ReqParserService
   ],
 })

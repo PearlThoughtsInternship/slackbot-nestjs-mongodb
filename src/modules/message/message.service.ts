@@ -34,6 +34,10 @@ export class MessageService {
         });
     }
 
+    async storeUserDetails(data){
+       // return this._messageModel.save({userName : data.userName});
+    }
+
     async whatsappOTPVerify(username,whatsappnum,channel,otp) {
         var params = {
                             'to': '91'+whatsappnum,
