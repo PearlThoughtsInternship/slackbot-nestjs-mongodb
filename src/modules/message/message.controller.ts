@@ -317,7 +317,7 @@ export class MessageController {
                     const regexICICIBTransaction2 =/(?<amount>(INR|USD).+(\d+(.\,\d{0,})?)).*?(?<transactionType>spent).*?(?<account>(Acct|Card).*?XX\d+).*?at (?<payee>\w{1,}.*?). Avl Lmt.*?(?<availableLimit> INR (\d+(.*\,\d{0,})[.]\d+))/m;
                     const regexICICIBRefundCredit =/Dear Customer,(?<Type>.*?\w{0,}(?=of)).*?(?<amount>(INR |USD |Rs )(\d+(.*\,\d{0,})?)).*?(from |by )(?<payee>.*?\w{0,}(?=has)).*?(?<account>(Account|Acct|Card).*?XX\d+)/m;
                     const regexICICIBFundTransfer3 = /(?<OTP>\d+) .*? OTP.*?INR (?<amount>(\d+(.\d{0,})?)).*?(?<account>(Account|acct).*?\d+) to (?<payee>\w.*?[.])/m;
-                    const regexICICIBDueReminder = /.*?(?<transactionType>Amount Due).*? ICICI Bank (?<account>Credit Card XX\d+) is (?<amount>(INR )(\d+(.*\,\d{0,})?)(\.[0-9]+|)). Amount will be debited from your bank account on or before (?<dueDate>(\d{2}[-]\w{3,}[-]\d{2}))./m;
+                    const regexICICIBDueReminder = /.*?(?<transactionType>Amount Due).*? ICICI Bank Credit (?<account>Card XX\d+) is (?<amount>(INR )(\d+(.*\,\d{0,})?)(\.[0-9]+|)). Amount will be debited from your bank account on or before (?<dueDate>(\d{2}[-]\w{3,}[-]\d{2}))./m;
                     
                     if (regexICICIBankingFundTransfer.test(message)) {
                         ({
@@ -859,7 +859,7 @@ export class MessageController {
 
         private checkPersonalTxnSms(sender:string,message:string):string {
             let notificationType
-                if(((sender == "ICICIB") || (sender == "ICIOTP")) && (message.includes("Card XX7003") || (message.includes("Card XXX431")) || (message.includes("Card XX9364")))){
+                if(((sender == "ICICIB") || (sender == "ICIOTP")) && ((message.includes("Card XX7003")) || (message.includes("Card XXX431")) || (message.includes("Card XX9364")))){
                     notificationType = "personalMessageNoBlock";
                 }
                 return notificationType;
