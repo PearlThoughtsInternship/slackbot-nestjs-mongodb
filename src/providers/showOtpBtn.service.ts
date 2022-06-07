@@ -5,7 +5,7 @@ export class ShowOtpButtonService {
     async initShowOtpModal({ body,client, ack, say }) {
 
          var OTP = JSON.parse(body.actions[0].value);
-        // console.log(orignalMessage.sender+" Modal opened.");
+        console.log("OTP Modal opened.");
         
         // Acknowledge action request
         await ack();

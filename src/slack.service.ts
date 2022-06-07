@@ -56,10 +56,11 @@ export class SlackService {
             var messageTs = body.message.ts;
             var originalMessage = body.message.text;
             //console.log({messageTs:messageTs,userId:userId});
-            await this.messageService.storeUserDetails(messageTs);
+            await this.showOtpButtonService.initShowOtpModal(request);
+            //await this.messageService.storeUserDetails({messageTs:messageTs,userName:userName,userId:userId});
 
             
-            this.showOtpButtonService.initShowOtpModal(request);
+           
             //this.messageService.storeUserDetails({userName:userName});
 
         })

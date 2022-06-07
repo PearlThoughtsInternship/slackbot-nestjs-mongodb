@@ -38,7 +38,7 @@ export class MessageService {
     async storeUserDetails(data){
         let msgTs=data.messageTs;
        // return this._messageModel.query(`Select * from 'text' where 'text.messageTs' = messageTs INSERT `);
-       let result =await this._messageModel.findOne({messageTs:msgTs});
+       let result =await this._messageModel.find({messageTs:msgTs});
        console.log(result);
     }
 
