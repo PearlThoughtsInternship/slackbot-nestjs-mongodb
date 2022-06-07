@@ -49,11 +49,14 @@ export class SlackService {
 
         boltApp.action("show_otp",async({body,client,ack,say}) =>{
             var request = { body,client, ack, say };
-            var channelName = body.channel.name;
+            //console.log(request)
+            var channelName = request.body.channel.name;
             var userId = body.user.id;
             var userName = body.user.name;
-            var originalMessage = body.original_message;
-            console.log(JSON.stringify(originalMessage));
+            var messageTs = body.message.ts;
+            var originalMessage = body.message.text;
+            //console.log({messageTs:messageTs,userId:userId});
+            await this.messageService.storeUserDetails(messageTs);
 
             
             this.showOtpButtonService.initShowOtpModal(request);

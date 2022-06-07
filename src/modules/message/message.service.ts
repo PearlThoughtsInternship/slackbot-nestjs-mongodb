@@ -30,12 +30,16 @@ export class MessageService {
             forwardedFrom:data.forwardedFrom,
             notificationType:data.notificationType,
             channelRouted:data.channelID,
-            blocks:data.blocks
+            blocks:data.blocks,
+            messageTs:data.messageTs
         });
     }
 
     async storeUserDetails(data){
-       // return this._messageModel.save({userName : data.userName});
+        let msgTs=data.messageTs;
+       // return this._messageModel.query(`Select * from 'text' where 'text.messageTs' = messageTs INSERT `);
+       let result =await this._messageModel.findOne({messageTs:msgTs});
+       console.log(result);
     }
 
     async whatsappOTPVerify(username,whatsappnum,channel,otp) {
