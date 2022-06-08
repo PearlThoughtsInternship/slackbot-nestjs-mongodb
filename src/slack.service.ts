@@ -7,6 +7,7 @@ import { OriginalButtonService } from 'src/providers/orgBtn.service';
 import { ShowOtpButtonService } from './providers/showOtpBtn.service';
 import { MessageService } from './modules/message/message.service';
 
+
 // const actionMap = {
 //     'orignal_message_button': orgBtn
 // };
@@ -46,30 +47,26 @@ export class SlackService {
     }
 
     initSlackInteractive(boltApp: any) {
+        boltApp.action("orignal_message_button", async ({ body,client, ack, say }) => {
+            var request = { body,client, ack, say };
+            this.originalButtonService.initOriginalMessageModal(request);
+        });
+
 
         boltApp.action("show_otp",async({body,client,ack,say}) =>{
             var request = { body,client, ack, say };
-            //console.log(request)
-            var channelName = request.body.channel.name;
-            var userId = body.user.id;
-            var userName = body.user.name;
-            var messageTs = body.message.ts;
-            var originalMessage = body.message.text;
             //console.log({messageTs:messageTs,userId:userId});
             await this.showOtpButtonService.initShowOtpModal(request);
-            //await this.messageService.storeUserDetails({messageTs:messageTs,userName:userName,userId:userId});
+         
+            //console.log(request)
+
+            let storeUserResponse=this.messageService.storeUserDetails(request);
 
             
            
             //this.messageService.storeUserDetails({userName:userName});
 
         })
-
-        boltApp.action("orignal_message_button", async ({ body,client, ack, say }) => {
-            var request = { body,client, ack, say };
-            this.originalButtonService.initOriginalMessageModal(request);
-        });
-
 
     }
 

@@ -5,6 +5,7 @@ import { OauthAccessDto } from '../slack/dto/OauthAccessDto';
 import { MessageModel } from './message.model';
 // import { MessageBird } from 'messagebird';
 import { ConfigService } from '../../shared/config.service';
+import { response } from 'express';
 // import { messagebird } from 'messagebird'(messageBirdApiKey);
 
 @Injectable()
@@ -35,10 +36,25 @@ export class MessageService {
         });
     }
 
-    async storeUserDetails(data){
-        let msgTs=data.messageTs;
+    async storeUserDetails({body,client,ack,say}){
+        var request = { body,client, ack, say };
+        //var channelName = request.body.channel.name;
+        var _userId = body.user.id;
+        var _userName = body.user.name;
+        var msgTs = body.message.ts;
+        //var originalMessage = body.message.text;
+
        // return this._messageModel.query(`Select * from 'text' where 'text.messageTs' = messageTs INSERT `);
        let result =await this._messageModel.find({messageTs:msgTs});
+       
+       if(result[0].userName === null){
+            let response = await this._messageModel.update({messageTs:msgTs},{userName:_userName});
+            console.log(response);
+       }
+       else
+       {
+           return response;
+       }
        console.log(result);
     }
 

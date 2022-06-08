@@ -825,6 +825,8 @@ export class MessageController {
                 
               if(OTP)
               {
+                  console.log(OTP);
+                  console.log(typeof(OTP));
                  var otpBtn = {
                     type: 'actions',
                     elements: [

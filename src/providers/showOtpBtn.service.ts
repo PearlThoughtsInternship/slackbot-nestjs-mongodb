@@ -4,11 +4,12 @@ import { Injectable } from '@nestjs/common';
 export class ShowOtpButtonService {
     async initShowOtpModal({ body,client, ack, say }) {
 
-         var OTP = JSON.parse(body.actions[0].value);
+         
         console.log("OTP Modal opened.");
         
         // Acknowledge action request
         await ack();
+        var OTP = JSON.parse(body.actions[0].value);
         //----------------------
         try {
           // Call views.open with the built-in client

@@ -3,12 +3,13 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class OriginalButtonService {
     async initOriginalMessageModal({ body,client, ack, say }) {
-        var channelName = body.channel.name;
+        //var channelName = body.channel.name;
+        await ack();
         var orignalMessage = JSON.parse(body.actions[0].value);
         console.log(orignalMessage.sender+" Modal opened.");
 
         // Acknowledge action request
-        await ack();
+        
         //----------------------
         try {
           // Call views.open with the built-in client
