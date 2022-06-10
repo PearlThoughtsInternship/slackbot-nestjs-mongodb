@@ -762,6 +762,9 @@ export class MessageController {
                     case 'ARAVND':  
                     channel = await this.channelService.findByType('PersonalMessages');          
                     break;
+                    case 'SCHEDL':
+                        channel = await this.channelService.findByType('PersonalMessages');          
+                        break;
                     case 'TEST':
                     channel = await this.channelService.findByType('Test');
                     console.log('notification type: ' + notificationType);
@@ -776,7 +779,7 @@ export class MessageController {
                         notificationType = "SendGridOTP";
                         icon_url = "https://pbs.twimg.com/profile_images/1153335496795414530/Af2RRy1K_400x400.jpg";
                     }
-                    else if((msg.includes("Instagram account") || msg.includes("Facebook") ||  msg.includes("Google verification code"))){
+                    else if((msg.includes("Instagram account") || msg.includes("Facebook") ||  msg.includes("Google verification code") || msg.includes("CoWIN") || msg.includes("cowin"))){
                         notificationType = "personalMessageNoBlock";
                         channel = await this.channelService.findByType('PersonalMessages');
                         
