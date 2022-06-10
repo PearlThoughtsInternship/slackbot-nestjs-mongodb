@@ -29,7 +29,7 @@ export function viewRzrpayFundTransfer({account,card,payee,amount,OTP}: any): an
                 },
                 {
                     "type": "mrkdwn",
-                    "text": "*OTP:*\n" + OTP
+                    "text": "*OTP:*\n XXXXXX"
                 }
             ]
         }

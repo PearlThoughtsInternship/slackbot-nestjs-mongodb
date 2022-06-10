@@ -29,7 +29,7 @@ export function viewSbicrdCardFundTransfer({account,card,payee,amount,OTP}: any)
                 },
                 {
                     "type": "mrkdwn",
-                    "text": "*OTP:*\n" + OTP
+                    "text": "*OTP:*\n XXXXXX"
                 }
             ]
         }

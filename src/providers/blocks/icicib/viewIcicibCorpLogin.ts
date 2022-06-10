@@ -14,25 +14,11 @@ export function viewIcicibCorpLogin({OTP}: any): any {
             "fields": [
                 {
                     "type": "mrkdwn",
-                    "text": "*OTP :*\n" +OTP
+                    "text": "*OTP :*\n XXXXXX"
                     
                 }
             ]
         },
-        // {
-        //     type: 'actions',
-        //     elements: [
-        //         {
-        //             type: 'button',
-        //             text: {
-        //                 type: 'plain_text',
-        //                 text: 'Show OTP',
-        //                 emoji: true,
-        //             },
-        //             action_id: ACTION_SHOW_OTP,
-        //         },
-        //     ]
-        //  },
     ];
 
     return blocks;

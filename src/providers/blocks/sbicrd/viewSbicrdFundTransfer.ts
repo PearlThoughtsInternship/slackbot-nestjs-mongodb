@@ -35,7 +35,7 @@ export function viewSbicrdFundTransfer({
                 },
                 {
                     "type": "mrkdwn",
-                    "text": "*OTP:*\n" + OTP
+                    "text": "*OTP:*\n XXXXXX"
                 }
             ]
         }

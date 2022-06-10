@@ -787,10 +787,39 @@ export class MessageController {
                     }
                     break;
             }
-
+            var a = {sender,message: msg}  
+              if(OTP)
+              {
+                 var otpBtn = {
+                    type: 'actions',
+                    elements: [
+                        {
+                            type: 'button',
+                            text: {
+                                type: 'plain_text',
+                                text: 'Show OTP 📩',
+                                emoji: true,
+                            },
+                            "style": "primary",
+                            "action_id": ACTION_SHOW_OTP,
+                            "value":OTP
+                        },
+                        {
+                            "type": "button",
+                            "text": {
+                                "type": "plain_text",
+                                "text": "Show Original Message ✉"
+                            },
+                            "style": "danger",
+                            "value": JSON.stringify(a),
+                            "action_id": "orignal_message_button"
+                        },
+                    ]
+                 } 
+              }
            
                 //add a action block in blocks which will show a button to see the actual message modal
-                var a = {sender,message: msg}
+             
                 var btn =   {
                     "type": "actions",
                     "block_id": "actionblock789",
@@ -799,7 +828,7 @@ export class MessageController {
                             "type": "button",
                             "text": {
                                 "type": "plain_text",
-                                "text": "Show Original Mesasge ✉"
+                                "text": "Show Original Message ✉"
                             },
                             "style": "danger",
                             "value": JSON.stringify(a),
@@ -808,46 +837,26 @@ export class MessageController {
                     ]
                 }
 
-                if(blocks ==undefined){
-                    blocks =    [
-                                    {
-                                        "type": "section",
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": msg,
-                                            "emoji": true
-                                        }
-                                    }
-                                ]
+
+                if(OTP && blocks){
+                    blocks.push(otpBtn)
+                }else if(!OTP && blocks){
+                    blocks.push(btn)
+                }else if(blocks == undefined){
+                    blocks = [
+                                {
+                                    "type": "section",
+                                    "text": {
+                                                "type": "plain_text",
+                                                "text": msg,
+                                                "emoji": true
+                                            }
+                                 }
+                            ]
+                    blocks.push(btn);
                 }
-                blocks.push(btn);
-
-                
-              if(OTP)
-              {
-                  console.log(OTP);
-                  console.log(typeof(OTP));
-                 var otpBtn = {
-                    type: 'actions',
-                    elements: [
-                        {
-                            type: 'button',
-                            text: {
-                                type: 'plain_text',
-                                text: 'Show OTP',
-                                emoji: true,
-                            },
-                            "action_id": ACTION_SHOW_OTP,
-                            "value":OTP
-                        },
-                    ]
-                 } 
-                 blocks.push(otpBtn);
-              }
-
-        
-
-                
+                    
+                      
                 //POST A/C to SENDER ID TO PREVIOUS CHANNELS CONFIGURED
 
             if(channel && channel.length > 0){

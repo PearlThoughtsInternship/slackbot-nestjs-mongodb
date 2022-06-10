@@ -16,7 +16,7 @@ export function viewIcicibFundTransfer({account,payee,amount,OTP,upiId}: any): a
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (OTP==undefined) ? " " :"*OTP:*\n" + OTP
+                    "text": (OTP==undefined) ? " " :"*OTP:*\n XXXXXX"
                 },
                 {
                     "type": "mrkdwn",
