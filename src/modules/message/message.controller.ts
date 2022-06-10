@@ -10,7 +10,7 @@ import {
     viewSbiinbLogin, viewSbiinbFundTransfer, viewSbiinbCredit, viewSbiinbTransaction,
     viewSbicrdLogin, viewSbicrdFundTransfer, viewSbicrdCredit, viewSbicrdTransaction, viewSbicrdDevopsCloud, viewSbicrdLimit, viewSbicrdUdemyOtp, viewSbicrdCardFundTransfer, viewSbicrdCardLogin, 
     viewAxisbkBalance, viewAxisbkBeneficiary, viewAxisbkCredit, viewAxisbkFundTransfer, viewAxisbkTransaction,
-    viewIcicibCorpLogin, viewIcicibCredit, viewIcicibFundTransfer, viewIcicibPersonalMessage, viewIcicibTransaction,viewIcicibDueReminder,
+    viewIcicibCorpLogin, viewIcicibCredit, viewIcicibFundTransfer, viewIcicibPersonalMessage, viewIcicibTransaction,viewIcicibDueReminder,viewIcicibAccessCibApp,
     viewSbipsgTransaction, viewSbipsgCredit,
     viewWorknhireFundTransfer,
     viewIpaytmPersonalMessage,
@@ -319,7 +319,8 @@ export class MessageController {
                     const regexICICIBRefundCredit =/Dear Customer,(?<Type>.*?\w{0,}(?=of)).*?(?<amount>(INR |USD |Rs )(\d+(.*\,\d{0,})?)).*?(from |by )(?<payee>.*?\w{0,}(?=has)).*?(?<account>(Account|Acct|Card).*?XX\d+)/m;
                     const regexICICIBFundTransfer3 = /(?<OTP>\d+) .*? OTP.*?INR (?<amount>(\d+(.\d{0,})?)).*?(?<account>(Account|acct).*?\d+) to (?<payee>\w.*?[.])/m;
                     const regexICICIBDueReminder = /.*?(?<transactionType>Amount Due).*? ICICI Bank Credit (?<account>Card XX\d+) is (?<amount>(INR )(\d+(.*\,\d{0,})?)(\.[0-9]+|)). Amount will be debited from your bank account on or before (?<dueDate>(\d{2}[-]\w{3,}[-]\d{2}))./m;
-                    
+                    const regexICICIBCibLogin =/.*?OTP.*?CIB.application. .* The OTP is (?<OTP>\d+)./m;
+
                     if (regexICICIBankingFundTransfer.test(msg)) {
                         ({
                             groups: { account, amount, payee, OTP }
@@ -437,7 +438,13 @@ export class MessageController {
                             groups:{ transactionType,account,amount,dueDate}
                         } = regexICICIBDueReminder.exec(msg))
                         notificationType = 'dueReminder';
+                    }else if(regexICICIBCibLogin.test(msg)){
+                        ({
+                            groups:{OTP}
+                        } = regexICICIBCibLogin.exec(msg))
+                        notificationType = 'accessCibApp'
                     }
+
 
                     if(account!=undefined && ( account.slice(-4) == "7003" || account.slice(-3) == "431" || account.slice(-4) == "9364" )) {
                         notificationType = "personalMessage";
@@ -474,6 +481,11 @@ export class MessageController {
                         channel = await this.channelService.findByType('login-otp');
                         icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
                         blocks = viewIcicibCorpLogin({OTP});
+                        break;
+                        case 'accessCibApp':
+                            channel = await this.channelService.findByType('login-otp');
+                            icon_url = '';
+                            blocks = viewIcicibAccessCibApp({OTP});
                         break;
                         case 'dueReminder':
                             channel = await this.channelService.findByType('fund-transfer-otp');

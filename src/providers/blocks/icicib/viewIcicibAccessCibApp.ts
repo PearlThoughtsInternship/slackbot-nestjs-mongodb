@@ -1,10 +1,10 @@
-export function viewIcicibCorpLogin({OTP}: any): any {
+export function viewIcicibAccessCibApp({OTP}: any): any {
     const blocks = [
         {
             "type": "header",
             "text": {
                 "type": "plain_text",
-                "text": "ICICI Bank Corporate Internet Banking"
+                "text": "Access CIB Application OTP"
             }
         },
         {
