@@ -5,6 +5,7 @@ import { Injectable } from '@nestjs/common';
 
 import { OriginalButtonService } from 'src/providers/orgBtn.service';
 import { ShowOtpButtonService } from './providers/showOtpBtn.service';
+import { ViewOtpLogService } from './modules/view_otp_log/view_otp_log.service';
 import { MessageService } from './modules/message/message.service';
 
 
@@ -25,6 +26,7 @@ export class SlackService {
     constructor(
         private originalButtonService: OriginalButtonService,
         private showOtpButtonService:ShowOtpButtonService,
+        private viewOtpLogService:ViewOtpLogService,
         private messageService:MessageService
     ) {}
 
@@ -55,17 +57,8 @@ export class SlackService {
 
         boltApp.action("show_otp",async({body,client,ack,say}) =>{
             var request = { body,client, ack, say };
-            //console.log({messageTs:messageTs,userId:userId});
             await this.showOtpButtonService.initShowOtpModal(request);
-         
-            //console.log(request)
-
-            let storeUserResponse=this.messageService.storeUserDetails(request);
-
-            
-           
-            //this.messageService.storeUserDetails({userName:userName});
-
+            await this.messageService.FetchMsgDetails(request);   
         })
 
     }

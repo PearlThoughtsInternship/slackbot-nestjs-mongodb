@@ -25,6 +25,9 @@ import { ShowOtpButtonService } from './providers/showOtpBtn.service';
 import { LoggerModule } from 'nestjs-rollbar';
 import { ReqParserModule } from './modules/reqparser/reqparser.module';
 import { ReqParserService } from './modules/reqparser/reqparser.service';
+import { ViewOtpLogModel } from './modules/view_otp_log/view_otp_log.model';
+import { ViewOtpLogModule } from './modules/view_otp_log/view_otp_log.module';
+import { ViewOtpLogService } from './modules/view_otp_log/view_otp_log.service';
 
 
 @Module({
@@ -37,7 +40,7 @@ import { ReqParserService } from './modules/reqparser/reqparser.service';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DATABASE,
-      entities: [WorkspaceModel, MessageModel, ChannelModel],
+      entities: [WorkspaceModel, MessageModel, ChannelModel,ViewOtpLogModel],
       synchronize: false,
     }),
     LoggerModule.forRoot({
@@ -51,7 +54,8 @@ import { ReqParserService } from './modules/reqparser/reqparser.service';
     MessageModule,
     ChannelModule,
     SlackApiModule,
-    ReqParserModule
+    ReqParserModule,
+    ViewOtpLogModule
   ],
   controllers: [AppController, MessageController],
   providers: [
@@ -62,7 +66,8 @@ import { ReqParserService } from './modules/reqparser/reqparser.service';
     SlackApiService,
     OriginalButtonService,
     ShowOtpButtonService,
-    ReqParserService
+    ReqParserService,
+    ViewOtpLogService
   ],
 })
 export class AppModule {
