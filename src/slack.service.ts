@@ -5,7 +5,6 @@ import { Injectable } from '@nestjs/common';
 
 import { OriginalButtonService } from 'src/providers/orgBtn.service';
 import { ShowOtpButtonService } from './providers/showOtpBtn.service';
-import { ViewOtpLogService } from './modules/view_otp_log/view_otp_log.service';
 import { MessageService } from './modules/message/message.service';
 
 
@@ -26,7 +25,6 @@ export class SlackService {
     constructor(
         private originalButtonService: OriginalButtonService,
         private showOtpButtonService:ShowOtpButtonService,
-        private viewOtpLogService:ViewOtpLogService,
         private messageService:MessageService
     ) {}
 
