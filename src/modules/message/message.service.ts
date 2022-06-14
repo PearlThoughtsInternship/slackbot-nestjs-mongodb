@@ -36,7 +36,7 @@ export class MessageService {
     });
   }
 
-  async FetchMsgDetails({ body }) {
+  async fetchMsgDetails({ body }) {
     let d = new Date();
     let msgDetails = await this._messageModel.find({
       messageTs: body.message.ts,

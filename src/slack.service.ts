@@ -56,7 +56,7 @@ export class SlackService {
         boltApp.action("show_otp",async({body,client,ack,say}) =>{
             var request = { body,client, ack, say };
             await this.showOtpButtonService.initShowOtpModal(request);
-            await this.messageService.FetchMsgDetails(request);   
+            await this.messageService.fetchMsgDetails(request);   
         })
 
     }
