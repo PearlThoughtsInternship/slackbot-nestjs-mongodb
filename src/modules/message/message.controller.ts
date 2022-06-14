@@ -19,6 +19,7 @@ import {
     viewCshfreUncategorized,
     view57575701Uncategorized,
 } from 'src/providers/blocks';
+import { ACTION_SHOW_OTP } from 'src/common/constants/action';
 
 @Controller('message')
 export class MessageController {
@@ -36,7 +37,7 @@ export class MessageController {
 
         var parsedResult = await this.reqParserService.parse(req);
         let sender = parsedResult.sender;
-        let message = parsedResult.message;
+        let msg = parsedResult.message;
         let forwardedFrom = parsedResult.forwardedFrom
         let blocks;
         let icon_url;
@@ -47,7 +48,7 @@ export class MessageController {
         console.log('sender: ' + sender);
         console.log('sender: ' + typeof(sender));
 
-        notificationType = this.checkPersonalTxnSms(sender,message);
+        notificationType = this.checkPersonalTxnSms(sender,msg);
 
 
             switch (sender) {
@@ -58,27 +59,27 @@ export class MessageController {
                     const regexSBINetBankingLogin = /.*OTP.*(?<OTP>\d{8}).*/m;
                     const regexSBIINBTransaction =/txn.*?Rs.(?<amount>(\d+(.*\,\d{0,})?)).*?A\/c.(?<account>X\d+).*?to.?(?<payee>.*?[.]).*Ref.(?<utr>.*? )/m;
 
-                    console.log(regexSBINetBankingLogin.test(message));
-                    if (regexSBINetBankingFundTransfer.test(message)) {
+                    console.log(regexSBINetBankingLogin.test(msg));
+                    if (regexSBINetBankingFundTransfer.test(msg)) {
                         ({
                             groups: { account, amount, payee, OTP }
-                        } = regexSBINetBankingFundTransfer.exec(message));
+                        } = regexSBINetBankingFundTransfer.exec(msg));
                         notificationType = 'fundTransfer';
-                    } else if (regexSBINetBankingLogin.test(message)) {                
+                    } else if (regexSBINetBankingLogin.test(msg)) {                
                         ({
                             groups: { OTP }
-                        } = regexSBINetBankingLogin.exec(message));
+                        } = regexSBINetBankingLogin.exec(msg));
                         notificationType = 'login';
                         
-                    } else if (regexSBICreditCaseOne.test(message)) {
+                    } else if (regexSBICreditCaseOne.test(msg)) {
                         ({
                             groups: { amount,account, payee  }
-                        } = regexSBICreditCaseOne.exec(message));
+                        } = regexSBICreditCaseOne.exec(msg));
                         notificationType = 'credit';
-                    } else if (regexSBIINBTransaction.test(message)) {
+                    } else if (regexSBIINBTransaction.test(msg)) {
                         ({
                             groups: { amount,account, payee, utr  }
-                        } = regexSBIINBTransaction.exec(message));
+                        } = regexSBIINBTransaction.exec(msg));
                         notificationType = 'transaction';
                     }
                     
@@ -132,15 +133,15 @@ export class MessageController {
                     const regexSBICardReversal =/request for.*?(?<type>\w{0,}.*?.+?(?=of Rs)).*?Rs.(?<amount>\d+(.*\,\d{0,})?).*?.ending.*?(?<card>.*?\d+).*?.has been(?<status>.*?\w{1,}[.])/m; //reversal request
                     const regexSBISI =/Trxn.*?(USD|INR|Rs)(?<amount>\d+(.*\.\d{1,})).*?.Card ending(?<card>.*?\d+).at(?<payee>.*?\w{0,}.*?.+?(?=on)).*?.has been(?<status>.*?\w{1,})/m; //SI-Standard Instruction
 
-                    if (regexSBICardFundTransfer.test(message)) {
+                    if (regexSBICardFundTransfer.test(msg)) {
                         ({
                             groups: { account, amount, payee, OTP }
-                        } = regexSBICardFundTransfer.exec(message));
+                        } = regexSBICardFundTransfer.exec(msg));
                         notificationType = 'fundTransfer';
-                    } else if (regexSBICreditCardTransfer.test(message)) {
+                    } else if (regexSBICreditCardTransfer.test(msg)) {
                         ({
                             groups: { card, amount, payee, OTP }
-                        } = regexSBICreditCardTransfer.exec(message));
+                        } = regexSBICreditCardTransfer.exec(msg));
                         notificationType = 'cardFundTransfer';
                         //Route the message to DevopsAWS Channel given the condition
                         var cloudPayeeAWS = payee.toLowerCase().includes('amazon');
@@ -149,77 +150,77 @@ export class MessageController {
                         if ((card == 33) && ( cloudPayeeAWS || cloudPayeeIBM  ) && (amount==2.00 || amount==1.00) ){
                             subNotificationType = 'devopsCloud';
                         }
-                    } else if (regexSBICardLogin.test(message)) {
+                    } else if (regexSBICardLogin.test(msg)) {
                         ({
                             groups: { card, OTP }
-                        } = regexSBICardLogin.exec(message));
+                        } = regexSBICardLogin.exec(msg));
                         notificationType = 'cardLogin';
-                    } else if (regexSBICardLoginCaseTwo.test(message)) {
+                    } else if (regexSBICardLoginCaseTwo.test(msg)) {
                         ({
                             groups: { OTP }
-                        } = regexSBICardLoginCaseTwo.exec(message));
+                        } = regexSBICardLoginCaseTwo.exec(msg));
                         notificationType = 'cardLogin';
-                    } else if (regexSBICardTransaction.test(message)) {
+                    } else if (regexSBICardTransaction.test(msg)) {
                         ({
                             groups: { card, amount, payee  }
-                        } = regexSBICardTransaction.exec(message));
+                        } = regexSBICardTransaction.exec(msg));
                         notificationType = 'transaction';
-                    } else if (regexSBINEFTTransaction.test(message)) {
+                    } else if (regexSBINEFTTransaction.test(msg)) {
                         ({
                             groups: { account, amount, payee, utr  }
-                        } = regexSBINEFTTransaction.exec(message));
+                        } = regexSBINEFTTransaction.exec(msg));
                         notificationType = 'transaction';
-                    } else if (regexSBINEFTTransactionCaseTwo.test(message)) {
+                    } else if (regexSBINEFTTransactionCaseTwo.test(msg)) {
                         ({
                             groups: { amount, payee, utr  }
-                        } = regexSBINEFTTransactionCaseTwo.exec(message));
+                        } = regexSBINEFTTransactionCaseTwo.exec(msg));
                         notificationType = 'transaction';
-                    } else if (regexSBICRDTransaction.test(message)) {
+                    } else if (regexSBICRDTransaction.test(msg)) {
                         ({
                             groups: { amount,account, payee, utr  }
-                        } = regexSBICRDTransaction.exec(message));
+                        } = regexSBICRDTransaction.exec(msg));
                         notificationType = 'transaction';
-                    } else if (regexSBICreditCaseTwo.test(message)) {
+                    } else if (regexSBICreditCaseTwo.test(msg)) {
                         ({
                             groups: { amount,card  }
-                        } = regexSBICreditCaseTwo.exec(message));
+                        } = regexSBICreditCaseTwo.exec(msg));
                         notificationType = 'credit';
-                    } else if (regexSBICreditCaseThree.test(message)) {
+                    } else if (regexSBICreditCaseThree.test(msg)) {
                         ({
                             groups: { amount,card ,payee }
-                        } = regexSBICreditCaseThree.exec(message));
+                        } = regexSBICreditCaseThree.exec(msg));
                         notificationType = 'credit';
-                    } else if (regexSBICardLimit.test(message)) {
+                    } else if (regexSBICardLimit.test(msg)) {
                         ({
                             groups: { limitConsumed, availableLimit }
-                        } = regexSBICardLimit.exec(message));
+                        } = regexSBICardLimit.exec(msg));
                         notificationType = 'limit';
-                    }  else if (regexSBICardTransactionCaseTwo.test(message)) {
+                    }  else if (regexSBICardTransactionCaseTwo.test(msg)) {
                         ({
                             groups: { amount, card,payee }
-                        } = regexSBICardTransactionCaseTwo.exec(message));
+                        } = regexSBICardTransactionCaseTwo.exec(msg));
                         notificationType = 'transaction';
-                    }  else if (regexSBICardTransactionCaseThree.test(message)) {
+                    }  else if (regexSBICardTransactionCaseThree.test(msg)) {
                         ({
                             groups: { amount, card,payee }
-                        } = regexSBICardTransactionCaseThree.exec(message));
+                        } = regexSBICardTransactionCaseThree.exec(msg));
                         notificationType = 'transaction';
-                    } else if(regexCardPINDelivery.test(message)) {
+                    } else if(regexCardPINDelivery.test(msg)) {
                         notificationType = 'package-delivery';
-                    } else if (regexSBIEStatement.test(message)){
+                    } else if (regexSBIEStatement.test(msg)){
                         ({
                             groups: {card,totDue,minDue}
-                        } = regexSBIEStatement.exec(message));
+                        } = regexSBIEStatement.exec(msg));
                         notificationType = 'transaction';
-                    } else if (regexSBICardReversal.test(message)){
+                    } else if (regexSBICardReversal.test(msg)){
                         ({
                             groups: {type ,amount,card,status}
-                        } =regexSBICardReversal.exec(message));
+                        } =regexSBICardReversal.exec(msg));
                         notificationType = 'transaction';
-                    } else if (regexSBISI.test(message)){
+                    } else if (regexSBISI.test(msg)){
                         ({
                             groups: {amount,card , payee,status}
-                        } =regexSBISI.exec(message));
+                        } =regexSBISI.exec(msg));
                         notificationType = 'transaction';
                     }
 
@@ -319,122 +320,122 @@ export class MessageController {
                     const regexICICIBFundTransfer3 = /(?<OTP>\d+) .*? OTP.*?INR (?<amount>(\d+(.\d{0,})?)).*?(?<account>(Account|acct).*?\d+) to (?<payee>\w.*?[.])/m;
                     const regexICICIBDueReminder = /.*?(?<transactionType>Amount Due).*? ICICI Bank Credit (?<account>Card XX\d+) is (?<amount>(INR )(\d+(.*\,\d{0,})?)(\.[0-9]+|)). Amount will be debited from your bank account on or before (?<dueDate>(\d{2}[-]\w{3,}[-]\d{2}))./m;
                     
-                    if (regexICICIBankingFundTransfer.test(message)) {
+                    if (regexICICIBankingFundTransfer.test(msg)) {
                         ({
                             groups: { account, amount, payee, OTP }
-                        } = regexICICIBankingFundTransfer.exec(message));
+                        } = regexICICIBankingFundTransfer.exec(msg));
                         notificationType = 'fundTransfer';
-                    } else if (regexICICIBankingFundTransferCaseOne.test(message)) {
+                    } else if (regexICICIBankingFundTransferCaseOne.test(msg)) {
                         ({
                             groups: { account, amount, payee, OTP }
-                        } = regexICICIBankingFundTransferCaseOne.exec(message));
+                        } = regexICICIBankingFundTransferCaseOne.exec(msg));
                         notificationType = 'fundTransfer'; 
-                    } else if (regexICICIBFundTransfer4.test(message)) {
+                    } else if (regexICICIBFundTransfer4.test(msg)) {
                         ({
                             groups: { account, OTP ,payee,amount}
-                        } = regexICICIBFundTransfer4.exec(message));
+                        } = regexICICIBFundTransfer4.exec(msg));
                         notificationType = 'fundTransfer';
-                    }else if (regexICICIBankingFundTransferCaseTwo.test(message)) {
+                    }else if (regexICICIBankingFundTransferCaseTwo.test(msg)) {
                         ({
                             groups: { account, OTP }
-                        } = regexICICIBankingFundTransferCaseTwo.exec(message));
+                        } = regexICICIBankingFundTransferCaseTwo.exec(msg));
                         notificationType = 'fundTransfer';
-                    } else if(regexICICIBFundTransfer1.test(message)) {
+                    } else if(regexICICIBFundTransfer1.test(msg)) {
                         ({
                             groups: { account, OTP }
-                        } = regexICICIBFundTransfer1.exec(message));
+                        } = regexICICIBFundTransfer1.exec(msg));
                         notificationType = 'fundTransfer';
-                    } else if(regexICICIBfundTransfer2.test(message)) {
+                    } else if(regexICICIBfundTransfer2.test(msg)) {
                         ({
                             groups: { account , amount , payee ,upiId  }
-                        } = regexICICIBfundTransfer2.exec(message));
+                        } = regexICICIBfundTransfer2.exec(msg));
                         notificationType = 'fundTransfer';
-                       } else if (regexICICIBankingFundTransferCaseThree.test(message)) {
+                       } else if (regexICICIBankingFundTransferCaseThree.test(msg)) {
                         ({
                             groups: { amount , OTP, payee }
-                        } = regexICICIBankingFundTransferCaseThree.exec(message));
+                        } = regexICICIBankingFundTransferCaseThree.exec(msg));
                         notificationType = 'fundTransfer';
-                    }  else if (regexICICIBankingCreditCaseOne.test(message)) {
+                    }  else if (regexICICIBankingCreditCaseOne.test(msg)) {
                         ({
                             groups: { amount,account, ref , balance  }
-                        } = regexICICIBankingCreditCaseOne.exec(message));
+                        } = regexICICIBankingCreditCaseOne.exec(msg));
                         notificationType = 'credit';
-                    } else if (regexICICIBankingCreditCaseTwo.test(message)) {
+                    } else if (regexICICIBankingCreditCaseTwo.test(msg)) {
                         ({
                             groups: { amount,account, balance  }
-                        } = regexICICIBankingCreditCaseTwo.exec(message));
+                        } = regexICICIBankingCreditCaseTwo.exec(msg));
                         notificationType = 'credit';
-                    } else if (regexICICIBTransactionCaseOne.test(message)){
+                    } else if (regexICICIBTransactionCaseOne.test(msg)){
                         ({
                             groups: { amount,account, balance , ref ,transactionType}
-                        } = regexICICIBTransactionCaseOne.exec(message));
+                        } = regexICICIBTransactionCaseOne.exec(msg));
                         notificationType = 'transaction';
-                    } else if(regexICICIBTransaction2.test(message)) {
+                    } else if(regexICICIBTransaction2.test(msg)) {
                             ({
                                 groups: { amount,account,payee,availableLimit,transactionType}
-                            } = regexICICIBTransaction2.exec(message));
+                            } = regexICICIBTransaction2.exec(msg));
                             notificationType = 'transaction';
-                    } else if (regexICICIBTransactionCaseThree.test(message)) {
+                    } else if (regexICICIBTransactionCaseThree.test(msg)) {
                         ({
                             groups: { amount,account, ref , balance, transactionType}
-                        } = regexICICIBTransactionCaseThree.exec(message));
+                        } = regexICICIBTransactionCaseThree.exec(msg));
                         notificationType = 'transaction';
-                    } else if (regexICICIBCorpBanking.test(message)) {
+                    } else if (regexICICIBCorpBanking.test(msg)) {
                         ({
                             groups: { OTP }
-                        } = regexICICIBCorpBanking.exec(message));
+                        } = regexICICIBCorpBanking.exec(msg));
                         notificationType = 'CorpLogin';
-                    } else if (regexICICIBTransactionCaseFour.test(message)) {
+                    } else if (regexICICIBTransactionCaseFour.test(msg)) {
                         ({
                             groups: { account , amount ,payee,transactionType}
-                        } = regexICICIBTransactionCaseFour.exec(message));
+                        } = regexICICIBTransactionCaseFour.exec(msg));
                         notificationType = 'transaction';
-                    } else if (regexICICIBTransactionCaseFive.test(message)) {
+                    } else if (regexICICIBTransactionCaseFive.test(msg)) {
                         ({
                             groups: { amount,account, balance , ref ,transactionType}
-                        } = regexICICIBTransactionCaseFive.exec(message));
+                        } = regexICICIBTransactionCaseFive.exec(msg));
                         notificationType = 'transaction';
-                    } else if (regexICICIBankingCreditCaseThree.test(message)) {
+                    } else if (regexICICIBankingCreditCaseThree.test(msg)) {
                         ({
                             groups: { amount,account }
-                        } = regexICICIBankingCreditCaseThree.exec(message));
+                        } = regexICICIBankingCreditCaseThree.exec(msg));
                         notificationType = 'credit';
-                    } else if (regexICICIBankingCreditCaseFour.test(message)) {
+                    } else if (regexICICIBankingCreditCaseFour.test(msg)) {
                         ({
                             groups: { amount,account,ref }
-                        } = regexICICIBankingCreditCaseFour.exec(message));
+                        } = regexICICIBankingCreditCaseFour.exec(msg));
                         notificationType = 'credit';
-                    } else if (regexICICIBankingCreditCaseSix.test(message)) {
+                    } else if (regexICICIBankingCreditCaseSix.test(msg)) {
                         ({
                             groups: { amount,account,ref }
-                        } = regexICICIBankingCreditCaseSix.exec(message));
+                        } = regexICICIBankingCreditCaseSix.exec(msg));
                         notificationType = 'credit';
-                    } else if (regexICICIBankingCreditCaseFive.test(message)) {
+                    } else if (regexICICIBankingCreditCaseFive.test(msg)) {
                         ({
                             groups: { amount,account,ref,payee }
-                        } = regexICICIBankingCreditCaseFive.exec(message));
+                        } = regexICICIBankingCreditCaseFive.exec(msg));
                         notificationType = 'credit';    
-                    } else if (regexICICIJioMobility.test(message)) {
+                    } else if (regexICICIJioMobility.test(msg)) {
                         notificationType = 'personalMessageNoBlock';
-                    }else if (regexICICIBRefundCredit.test(message)) {
+                    }else if (regexICICIBRefundCredit.test(msg)) {
                         ({
                             groups: { type,amount,payee,account }
-                        } = regexICICIBRefundCredit.exec(message));
+                        } = regexICICIBRefundCredit.exec(msg));
                         notificationType = 'credit';
-                    }else if (regexICICIBTransaction1.test(message)) {
+                    }else if (regexICICIBTransaction1.test(msg)) {
                         ({
                             groups: { amount , account , paymentService }
-                        } = regexICICIBTransaction1.exec(message));
+                        } = regexICICIBTransaction1.exec(msg));
                         notificationType = 'transaction';
-                    }else if (regexICICIBFundTransfer3.test(message)) {
+                    }else if (regexICICIBFundTransfer3.test(msg)) {
                         ({
                             groups: { account, amount, payee, OTP }
-                        } = regexICICIBFundTransfer3.exec(message));
+                        } = regexICICIBFundTransfer3.exec(msg));
                         notificationType = 'fundTransfer'; 
-                    }else if(regexICICIBDueReminder.test(message)){
+                    }else if(regexICICIBDueReminder.test(msg)){
                         ({
                             groups:{ transactionType,account,amount,dueDate}
-                        } = regexICICIBDueReminder.exec(message))
+                        } = regexICICIBDueReminder.exec(msg))
                         notificationType = 'dueReminder';
                     }
 
@@ -463,7 +464,7 @@ export class MessageController {
                         case 'personalMessage':
                             channel = await this.channelService.findByType('PersonalMessages');
                             icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                            blocks = viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,balance,upiId,availableLimit,transactionType,dueDate});
+                            blocks = viewIcicibPersonalMessage({account,payee,amount,OTP,message: msg,ref,balance,upiId,availableLimit,transactionType,dueDate});
                             break;
                         case 'personalMessageNoBlock':
                             channel = await this.channelService.findByType('PersonalMessages');
@@ -491,36 +492,36 @@ export class MessageController {
                     const regexAxisBkTransactionCaseOne = /INR.(?<amount>(\d+(.*\,\d{0,})?)).*?debited.*?(?<account>A\/c.*?\d+).*?at.(?<ref>.*?[.]).*?Bal.*?INR.(?<balance>(\d+(.*\,\d{0,})?))/m;
                     const regexAxisBkBalance = /balance.*?(?<account>a\/c.*?\d+).*?Rs.(?<balance>(\d+(.*\,\d{0,})?))/m;
                     const regexAxisBkCardPersonal = /4489/m;
-                    if (regexAxisBkFundTransfer.test(message)) {
+                    if (regexAxisBkFundTransfer.test(msg)) {
                         ({
                             groups: { account, amount, payee, OTP }
-                        } = regexAxisBkFundTransfer.exec(message));
+                        } = regexAxisBkFundTransfer.exec(msg));
                         notificationType = 'fundTransfer';
                     }
-                    else if (regexAxisBkBeneficiary.test(message)) {
+                    else if (regexAxisBkBeneficiary.test(msg)) {
                         ({
                             groups: { account, OTP }
-                        } = regexAxisBkBeneficiary.exec(message));
+                        } = regexAxisBkBeneficiary.exec(msg));
                         notificationType = 'beneficiary';
                     }  
-                    else if (regexAxisBkCreditCaseOne.test(message)) {
+                    else if (regexAxisBkCreditCaseOne.test(msg)) {
                         ({
                             groups: { amount,account, ref , balance  }
-                        } = regexAxisBkCreditCaseOne.exec(message));
+                        } = regexAxisBkCreditCaseOne.exec(msg));
                         notificationType = 'credit';
                     } 
-                    else if (regexAxisBkTransactionCaseOne.test(message)) {
+                    else if (regexAxisBkTransactionCaseOne.test(msg)) {
                         ({
                             groups: { amount,account,ref, balance  }
-                        } = regexAxisBkTransactionCaseOne.exec(message));
+                        } = regexAxisBkTransactionCaseOne.exec(msg));
                         notificationType = 'transaction';
                     } 
-                    else if (regexAxisBkBalance.test(message)) {
+                    else if (regexAxisBkBalance.test(msg)) {
                         ({
                             groups: { account, balance }
-                        } = regexAxisBkBalance.exec(message));
+                        } = regexAxisBkBalance.exec(msg));
                         notificationType = 'balance';
-                    } else if (regexAxisBkCardPersonal.test(message)) {
+                    } else if (regexAxisBkCardPersonal.test(msg)) {
                         notificationType = 'personalMessage';
                     } 
 
@@ -570,20 +571,20 @@ export class MessageController {
                     const regexSBIPSGCreditCaseOne = /INR.(?<amount>(\d+(.*\,\d{0,})?)).*credited.*?(?<account>A\/c.*?\d+).*?by (?<payee>.*,)/m;
                     const regexSBIPSGTransaction = /A\/c.(?<account>XX\d+).*?debited.*?INR.(?<amount>(\d+(.*\,\d{0,})?)).*UTR.(?<utr>.*? ).*?to.?(?<payee>.*)/m;
                     const regexSBIPSGTransactionCaseTwo =  /NEFT.*?Rs.(?<amount>(\d+(.*\,\d{0,})?)).*UTR.(?<utr>.*? ).*?to.?(?<payee>.*)at/m;
-                    if (regexSBIPSGCreditCaseOne.test(message)) {
+                    if (regexSBIPSGCreditCaseOne.test(msg)) {
                         ({
                             groups: { amount,account, payee }
-                        } = regexSBIPSGCreditCaseOne.exec(message));
+                        } = regexSBIPSGCreditCaseOne.exec(msg));
                         notificationType = 'credit';
-                    } else if (regexSBIPSGTransaction.test(message)) {
+                    } else if (regexSBIPSGTransaction.test(msg)) {
                         ({
                             groups: { account, amount, payee, utr  }
-                        } = regexSBIPSGTransaction.exec(message));
+                        } = regexSBIPSGTransaction.exec(msg));
                         notificationType = 'transaction';
-                    } else if (regexSBIPSGTransactionCaseTwo.test(message)) {
+                    } else if (regexSBIPSGTransactionCaseTwo.test(msg)) {
                         ({
                             groups: { amount, payee, utr  }
-                        } = regexSBIPSGTransactionCaseTwo.exec(message));
+                        } = regexSBIPSGTransactionCaseTwo.exec(msg));
                         notificationType = 'transaction';
                     }
 
@@ -607,10 +608,10 @@ export class MessageController {
                     break;
                 case 'CBSSBI':
                     const regexCBSSBICreditCaseOne = /(?<account>A\/C.*?\d+).*credit.*?Rs (?<amount>(\d+(.*\,\d{0,})?)).*?Bal .*?(?<balance>(\d+(.*\,\d{0,})?))/m;
-                    if (regexCBSSBICreditCaseOne.test(message)) {
+                    if (regexCBSSBICreditCaseOne.test(msg)) {
                         ({
                             groups: { amount,account, balance }
-                        } = regexCBSSBICreditCaseOne.exec(message));
+                        } = regexCBSSBICreditCaseOne.exec(msg));
                         notificationType = 'credit';
                     } 
 
@@ -629,10 +630,10 @@ export class MessageController {
                     break;
                 case 'Worknhire':
                     const regexWorknhireFundTransfer = /(?<OTP>\d+).?is.*?OTP/m;
-                    if (regexWorknhireFundTransfer.test(message)) {
+                    if (regexWorknhireFundTransfer.test(msg)) {
                         ({
                             groups: { OTP }
-                        } = regexWorknhireFundTransfer.exec(message));
+                        } = regexWorknhireFundTransfer.exec(msg));
                         notificationType = 'fundTransfer';
                     }
 
@@ -654,15 +655,15 @@ export class MessageController {
 
                     const regexPayoneerFundTransfer = /(?<OTP>\d+).?is.*?verification.*? code/m;
                     const regexPayoneerFundTransferCase1 = /(?<OTP>\d+).?is.*?your.*? code/m;
-                    if (regexPayoneerFundTransfer.test(message)) {
+                    if (regexPayoneerFundTransfer.test(msg)) {
                         ({
                             groups: { OTP }
-                        } = regexPayoneerFundTransfer.exec(message));
+                        } = regexPayoneerFundTransfer.exec(msg));
                         notificationType = 'login-otp';
-                    } else if (regexPayoneerFundTransferCase1.test(message)) {
+                    } else if (regexPayoneerFundTransferCase1.test(msg)) {
                         ({
                             groups: { OTP }
-                        } = regexPayoneerFundTransferCase1.exec(message));
+                        } = regexPayoneerFundTransferCase1.exec(msg));
                         notificationType = 'login-otp';
                     }
                     console.log('notification type: ' + notificationType);
@@ -674,7 +675,7 @@ export class MessageController {
                             blocks = view57575701Uncategorized({ OTP });
                             break;
                         default:
-                            if(message.includes('SendGrid'))
+                            if(msg.includes('SendGrid'))
                             {
                                 channel = await this.channelService.findByType('sendgrid-otp');
                                 notificationType = "SendGridOTP";
@@ -688,10 +689,10 @@ export class MessageController {
                     break;
                 case 'CSHFRE':
                     const regexCashfreeFundTransfer = /OTP.*?is.(?<OTP>\d+)/m;
-                    if (regexCashfreeFundTransfer.test(message)) {
+                    if (regexCashfreeFundTransfer.test(msg)) {
                         ({
                             groups: { OTP }
-                        } = regexCashfreeFundTransfer.exec(message));
+                        } = regexCashfreeFundTransfer.exec(msg));
                         notificationType = 'Uncategorized';
                     }
 
@@ -711,15 +712,15 @@ export class MessageController {
                 case 'iPaytm':
                     const regexiPaytmDebitCaseOne = /Paid.?.(?<amount>(Rs |INR |USD )(\d+(.*\,\d{0,})?)).*?.for.(?<purpose>.*?.+?(?=on)).*?.TxnId:(?<ref>.*?[.]).*?Bal.*?.(?<balance>(Rs |INR )(\d+(.*\,\d{0,})?))/m;
                     const regexiPaytmDebitCaseTwo = /Paid.(Rs.|INR).*?(?<amount>\d+(.*\,\d{0,})?).to.(?<payee>.+?(?=from))from.(?<paymentService>\w{0,}.*?[.]).*?Paytm Wallet-.(Rs|INR).*?(?<balance>\d+(.*\,\d{0,)?)/m;
-                    if (regexiPaytmDebitCaseOne.test(message)) {
+                    if (regexiPaytmDebitCaseOne.test(msg)) {
                         ({
                             groups: { amount,purpose,ref,balance }
-                        } = regexiPaytmDebitCaseOne.exec(message));
+                        } = regexiPaytmDebitCaseOne.exec(msg));
                         notificationType = 'personalMessage';
-                    } else   if (regexiPaytmDebitCaseTwo.test(message)) {
+                    } else   if (regexiPaytmDebitCaseTwo.test(msg)) {
                         ({
                             groups: { amount,payee,paymentService,balance }
-                        } = regexiPaytmDebitCaseTwo.exec(message));
+                        } = regexiPaytmDebitCaseTwo.exec(msg));
                         notificationType = 'personalMessage';
                     }
 
@@ -729,7 +730,7 @@ export class MessageController {
                         case 'personalMessage':
                             channel = await this.channelService.findByType('PersonalMessages');
                             icon_url = 'https://scontent.famd4-1.fna.fbcdn.net/v/t1.6435-9/54433583_2270713066327585_4370000988841443328_n.png?_nc_cat=1&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=W0Ieb692IT4AX8CUYbE&_nc_ht=scontent.famd4-1.fna&oh=a0a5238fee7f8df4e8a50a37d3b659e4&oe=6193612B';
-                            blocks = viewIpaytmPersonalMessage({amount,purpose,payee,paymentService,ref,balance,message});
+                            blocks = viewIpaytmPersonalMessage({amount,purpose,payee,paymentService,ref,balance,message: msg});
                             break;
                         default:
                             channel = await this.channelService.findByType('Uncategorized');
@@ -738,10 +739,10 @@ export class MessageController {
                     break;
                 case 'RZRPAY':
                     const regexRZRPAYFundTransfer = /(?<OTP>\d+).?is.*OTP.*INR.(?<amount>(\d+(.*\,\d{0,})?)).*from.*?account.*?(?<account>X*\d+)/m;
-                    if (regexRZRPAYFundTransfer.test(message)) {
+                    if (regexRZRPAYFundTransfer.test(msg)) {
                         ({
                             groups: { amount,OTP,account }
-                        } = regexRZRPAYFundTransfer.exec(message));
+                        } = regexRZRPAYFundTransfer.exec(msg));
                         notificationType = 'fundTransfer';
                     }
 
@@ -769,13 +770,13 @@ export class MessageController {
                     if(sender.length > 9){
                         channel = await this.channelService.findByType('PersonalMessages');
                     }
-                    else if(message.includes("SendGrid"))
+                    else if(msg.includes("SendGrid"))
                     {
                         channel = await this.channelService.findByType('sendgrid-otp');
                         notificationType = "SendGridOTP";
                         icon_url = "https://pbs.twimg.com/profile_images/1153335496795414530/Af2RRy1K_400x400.jpg";
                     }
-                    else if((message.includes("Instagram account") || message.includes("Facebook") ||  message.includes("Google verification code"))){
+                    else if((msg.includes("Instagram account") || msg.includes("Facebook") ||  msg.includes("Google verification code"))){
                         notificationType = "personalMessageNoBlock";
                         channel = await this.channelService.findByType('PersonalMessages');
                         
@@ -786,12 +787,39 @@ export class MessageController {
                     }
                     break;
             }
-
-          
-        
+            var a = {sender,message: msg}  
+              if(OTP)
+              {
+                 var otpBtn = {
+                    type: 'actions',
+                    elements: [
+                        {
+                            type: 'button',
+                            text: {
+                                type: 'plain_text',
+                                text: 'Show OTP 📩',
+                                emoji: true,
+                            },
+                            "style": "primary",
+                            "action_id": ACTION_SHOW_OTP,
+                            "value":OTP
+                        },
+                        {
+                            "type": "button",
+                            "text": {
+                                "type": "plain_text",
+                                "text": "Show Original Message ✉"
+                            },
+                            "style": "danger",
+                            "value": JSON.stringify(a),
+                            "action_id": "orignal_message_button"
+                        },
+                    ]
+                 } 
+              }
            
                 //add a action block in blocks which will show a button to see the actual message modal
-                var a = {sender,message}
+             
                 var btn =   {
                     "type": "actions",
                     "block_id": "actionblock789",
@@ -800,7 +828,7 @@ export class MessageController {
                             "type": "button",
                             "text": {
                                 "type": "plain_text",
-                                "text": "Show Original Mesasge ✉"
+                                "text": "Show Original Message ✉"
                             },
                             "style": "danger",
                             "value": JSON.stringify(a),
@@ -809,21 +837,26 @@ export class MessageController {
                     ]
                 }
 
-                if(blocks ==undefined){
-                    blocks =    [
-                                    {
-                                        "type": "section",
-                                        "text": {
-                                            "type": "plain_text",
-                                            "text": message,
-                                            "emoji": true
-                                        }
-                                    }
-                                ]
-                }
-                blocks.push(btn);
 
-                
+                if(OTP && blocks){
+                    blocks.push(otpBtn)
+                }else if(!OTP && blocks){
+                    blocks.push(btn)
+                }else if(blocks == undefined){
+                    blocks = [
+                                {
+                                    "type": "section",
+                                    "text": {
+                                                "type": "plain_text",
+                                                "text": msg,
+                                                "emoji": true
+                                            }
+                                 }
+                            ]
+                    blocks.push(btn);
+                }
+                    
+                      
                 //POST A/C to SENDER ID TO PREVIOUS CHANNELS CONFIGURED
 
             if(channel && channel.length > 0){
@@ -833,22 +866,25 @@ export class MessageController {
                     } else {
                          await this.workspaceService.findByTeamId(process.env.DEFAULT_WORKSPACE_ID);
                     }
-                    await this.slackService.postBlockMessage(
+                    let postMsgResponse=await this.slackService.postBlockMessage(
                         workspace.accessToken,
                         oneChannel.channelID,
-                        message,
+                        msg,
                         blocks,
                         icon_url,
                     );
+
+                    let {channel,ts,message}=JSON.parse(JSON.stringify(postMsgResponse));
                     let data = {
                         sender,
-                        message,
+                        message:message.text,
                         forwardedFrom,
                         notificationType,
-                        channelID:oneChannel.channelID,
-                        blocks:JSON.stringify(blocks)
+                        channelID:channel,
+                        blocks:JSON.stringify(blocks),
+                        messageTs:ts,
                     }
-                    const text = await this.messageService.log(data);
+                     await this.messageService.log(data);
                 }
             }else{
                 console.log("Channel Array is empty");

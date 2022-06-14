@@ -30,7 +30,7 @@ export function viewIcicibPersonalMessage({account,payee,amount,OTP,message,ref,
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (OTP===undefined) ? " " : "*OTP:*\n" + OTP
+                    "text": (OTP===undefined) ? " " : "*OTP:*\n XXXXXX" 
                 },{
                     "type": "mrkdwn",
                     "text": (upiId==undefined) ? " " :"*UPI-ID:*\n" + upiId

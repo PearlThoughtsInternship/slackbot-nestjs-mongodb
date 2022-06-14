@@ -26,4 +26,7 @@ export class MessageModel {
   
   @Column({ name: "blocks" })
   blocks: string;
+
+  @Column({ name: "messageTs" })
+  messageTs: string;
 }

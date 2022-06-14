@@ -16,7 +16,7 @@ export function viewSbiinbLogin({card,OTP}: any): any {
                 },
                 {
                     "type": "mrkdwn",
-                    "text": "*OTP:*\n " + OTP
+                    "text": "*OTP:*\n XXXXXX" 
                 }
             ]
         }

@@ -12,11 +12,11 @@ export function viewIcicibCorpLogin({OTP}: any): any {
             "fields": [
                 {
                     "type": "mrkdwn",
-                    "text": "*OTP :*\n" +OTP
+                    "text": "*OTP :*\n XXXXXX"
                     
                 }
             ]
-        }
+        },
     ];
 
     return blocks;

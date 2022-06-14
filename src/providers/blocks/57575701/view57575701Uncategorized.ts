@@ -12,7 +12,7 @@ export function view57575701Uncategorized({ OTP }: any): any {
             "fields": [
                 {
                     "type": "mrkdwn",
-                    "text": "*OTP:*\n" + OTP
+                    "text": "*OTP:*\n XXXXXX" 
                 }
             ]
         }
