@@ -878,22 +878,16 @@ export class MessageController {
                     );
 
                     let {channel,ts,message}=JSON.parse(JSON.stringify(postMsgResponse));
-                    let postMsgresponseData = { message:message.text,channel:channel,ts:ts};
-                    console.log(postMsgresponseData);
                     let data = {
                         sender,
-                        message:postMsgresponseData.message,
+                        message:message.text,
                         forwardedFrom,
                         notificationType,
-                        channelID:postMsgresponseData.channel,
+                        channelID:channel,
                         blocks:JSON.stringify(blocks),
-                        messageTs:postMsgresponseData.ts,
+                        messageTs:ts,
                     }
                      await this.messageService.log(data);
-                    
-
-
-                    // await this.messageService.storePostMsgResponse(postMsgresponseData);
                 }
             }else{
                 console.log("Channel Array is empty");

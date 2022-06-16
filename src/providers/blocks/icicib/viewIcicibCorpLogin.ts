@@ -1,5 +1,3 @@
-import { ACTION_SHOW_OTP } from "src/common/constants/action";
-
 export function viewIcicibCorpLogin({OTP}: any): any {
     const blocks = [
         {
