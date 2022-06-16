@@ -40,4 +40,5 @@ export * from './cshfre/viewCshfreUncategorized';
 
 export * from './57575701/view57575701Uncategorized';
 
-export * from './icicib/viewIcicibDueReminder'
+export * from './icicib/viewIcicibDueReminder';
+export * from './icicib/viewIcicibAccessCibApp';
