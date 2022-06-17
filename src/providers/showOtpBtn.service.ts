@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 export class ShowOtpButtonService {
   async initShowOtpModal({ body, client, ack }) {
     await ack();
-    var OTP = JSON.parse(body.actions[0].value);
+    var OTP = body.actions[0].value;
     try {
      await client.views.open({
         trigger_id: body.trigger_id,
