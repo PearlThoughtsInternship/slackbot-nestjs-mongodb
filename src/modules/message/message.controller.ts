@@ -20,6 +20,7 @@ import {
     view57575701Uncategorized,
 } from 'src/providers/blocks';
 import { ACTION_SHOW_OTP } from 'src/common/constants/action';
+import { viewIcicibSI } from 'src/providers/blocks/icicib/viewIcicibSI';
 
 @Controller('message')
 export class MessageController {
@@ -43,7 +44,7 @@ export class MessageController {
         let icon_url;
         let notificationType = 'uncategorized';
         let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,paymentService,type,status,totDue,minDue,upiId,transactionType,dueDate;
-        let channel,channelID,workspace,subNotificationType,subChannels;
+        let channel,channelID,workspace,subNotificationType,subChannels,commitmentType;
         
         console.log('sender: ' + sender);
         console.log('sender: ' + typeof(sender));
@@ -320,6 +321,7 @@ export class MessageController {
                     const regexICICIBFundTransfer3 = /(?<OTP>\d+) .*? OTP.*?INR (?<amount>(\d+(.\d{0,})?)).*?(?<account>(Account|acct).*?\d+) to (?<payee>\w.*?[.])/m;
                     const regexICICIBDueReminder = /.*?(?<transactionType>Amount Due).*? ICICI Bank Credit (?<account>Card XX\d+) is (?<amount>(INR )(\d+(.*\,\d{0,})?)(\.[0-9]+|)). Amount will be debited from your bank account on or before (?<dueDate>(\d{2}[-]\w{3,}[-]\d{2}))./m;
                     const regexICICIBCibLogin =/.*?OTP.*?CIB.application. .* The OTP is (?<OTP>\d+)./m;
+                    const regexICICIBSI = /.*? your payment.*(?<amount>(Rs )(\d+(.*\,\d{0,})?)(\.[0-9]+|)) for (?<merchant>\w.*?[,]) as per (?<commitmentType>Standing Instruction) .*? due by (?<dueDate>\d{2}[\/]\d{2}[\/]\d{4}).*? debited .* (?<account>(Credit Card) (\d{4}))./m
 
                     if (regexICICIBankingFundTransfer.test(msg)) {
                         ({
@@ -443,6 +445,11 @@ export class MessageController {
                             groups:{OTP}
                         } = regexICICIBCibLogin.exec(msg))
                         notificationType = 'accessCibApp'
+                    }else if(regexICICIBSI.test(msg)){
+                        ({
+                            groups:{amount,commitmentType,dueDate,account}
+                        } = regexICICIBSI.exec(msg))
+                        notificationType = 'standingInstruction'
                     }
 
 
@@ -471,7 +478,7 @@ export class MessageController {
                         case 'personalMessage':
                             channel = await this.channelService.findByType('PersonalMessages');
                             icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                            blocks = viewIcicibPersonalMessage({account,payee,amount,OTP,message: msg,ref,balance,upiId,availableLimit,transactionType,dueDate});
+                            blocks = viewIcicibPersonalMessage({commitmentType,account,payee,amount,OTP,message: msg,ref,balance,upiId,availableLimit,transactionType,dueDate});
                             break;
                         case 'personalMessageNoBlock':
                             channel = await this.channelService.findByType('PersonalMessages');
@@ -491,6 +498,11 @@ export class MessageController {
                             channel = await this.channelService.findByType('fund-transfer-otp');
                             icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
                             blocks = viewIcicibDueReminder({account,amount,transactionType,dueDate})
+                            break;
+                        case 'standingInstruction':
+                            channel = await this.channelService.findByType('service-alerts');
+                            icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
+                            blocks = viewIcicibSI({amount,account,commitmentType,dueDate})
                             break;
                         default:
                             channel = await this.channelService.findByType('Uncategorized');
