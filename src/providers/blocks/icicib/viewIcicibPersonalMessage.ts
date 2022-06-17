@@ -1,11 +1,11 @@
-export function viewIcicibPersonalMessage({account,payee,amount,OTP,message,commitmentType,ref,balance,upiId,availableLimit,transactionType,dueDate}: any): any {
+export function viewIcicibPersonalMessage({commitmentType,account,payee,amount,OTP,message,ref,balance,upiId,availableLimit,transactionType,dueDate}: any): any {
 
     const blocks = [
         {
             "type": "header",
             "text": {
                 "type": "plain_text",
-                "text": (message.includes('credited'&&'debited')) ? "Fund transfer":(message.includes('credited')) ? "Credit Alert" : (message.includes("OTP")) ? "Fund Transfer OTP" : (message.includes("Amount Due")) ? "Due Reminder": (message.includes("Standing Instruction")) ? "Standing Instruction" : "Transaction Alert"
+                "text": (commitmentType === 'Standing Instruction') ? 'Standing Instruction' : (message.includes('credited'&&'debited')) ? "Fund transfer":(message.includes('credited')) ? "Credit Alert" : (message.includes("OTP")) ? "Fund Transfer OTP" : (message.includes("Amount Due")) ? "Due Reminder": "Transaction Alert"
             }
         },
         {

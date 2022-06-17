@@ -478,7 +478,7 @@ export class MessageController {
                         case 'personalMessage':
                             channel = await this.channelService.findByType('PersonalMessages');
                             icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                            blocks = viewIcicibPersonalMessage({commitmentType,account,payee,amount,OTP,message: msg,ref,balance,upiId,availableLimit,transactionType,dueDate});
+                            blocks = viewIcicibPersonalMessage({commitmentType,account,payee,amount,OTP,msg,ref,balance,upiId,availableLimit,transactionType,dueDate});
                             break;
                         case 'personalMessageNoBlock':
                             channel = await this.channelService.findByType('PersonalMessages');
