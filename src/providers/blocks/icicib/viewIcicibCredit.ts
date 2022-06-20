@@ -31,11 +31,11 @@ export function viewIcicibCredit({type,account,ref,amount,balance,payee}: any): 
             "fields": [
                 {
                     "type": "mrkdwn",
-                    "text": "*Amount Credited :*\n" + amount
+                    "text": "*Amount Credited :*\n₹" + amount
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (balance === undefined) ? " " : "*Available Balance :*\n" + balance
+                    "text": (balance === undefined) ? " " : "*Available Balance :*\n₹" + balance
                 },
                 {
                     "type": "mrkdwn",

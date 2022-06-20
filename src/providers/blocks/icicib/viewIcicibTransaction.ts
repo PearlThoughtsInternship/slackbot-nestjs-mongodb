@@ -17,7 +17,7 @@ export function viewIcicibTransaction({account,payee,ref,balance,amount,paymentS
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (amount === undefined) ? " " : ("*Transaction Value :*\n" + (amount.includes('USD')?amount.replace('USD ','$'):amount.includes('INR') ? amount.replace('INR','₹'): amount.replace('Rs ','₹')))
+                    "text": (amount === undefined) ? " " : ("*Transaction Value :*\n" + (amount.includes('USD')?amount.replace('USD ','$'):amount.includes('INR') ? amount.replace('INR ','₹'): amount.replace('Rs ','₹')))
                 },
                 {
                     "type": "mrkdwn",
@@ -49,11 +49,11 @@ export function viewIcicibTransaction({account,payee,ref,balance,amount,paymentS
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (balance === undefined) ? " " : "*Available Balance :*\n" + (balance.includes('USD')?balance.replace('USD ','$'):balance.replace('INR','₹'))
+                    "text": (balance === undefined) ? " " : "*Available Balance :*\n" + (balance.includes('USD')?balance.replace('USD ','$'):balance.replace('INR ','₹'))
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (availableLimit === undefined) ? " " : "*Available Credit limit :*\n" + (availableLimit.includes('USD')?availableLimit.replace('USD ','$'):availableLimit.replace('INR','₹'))
+                    "text": (availableLimit === undefined) ? " " : "*Available Credit limit :*\n" + (availableLimit.includes('USD')?availableLimit.replace('USD ','$'):availableLimit.replace('INR ','₹'))
                 },
             ]
         }

@@ -29,7 +29,7 @@ export function viewIcicibFundTransfer({account,payee,amount,OTP,upiId}: any): a
             "fields": [
                 {
                     "type": "mrkdwn",
-                    "text": (amount === undefined) ? " " :  "*Amount:*\n" + (amount.includes('USD')?amount.replace('USD ','$'):amount.replace('INR','₹'))
+                    "text": (amount === undefined) ? " " :  "*Amount:*\n" + (amount.includes('USD')?amount.replace('USD ','$'):amount.replace('INR ','₹'))
                 },
                 {
                     "type": "mrkdwn",

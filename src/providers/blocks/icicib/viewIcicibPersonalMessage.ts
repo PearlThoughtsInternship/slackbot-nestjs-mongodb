@@ -5,7 +5,7 @@ export function viewIcicibPersonalMessage({commitmentType,account,payee,amount,O
             "type": "header",
             "text": {
                 "type": "plain_text",
-                "text": (commitmentType === 'Standing Instruction') ? 'Standing Instruction' : (message.includes('credited'&&'debited')) ? "Fund transfer":(message.includes('credited')) ? "Credit Alert" : (message.includes("OTP")) ? "Fund Transfer OTP" : (message.includes("Amount Due")) ? "Due Reminder": "Transaction Alert"
+                "text": (message.includes('credited'&&'debited')) ? "Fund transfer":(message.includes('credited')) ? "Credit Alert" : (message.includes("OTP")) ? "Fund Transfer OTP" : (message.includes("Amount Due")) ? "Due Reminder" : "Transaction Alert"
             }
         },
         {
@@ -46,11 +46,11 @@ export function viewIcicibPersonalMessage({commitmentType,account,payee,amount,O
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (availableLimit === undefined) ? " " : "*Available Credit Limit :*\n" + (availableLimit.includes('USD')?availableLimit.replace('USD ','$'):availableLimit.replace('INR','₹'))
+                    "text": (availableLimit === undefined) ? " " : "*Available Credit Limit :*\n" + (availableLimit.includes('USD')?availableLimit.replace('USD ','$'):availableLimit.replace('INR ','₹'))
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (balance === undefined) ? " " : "*Available Balance :*\n" + (balance.includes('USD')?balance.replace('USD ','$'):balance.replace('INR','₹'))
+                    "text": (balance === undefined) ? " " : "*Available Balance :*\n" + (balance.includes('USD')?balance.replace('USD ','$'):balance.replace('INR ','₹'))
                 },
 
                 {
