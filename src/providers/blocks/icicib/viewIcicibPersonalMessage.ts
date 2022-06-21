@@ -1,11 +1,11 @@
-export function viewIcicibPersonalMessage({commitmentType,account,payee,amount,OTP,message,ref,balance,upiId,availableLimit,transactionType,dueDate}: any): any {
+export function viewIcicibPersonalMessage({commitmentType,account,payee,amount,OTP,msg,ref,balance,upiId,availableLimit,transactionType,dueDate}: any): any {
 
     const blocks = [
         {
             "type": "header",
             "text": {
                 "type": "plain_text",
-                "text": (message.includes('credited'&&'debited')) ? "Fund transfer":(message.includes('credited')) ? "Credit Alert" : (message.includes("OTP")) ? "Fund Transfer OTP" : (message.includes("Amount Due")) ? "Due Reminder" : "Transaction Alert"
+                "text": (commitmentType == 'Standing Instruction') ? 'Standing Instruction' : (msg.includes('credited'&&'debited')) ? "Fund transfer":(msg.includes('credited')) ? "Credit Alert" : (msg.includes("OTP")) ? "Fund Transfer OTP" : (msg.includes("Amount Due")) ? "Due Reminder" : "Transaction Alert"
             }
         },
         {
@@ -23,7 +23,7 @@ export function viewIcicibPersonalMessage({commitmentType,account,payee,amount,O
             "fields": [
                 {
                     "type": "mrkdwn",
-                    "text": (amount === undefined) ? " " : (message.includes('due')) ? "*Due Amount:*\n" + (amount.includes('Rs') ? amount.replace('Rs ','₹') : amount.replace('INR ','₹')) : "*Transaction Value :*\n" + (amount.includes('USD') ? amount.replace('USD ','$'):amount.includes('Rs') ? amount.replace('Rs ','₹') : amount.replace('INR ','₹'))  
+                    "text": (amount === undefined) ? " " : (msg.includes('due')) ? "*Due Amount:*\n" + (amount.includes('Rs') ? amount.replace('Rs ','₹') : amount.replace('INR ','₹')) : "*Transaction Value :*\n" + (amount.includes('USD') ? amount.replace('USD ','$'):amount.includes('Rs') ? amount.replace('Rs ','₹') : amount.replace('INR ','₹'))  
                 },
                 {
                     "type": "mrkdwn",
