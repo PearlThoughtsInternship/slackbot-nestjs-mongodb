@@ -45,6 +45,7 @@ import { ViewOtpLogService } from './modules/view_otp_log/view_otp_log.service';
     }),
     LoggerModule.forRoot({
       accessToken: process.env.ROLLBAR_ACCESS_TOKEN,
+      environment: process.env.ROLLBAR_ENVIRONMENT,
       captureUncaught: true,
       captureUnhandledRejections: true,
       ignoreDuplicateErrors: false,
