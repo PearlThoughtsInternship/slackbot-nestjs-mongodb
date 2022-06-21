@@ -16,7 +16,7 @@ export function viewIcicibDueReminder({account,amount,transactionType,dueDate}: 
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (amount === undefined) ? " " :  "*Amount:*\n" + (amount.includes('USD')?amount.replace('USD ','$'):amount.replace('INR','₹'))
+                    "text": (amount === undefined) ? " " :  "*Amount:*\n" + (amount.includes('USD')?amount.replace('USD ','$'):amount.replace('INR ','₹'))
                 },
             ]
         },
