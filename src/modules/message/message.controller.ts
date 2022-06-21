@@ -44,7 +44,7 @@ export class MessageController {
         let icon_url;
         let notificationType = 'uncategorized';
         let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,paymentService,type,status,totDue,minDue,upiId,transactionType,dueDate;
-        let channel,channelID,workspace,subNotificationType,subChannels,commitmentType;
+        let channel,channelID,workspace,subNotificationType,subChannels,commitmentType,payerAccount;
         
         console.log('sender: ' + sender);
         console.log('sender: ' + typeof(sender));
@@ -301,7 +301,7 @@ export class MessageController {
                     const regexICICIBFundTransfer4 = /(?<OTP>\d+).? is .*?OTP for NEFT.*?(?<amount>(INR | USD)(\d+(.\d{0,})?)).*?(?<account>(Account|Acct).*?\d+) to (?<payee>\w.*?[.])/m;
                     const regexICICIBankingFundTransferCaseTwo = /(?<OTP>\d+).?is.*?OTP.*(?<account>(Acct|Card).*?XX\d+)/m;
                     const regexICICIBankingFundTransferCaseThree = /(?<OTP>\d+).?is.*?OTP.*?to pay.*?(?<payee>.*?[,]).*?(Rs |INR |USD )(?<amount>(\d+(.*\,\d{0,})?))/m;
-                    const regexICICIBankingCreditCaseOne = /(?<account>Account.*?\d+).*credited.*?INR.(?<amount>(\d+(.*\,\d{0,})?)).*?Info:(?<ref>.*?[.]).*?Balance is.*?(?<balance>(\d+(\,\d.*[^.])))/m;
+                    const regexICICIBankingCreditCaseOne = /(?<account>Account.*?\d+).*credited.*?(?<amount>INR (\d+(.*\,\d{0,})?)).*?Info:(?<ref>.*?[.]).*?Balance is.*?(?<balance>INR (\d+(\,\d.*[^.])))/m;
                     const regexICICIBankingCreditCaseTwo = /Rs.*?(?<amount>(\d+(.*\,\d{0,})?)).*credited.*?account.(?<account>.*?\d+).*?Bal.*?Rs.(?<balance>(\d+(.*\,\d{0,})?))/m;
                     const regexICICIBankingCreditCaseFive = /(?<account>Account.*?\d+).*credited.*?(?<amount>(INR |USD |Rs )(\d+(.*\,\d{0,})?)).*?(from |by )(?<payee>.*?[.]).*?Ref. no..*?.(?<ref>.*?[.])/m;
                     const regexICICIBTransactionCaseOne = /(?<account>Acc.*?\d+).*(?<transactionType>debited).*?(?<amount>INR (\d+(.*\,\d{0,})?)(\.[0-9]+ |)).*?Info:(?<ref>.*?[.]).*?Balance is.*?(?<balance>INR (\d+(.*\,\d{0,})?)(\.[0-9]+|))/m;
@@ -309,7 +309,7 @@ export class MessageController {
                     const regexICICIBTransactionCaseFour = /(?<account>(Acct|Account).*?\d+).*(?<transactionType>debited).*?.(?<amount>(Rs |USD |INR )(\d+(.*\,\d{0,})?)(\.[0-9]+ |)).*? (?<format>and|&) (?<payee>.*?) credited./m;
                     const regexICICIBTransactionCaseFive = /.*? (?<transactionType>transcation) of (?<amount>(INR |USD )(\d+(.*\,\d{0,})?)(\.[0-9]+ |)).*?done.*?(?<account>(Account|Acc|Card).*?XX\d+).*?Info:(?<ref>.*?[.]).*?Available Balance.*?(?<balance>INR (\d+(.*\,\d{0,})?)(\.[0-9]+|))/m;
                     const regexICICIBankingCreditCaseThree = /Payment.*?INR.*?(?<amount>(\d+(.*\,\d{0,})?)).*?Account.*?(?<account>xxx.*?\d+)/m;
-                    const regexICICIBankingCreditCaseFour = /(?<account>Acct.*?\d+).*credited.*?Rs.(?<amount>(\d+(.*\,\d{0,})?)).*?by (?<ref>.*?\d+)/m;
+                    const regexICICIBankingCreditCaseFour = /(?<account>Acct.*?\d+).*credited.*?(?<amount>Rs (\d+(.*\,\d{0,})?)).*?by (?<payerAccount>.*?\d+). .* Ref. no. (?<ref>(\d{1,}))./m;
                     const regexICICIJioMobility = /Jio Mobility.*?ICICI Bank app/m;
                     const regexICICIBankingCreditCaseSix =/(?<ref>\d+).*?Rs.*?(?<amount>(\d+(.*\,\d{0,})?)).*?credited.to.*?(?<account>\w.*account)/m;
                     const regexICICIBCorpBanking = /(?<OTP>\d+).*?is.*?OTP.*?Corporate Internet Banking/m;
@@ -405,7 +405,7 @@ export class MessageController {
                         notificationType = 'credit';
                     } else if (regexICICIBankingCreditCaseFour.test(msg)) {
                         ({
-                            groups: { amount,account,ref }
+                            groups: { amount,account,ref,payerAccount}
                         } = regexICICIBankingCreditCaseFour.exec(msg));
                         notificationType = 'credit';
                     } else if (regexICICIBankingCreditCaseSix.test(msg)) {
@@ -468,7 +468,7 @@ export class MessageController {
                         case 'credit':
                             channel = await this.channelService.findByType('service-alerts');
                             icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                            blocks = viewIcicibCredit({type,account,ref,amount,balance,payee});
+                            blocks = viewIcicibCredit({type,account,ref,amount,balance,payee,payerAccount});
                             break;
                         case 'transaction':
                             channel = await this.channelService.findByType('service-alerts');

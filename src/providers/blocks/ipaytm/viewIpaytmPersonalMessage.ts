@@ -20,11 +20,11 @@ export function viewIpaytmPersonalMessage({amount,purpose,payee,paymentService,r
             "fields": [
                 {
                     "type": "mrkdwn",
-                    "text": message.includes('Paid')  ?  (amount==undefined)?" ":"*Amount debited :*\n" + (amount.includes('USD')?amount.replace('USD ','$'):amount.replace('Rs','₹'))  :  (amount==undefined)?" ":"*Amount Credited :*\n₹" + amount
+                    "text": message.includes('Paid')  ?  (amount==undefined)?" ":"*Amount debited :*\n" + (amount.includes('USD')?amount.replace('USD ','$'):amount.replace('Rs ','₹'))  :  (amount==undefined)?" ":"*Amount Credited :*\n₹" + amount
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (balance === undefined) ? " " : "*Available Balance :*\n" + (balance.includes('USD')?balance.replace('USD ','$'):balance.replace('Rs','₹'))
+                    "text": (balance === undefined) ? " " : "*Available Balance :*\n" + (balance.includes('USD')?balance.replace('USD ','$'):balance.replace('Rs ','₹'))
                 }
             ]
         },
@@ -38,11 +38,6 @@ export function viewIpaytmPersonalMessage({amount,purpose,payee,paymentService,r
                     "type": "mrkdwn",
                     "text": (paymentService===undefined) ? " " : "*PaymentService:*\n" + paymentService
                 },
-           ]
-        },
-        {
-            "type": "section",
-            "fields": [
                 {
                     "type": "mrkdwn",
                     "text": (ref === undefined) ? " " : "*TxnId:*\n" + ref
@@ -51,8 +46,8 @@ export function viewIpaytmPersonalMessage({amount,purpose,payee,paymentService,r
                     "type": "mrkdwn",
                     "text": (purpose===undefined) ? " " : "*Purpose:*\n" + purpose
                 }
-            ]
-        }
+           ]
+        },
     ];
 
     return blocks;
