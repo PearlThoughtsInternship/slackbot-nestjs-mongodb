@@ -5,7 +5,7 @@ export function viewIcicibPersonalMessage({commitmentType,account,payee,amount,O
             "type": "header",
             "text": {
                 "type": "plain_text",
-                "text": (commitmentType == 'Standing Instruction') ? 'Standing Instruction' : (msg.includes('credited'&&'debited')) ? "Fund transfer":(msg.includes('credited')) ? "Credit Alert" : (msg.includes("OTP")) ? "Fund Transfer OTP" : (msg.includes("Amount Due")) ? "Due Reminder" : "Transaction Alert"
+                "text": (commitmentType == 'Standing Instruction') ? 'Standing Instruction' : (msg.includes('credited'&&'debited')) ? "Fund transfer":(msg.includes('credited')) ? "Credit Alert" : (msg.includes("OTP")) ? "Fund Transfer OTP" : (msg.includes("Amount Due")) ? "Due Reminder": "Transaction Alert"
             }
         },
         {
