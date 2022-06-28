@@ -19,7 +19,7 @@ import {
     viewCshfreUncategorized,
     view57575701Uncategorized,
 } from 'src/providers/blocks';
-import { ACTION_SHOW_OTP } from 'src/common/constants/action';
+import { ACTION_SHOW_ORIGINAL, ACTION_SHOW_ORIGINAL_NO_LOG, ACTION_SHOW_OTP, ACTION_SHOW_VIEW_LOG } from 'src/common/constants/action';
 import { viewIcicibSI } from 'src/providers/blocks/icicib/viewIcicibSI';
 
 @Controller('message')
@@ -839,7 +839,17 @@ export class MessageController {
                             },
                             "style": "danger",
                             "value": JSON.stringify(a),
-                            "action_id": "orignal_message_button"
+                            "action_id": ACTION_SHOW_ORIGINAL,
+                        },
+                        {
+                            "type": "button",
+                            "text": {
+                                "type": "plain_text",
+                                "text": "Show View Log 📃"
+                            },
+                            "style": "danger",
+                            "value": JSON.stringify(a),
+                            "action_id": ACTION_SHOW_VIEW_LOG,
                         },
                     ]
                  } 
@@ -859,7 +869,7 @@ export class MessageController {
                             },
                             "style": "danger",
                             "value": JSON.stringify(a),
-                            "action_id": "orignal_message_button"
+                            "action_id": ACTION_SHOW_ORIGINAL_NO_LOG,
                         },
                     ]
                 }

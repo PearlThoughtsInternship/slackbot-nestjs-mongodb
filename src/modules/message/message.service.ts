@@ -58,6 +58,25 @@ export class MessageService {
         }
   }
 
+  async fetchViewLogDetails({ body }) {
+    let msgDetails = await this._messageModel.find({
+      messageTs: body.message.ts,
+    });
+    console.log("msgDetails:" + JSON.stringify(msgDetails));
+    let viewDetails,showviewDetails = [];
+    try{
+         viewDetails = await this.viewOtpLogService.fetchUserDetails(msgDetails[0].id);
+         console.log("viewDetails:"  + viewDetails);
+         for(let viewDetail of viewDetails){
+          showviewDetails.push({userName:viewDetail.user_id,viewedOn:viewDetail.created_on})
+         }
+         return showviewDetails;
+        }
+        catch(error){
+            console.error(error);
+        }
+  }
+
   async whatsappOTPVerify(username, whatsappnum, channel, otp) {
     var params = {
       to: '91' + whatsappnum,

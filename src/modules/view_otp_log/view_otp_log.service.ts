@@ -15,4 +15,8 @@ export class ViewOtpLogService {
    async storeUserDetails(data) {
        return this.viewOtpLogModel.insert(data)   
    }
+
+   async fetchUserDetails(msgId){
+        return this.viewOtpLogModel.find({text_id:msgId});
+   }
 }

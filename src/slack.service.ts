@@ -6,6 +6,7 @@ import { Injectable } from '@nestjs/common';
 import { OriginalButtonService } from 'src/providers/orgBtn.service';
 import { ShowOtpButtonService } from './providers/showOtpBtn.service';
 import { MessageService } from './modules/message/message.service';
+import { ACTION_ADD_CHANNELS_ADMIN } from './common/constants/action';
 
 
 // const actionMap = {
@@ -47,17 +48,29 @@ export class SlackService {
     }
 
     initSlackInteractive(boltApp: any) {
-        boltApp.action("orignal_message_button", async ({ body,client, ack, say }) => {
+        boltApp.action("show_orignal_message", async ({ body,client, ack, say }) => {
             var request = { body,client, ack, say };
             this.originalButtonService.initOriginalMessageModal(request);
+            await this.messageService.fetchMsgDetails(request); 
         });
 
+        boltApp.action("show_orignal_message_no_log", async ({ body,client, ack, say }) => {
+            var request = { body,client, ack, say };
+            this.originalButtonService.initOriginalMessageModal(request); 
+        });
 
         boltApp.action("show_otp",async({body,client,ack,say}) =>{
             var request = { body,client, ack, say };
             await this.showOtpButtonService.initShowOtpModal(request);
             await this.messageService.fetchMsgDetails(request);   
-        })
+        });
+
+        boltApp.action("show_view_log",async({body,client,ack,say}) =>{
+            var request = { body,client, ack, say };
+            let showviewDetails = await this.messageService.fetchViewLogDetails(request);  
+            await this.showOtpButtonService.initShowViewLogModal(request,showviewDetails);
+             
+        });
 
     }
 
@@ -67,19 +80,11 @@ export class SlackService {
         boltApp.event('app_home_opened', async ({ event, client, context }) => {
             
             try {
-              /* view.publish is the method that your app uses to push a view to the Home tab */
               const result = await client.views.publish({
-          
-                /* the user that opened your app's app home */
                 user_id: event.user,
-                
-          
-                /* the view object that appears in the app home*/
                 view: {
                   type: 'home',
                   callback_id: 'home_view',
-          
-                  /* body of the view */
                   blocks: [
                     {
                         "type": "section",
@@ -95,7 +100,8 @@ export class SlackService {
                                 "emoji": true
                             },
                             "value": "add_channels",
-                            "action_id": "button-action"
+                            "action_id": ACTION_ADD_CHANNELS_ADMIN,
+
                         }
                     }
                 ]
