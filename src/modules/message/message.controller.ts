@@ -10,7 +10,7 @@ import {
     viewSbiinbLogin, viewSbiinbFundTransfer, viewSbiinbCredit, viewSbiinbTransaction,
     viewSbicrdLogin, viewSbicrdFundTransfer, viewSbicrdCredit, viewSbicrdTransaction, viewSbicrdDevopsCloud, viewSbicrdLimit, viewSbicrdUdemyOtp, viewSbicrdCardFundTransfer, viewSbicrdCardLogin, 
     viewAxisbkBalance, viewAxisbkBeneficiary, viewAxisbkCredit, viewAxisbkFundTransfer, viewAxisbkTransaction,
-    viewIcicibCorpLogin, viewIcicibCredit, viewIcicibFundTransfer, viewIcicibPersonalMessage, viewIcicibTransaction,viewIcicibDueReminder,viewIcicibAccessCibApp,
+    viewIcicibCorpLogin, viewIcicibCredit, viewIcicibFundTransfer, viewIcicibPersonalMessage, viewIcicibTransaction,viewIcicibDueReminder,viewIcicibAccessCibApp,viewIcicibSI,
     viewSbipsgTransaction, viewSbipsgCredit,
     viewWorknhireFundTransfer,
     viewIpaytmPersonalMessage,
@@ -20,7 +20,6 @@ import {
     view57575701Uncategorized,
 } from 'src/providers/blocks';
 import { ACTION_SHOW_ORIGINAL, ACTION_SHOW_ORIGINAL_NO_LOG, ACTION_SHOW_OTP, ACTION_SHOW_VIEW_LOG } from 'src/common/constants/action';
-import { viewIcicibSI } from 'src/providers/blocks/icicib/viewIcicibSI';
 
 @Controller('message')
 export class MessageController {
