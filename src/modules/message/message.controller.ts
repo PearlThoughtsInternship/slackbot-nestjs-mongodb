@@ -43,7 +43,7 @@ export class MessageController {
         let icon_url;
         let notificationType = 'uncategorized';
         let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,paymentService,type,status,totDue,minDue,upiId,transactionType,dueDate;
-        let channel,channelID,workspace,subNotificationType,subChannels,commitmentType,payerAccount;
+        let channel,channelID,workspace,subNotificationType,subChannels,commitmentType,payerAccount,merchant;
         
         console.log('sender: ' + sender);
         console.log('sender: ' + typeof(sender));
@@ -446,7 +446,7 @@ export class MessageController {
                         notificationType = 'accessCibApp'
                     }else if(regexICICIBSI.test(msg)){
                         ({
-                            groups:{amount,commitmentType,dueDate,account}
+                            groups:{amount,commitmentType,dueDate,account,merchant}
                         } = regexICICIBSI.exec(msg))
                         notificationType = 'standingInstruction'
                     }
@@ -501,7 +501,7 @@ export class MessageController {
                         case 'standingInstruction':
                             channel = await this.channelService.findByType('service-alerts');
                             icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                            blocks = viewIcicibSI({amount,account,commitmentType,dueDate})
+                            blocks = viewIcicibSI({amount,account,commitmentType,dueDate,merchant})
                             break;
                         default:
                             channel = await this.channelService.findByType('Uncategorized');

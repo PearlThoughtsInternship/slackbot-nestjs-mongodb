@@ -1,4 +1,4 @@
-export function viewIcicibSI({account,amount,commitmentType,dueDate}: any): any {
+export function viewIcicibSI({account,amount,commitmentType,dueDate,merchant}: any): any {
     const blocks = [
         {
             "type": "header",
@@ -30,6 +30,10 @@ export function viewIcicibSI({account,amount,commitmentType,dueDate}: any): any 
                 {
                     "type": "mrkdwn",
                     "text": (dueDate === undefined) ? " " :  "*Due Date:*\n" + dueDate
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": (merchant === undefined) ? " " :  "*Merchant:*\n" + merchant
                 },
             ]
         }
