@@ -847,7 +847,7 @@ export class MessageController {
                                 "type": "plain_text",
                                 "text": "Show View Log 📃"
                             },
-                            "style": "danger",
+                            "style": "primary",
                             "value": JSON.stringify(a),
                             "action_id": ACTION_SHOW_VIEW_LOG,
                         },

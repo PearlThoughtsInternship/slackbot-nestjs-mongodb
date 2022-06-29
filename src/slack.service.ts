@@ -74,8 +74,6 @@ export class SlackService {
 
     }
 
-
-
     initAppHome(boltApp: any) {
         boltApp.event('app_home_opened', async ({ event, client, context }) => {
             

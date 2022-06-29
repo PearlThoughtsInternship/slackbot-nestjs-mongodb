@@ -40,7 +40,7 @@ export class ShowOtpButtonService {
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": `<@${showViewDetail.userName}> \t \t \t \t \t \t \t \t \t \t \t ${showViewDetail.viewedOn}`
+          "text": `<@${showViewDetail.userName}> \t \t \t \t \t \t  ${showViewDetail.viewedOn}`
         }
       })
     }
@@ -64,7 +64,7 @@ export class ShowOtpButtonService {
             "type": "header",
             "text": {
               "type": "plain_text",
-              "text": "User \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \tViewed on",
+              "text": "User \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t Viewed on",
               "emoji": true
             }
           },

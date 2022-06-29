@@ -62,13 +62,12 @@ export class MessageService {
     let msgDetails = await this._messageModel.find({
       messageTs: body.message.ts,
     });
-    console.log("msgDetails:" + JSON.stringify(msgDetails));
     let viewDetails,showviewDetails = [];
     try{
          viewDetails = await this.viewOtpLogService.fetchUserDetails(msgDetails[0].id);
-         console.log("viewDetails:"  + viewDetails);
          for(let viewDetail of viewDetails){
-          showviewDetails.push({userName:viewDetail.user_id,viewedOn:viewDetail.created_on})
+          let createdOn = (new Date(viewDetail.created_on)).toLocaleString();
+          showviewDetails.push({userName:viewDetail.user_id,viewedOn:createdOn})
          }
          return showviewDetails;
         }
