@@ -452,7 +452,7 @@ export class MessageController {
                     }
 
 
-                    if(account!=undefined && ( account.slice(-4) == "7003" || account.slice(-3) == "431" || account.slice(-4) == "9364" )) {
+                    if(account!=undefined && ( account.slice(-4) == "7003" || account.slice(-3) == "431" || account.slice(-4) == "9364" ||account.slice(-4) == "6879")) {
                         notificationType = "personalMessage";
                     }
 
@@ -931,7 +931,7 @@ export class MessageController {
 
         private checkPersonalTxnSms(sender:string,message:string):string {
             let notificationType
-                if(((sender == "ICICIB") || (sender == "ICIOTP")) && ((message.includes("Card XX7003")) || (message.includes("Card XXX431")) || (message.includes("Card XX9364")))){
+                if(((sender == "ICICIB") || (sender == "ICIOTP")) && ((message.includes("Card XX7003")) || (message.includes("Card XXX431")) || (message.includes("Card XX9364")) || (message.includes("Account XX6879")))){
                     notificationType = "personalMessageNoBlock";
                 }
                 return notificationType;
