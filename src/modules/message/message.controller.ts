@@ -10,7 +10,7 @@ import {
     viewSbiinbLogin, viewSbiinbFundTransfer, viewSbiinbCredit, viewSbiinbTransaction,
     viewSbicrdLogin, viewSbicrdFundTransfer, viewSbicrdCredit, viewSbicrdTransaction, viewSbicrdDevopsCloud, viewSbicrdLimit, viewSbicrdUdemyOtp, viewSbicrdCardFundTransfer, viewSbicrdCardLogin, 
     viewAxisbkBalance, viewAxisbkBeneficiary, viewAxisbkCredit, viewAxisbkFundTransfer, viewAxisbkTransaction,
-    viewIcicibCorpLogin, viewIcicibCredit, viewIcicibFundTransfer, viewIcicibPersonalMessage, viewIcicibTransaction,viewIcicibDueReminder,viewIcicibAccessCibApp,
+    viewIcicibCorpLogin, viewIcicibCredit, viewIcicibFundTransfer, viewIcicibPersonalMessage, viewIcicibTransaction,viewIcicibDueReminder,viewIcicibAccessCibApp,viewIcicibSI,
     viewSbipsgTransaction, viewSbipsgCredit,
     viewWorknhireFundTransfer,
     viewIpaytmPersonalMessage,
@@ -19,8 +19,7 @@ import {
     viewCshfreUncategorized,
     view57575701Uncategorized,
 } from 'src/providers/blocks';
-import { ACTION_SHOW_OTP } from 'src/common/constants/action';
-import { viewIcicibSI } from 'src/providers/blocks/icicib/viewIcicibSI';
+import { ACTION_SHOW_ORIGINAL, ACTION_SHOW_ORIGINAL_NO_LOG, ACTION_SHOW_OTP, ACTION_SHOW_VIEW_LOG } from 'src/common/constants/action';
 
 @Controller('message')
 export class MessageController {
@@ -44,7 +43,7 @@ export class MessageController {
         let icon_url;
         let notificationType = 'uncategorized';
         let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,paymentService,type,status,totDue,minDue,upiId,transactionType,dueDate;
-        let channel,channelID,workspace,subNotificationType,subChannels,commitmentType,payerAccount;
+        let channel,channelID,workspace,subNotificationType,subChannels,commitmentType,payerAccount,merchant;
         
         console.log('sender: ' + sender);
         console.log('sender: ' + typeof(sender));
@@ -447,13 +446,13 @@ export class MessageController {
                         notificationType = 'accessCibApp'
                     }else if(regexICICIBSI.test(msg)){
                         ({
-                            groups:{amount,commitmentType,dueDate,account}
+                            groups:{amount,commitmentType,dueDate,account,merchant}
                         } = regexICICIBSI.exec(msg))
                         notificationType = 'standingInstruction'
                     }
 
 
-                    if(account!=undefined && ( account.slice(-4) == "7003" || account.slice(-3) == "431" || account.slice(-4) == "9364" )) {
+                    if(account!=undefined && ( account.slice(-4) == "7003" || account.slice(-3) == "431" || account.slice(-4) == "9364" ||account.slice(-4) == "6879")) {
                         notificationType = "personalMessage";
                     }
 
@@ -478,7 +477,7 @@ export class MessageController {
                         case 'personalMessage':
                             channel = await this.channelService.findByType('PersonalMessages');
                             icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                            blocks = viewIcicibPersonalMessage({commitmentType,account,payee,amount,OTP,msg,ref,balance,upiId,availableLimit,transactionType,dueDate});
+                            blocks = viewIcicibPersonalMessage({commitmentType,account,payee,amount,OTP,msg,ref,balance,upiId,availableLimit,transactionType,dueDate,paymentService});
                             break;
                         case 'personalMessageNoBlock':
                             channel = await this.channelService.findByType('PersonalMessages');
@@ -502,7 +501,7 @@ export class MessageController {
                         case 'standingInstruction':
                             channel = await this.channelService.findByType('service-alerts');
                             icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                            blocks = viewIcicibSI({amount,account,commitmentType,dueDate})
+                            blocks = viewIcicibSI({amount,account,commitmentType,dueDate,merchant})
                             break;
                         default:
                             channel = await this.channelService.findByType('Uncategorized');
@@ -839,7 +838,17 @@ export class MessageController {
                             },
                             "style": "danger",
                             "value": JSON.stringify(a),
-                            "action_id": "orignal_message_button"
+                            "action_id": ACTION_SHOW_ORIGINAL,
+                        },
+                        {
+                            "type": "button",
+                            "text": {
+                                "type": "plain_text",
+                                "text": "Show View Log 📃"
+                            },
+                            "style": "primary",
+                            "value": JSON.stringify(a),
+                            "action_id": ACTION_SHOW_VIEW_LOG,
                         },
                     ]
                  } 
@@ -859,7 +868,7 @@ export class MessageController {
                             },
                             "style": "danger",
                             "value": JSON.stringify(a),
-                            "action_id": "orignal_message_button"
+                            "action_id": ACTION_SHOW_ORIGINAL_NO_LOG,
                         },
                     ]
                 }
@@ -922,7 +931,7 @@ export class MessageController {
 
         private checkPersonalTxnSms(sender:string,message:string):string {
             let notificationType
-                if(((sender == "ICICIB") || (sender == "ICIOTP")) && ((message.includes("Card XX7003")) || (message.includes("Card XXX431")) || (message.includes("Card XX9364")))){
+                if(((sender == "ICICIB") || (sender == "ICIOTP")) && ((message.includes("Card XX7003")) || (message.includes("Card XXX431")) || (message.includes("Card XX9364")) || (message.includes("Account XX6879")))){
                     notificationType = "personalMessageNoBlock";
                 }
                 return notificationType;

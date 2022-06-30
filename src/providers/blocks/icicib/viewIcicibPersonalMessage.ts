@@ -1,4 +1,4 @@
-export function viewIcicibPersonalMessage({commitmentType,account,payee,amount,OTP,msg,ref,balance,upiId,availableLimit,transactionType,dueDate}: any): any {
+export function viewIcicibPersonalMessage({commitmentType,account,payee,amount,OTP,msg,ref,balance,upiId,availableLimit,transactionType,dueDate,paymentService}: any): any {
 
     const blocks = [
         {
@@ -36,13 +36,6 @@ export function viewIcicibPersonalMessage({commitmentType,account,payee,amount,O
                 {
                     "type": "mrkdwn",
                     "text": (OTP===undefined) ? " " : "*OTP:*\n XXXXXX" 
-                },{
-                    "type": "mrkdwn",
-                    "text": (upiId==undefined) ? " " :"*UPI-ID:*\n" + upiId
-                },
-                {
-                    "type": "mrkdwn",
-                    "text": (ref === undefined) ? " " : "*Ref:*\n" + ref
                 },
                 {
                     "type": "mrkdwn",
@@ -53,16 +46,34 @@ export function viewIcicibPersonalMessage({commitmentType,account,payee,amount,O
                     "text": (balance === undefined) ? " " : "*Available Balance :*\n" + (balance.includes('USD')?balance.replace('USD ','$'):balance.replace('INR ','₹'))
                 },
 
+
+            ],
+        },
+        {
+            "type":"section",
+            "fields":[
+                {
+                    "type":"mrkdwn",
+                    "text":(paymentService === undefined) ? " " : "*Payment Service :*\n " + paymentService
+                },
                 {
                     "type": "mrkdwn",
                     "text": (dueDate === undefined) ? " " : "*Due Date :*\n" + dueDate
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (commitmentType == undefined) ? " " : "*Commitment Type :*\n " +  commitmentType
+                    "text": (commitmentType === undefined) ? " " : "*Commitment Type :*\n " +  commitmentType
                 },
-            ],
-        },
+                {
+                    "type": "mrkdwn",
+                    "text": (upiId==undefined) ? " " :"*UPI-ID:*\n" + upiId
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": (ref === undefined) ? " " : "*Ref:*\n" + ref
+                },
+            ]
+        }
     ];
 
     return blocks;
