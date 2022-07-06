@@ -9,7 +9,7 @@ import { ConfigService } from '../../shared/config.service';
 import {
     viewSbiinbLogin, viewSbiinbFundTransfer, viewSbiinbCredit, viewSbiinbTransaction,
     viewSbicrdLogin, viewSbicrdFundTransfer, viewSbicrdCredit, viewSbicrdTransaction, viewSbicrdDevopsCloud, viewSbicrdLimit, viewSbicrdUdemyOtp, viewSbicrdCardFundTransfer, viewSbicrdCardLogin, 
-    viewAxisbkBalance, viewAxisbkBeneficiary, viewAxisbkCredit, viewAxisbkFundTransfer, viewAxisbkTransaction,
+    viewAxisbkBalance, viewAxisbkBeneficiary, viewAxisbkCredit, viewAxisbkFundTransfer, viewAxisbkTransaction,viewAxisBkSecurityAlerts,
     viewIcicibCorpLogin, viewIcicibCredit, viewIcicibFundTransfer, viewIcicibPersonalMessage, viewIcicibTransaction,viewIcicibDueReminder,viewIcicibAccessCibApp,viewIcicibSI,
     viewSbipsgTransaction, viewSbipsgCredit,
     viewWorknhireFundTransfer,
@@ -20,6 +20,7 @@ import {
     view57575701Uncategorized,
 } from 'src/providers/blocks';
 import { ACTION_SHOW_ORIGINAL, ACTION_SHOW_ORIGINAL_NO_LOG, ACTION_SHOW_OTP, ACTION_SHOW_VIEW_LOG } from 'src/common/constants/action';
+
 
 @Controller('message')
 export class MessageController {
@@ -43,7 +44,7 @@ export class MessageController {
         let icon_url;
         let notificationType = 'uncategorized';
         let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,paymentService,type,status,totDue,minDue,upiId,transactionType,dueDate;
-        let channel,channelID,workspace,subNotificationType,subChannels,commitmentType,payerAccount,merchant;
+        let channel,channelID,workspace,subNotificationType,subChannels,commitmentType,payerAccount,merchant,transactionMode,retryLeft,action,info;
         
         console.log('sender: ' + sender);
         console.log('sender: ' + typeof(sender));
@@ -82,7 +83,6 @@ export class MessageController {
                         } = regexSBIINBTransaction.exec(msg));
                         notificationType = 'transaction';
                     }
-                    
                     console.log('notification type: ' + notificationType);
                     switch (notificationType) {
                         case 'login':
@@ -509,12 +509,16 @@ export class MessageController {
                     }
                     break;
                 case 'AxisBk':
+                case 'AXISBK':
                     const regexAxisBkFundTransfer = /(?<OTP>\d+).?is.*?OTP.*?.(?<account>(A\/c).*?XX\d+).*?to.*?(?<payee>(A\/c).*?XX\d+).*INR.(?<amount>(\d+(.*\,\d{0,})?))/m;
                     const regexAxisBkBeneficiary = /(?<OTP>\d+).?is.*?OTP.*?adding.(?<account>.*?).as/m;
                     const regexAxisBkCreditCaseOne = /INR.(?<amount>(\d+(.*\,\d{0,})?)).*?credited.*?(?<account>A\/c.*?\d+).*?Info(:|-) (?<ref>.*?[.]).*?Bal(:|-).*?INR.(?<balance>(\d+(.*\,\d{0,})?))/m;
                     const regexAxisBkTransactionCaseOne = /INR.(?<amount>(\d+(.*\,\d{0,})?)).*?debited.*?(?<account>A\/c.*?\d+).*?at.(?<ref>.*?[.]).*?Bal.*?INR.(?<balance>(\d+(.*\,\d{0,})?))/m;
                     const regexAxisBkBalance = /balance.*?(?<account>a\/c.*?\d+).*?Rs.(?<balance>(\d+(.*\,\d{0,})?))/m;
                     const regexAxisBkCardPersonal = /4489/m;
+                    const regexAxisBkSecurityAlerts =/(?<action>log) .* Axis (?<transactionMode>.*?) has (?<status>.*). You have (?<retryLeft>.* attempts) left./m;
+                    const regexAxisBKPasswordReset = /(?<OTP>\d+) is the OTP to (?<purpose>.*). Do not share with anyone - Axis Bank/m;
+                    const regexAxisBkPasswordSet = /(?<info>.*?). If not you, pls call us on our Phone Banking numbers - Axis Bank/m;
                     if (regexAxisBkFundTransfer.test(msg)) {
                         ({
                             groups: { account, amount, payee, OTP }
@@ -546,7 +550,22 @@ export class MessageController {
                         notificationType = 'balance';
                     } else if (regexAxisBkCardPersonal.test(msg)) {
                         notificationType = 'personalMessage';
-                    } 
+                    } else if (regexAxisBkSecurityAlerts.test(msg)){
+                        ({
+                            groups: {action,transactionMode,status,retryLeft}
+                        } = regexAxisBkSecurityAlerts.exec(msg));
+                        notificationType = 'bankSecurityAlerts';
+                    } else if (regexAxisBKPasswordReset.test(msg)){
+                        ({
+                            groups:{OTP,purpose}
+                        } = regexAxisBKPasswordReset.exec(msg));
+                        notificationType = 'bankSecurityAlerts';
+                    } else if (regexAxisBkPasswordSet.test(msg)){
+                        ({
+                            groups:{info}
+                        } = regexAxisBkPasswordSet.exec(msg));
+                        notificationType = 'bankSecurityAlerts';
+                    }
 
                     console.log('notification type: ' + notificationType);
 
@@ -584,6 +603,11 @@ export class MessageController {
                             channel = await this.channelService.findByType('PersonalMessages');
                             icon_url = 'https://www.searchpng.com/wp-content/uploads/2019/01/Axis-Bank-PNG-Logo--715x715.png';
                             // Yet to add any Block Message for personal Axis Card
+                            break;
+                        case 'bankSecurityAlerts':
+                            channel = await this.channelService.findByType('bank-security-alerts');
+                            icon_url = 'https://www.searchpng.com/wp-content/uploads/2019/01/Axis-Bank-PNG-Logo--715x715.png';
+                            blocks = viewAxisBkSecurityAlerts({action,transactionMode,status,retryLeft,OTP,purpose,info})
                             break;
                         default:
                             channel = await this.channelService.findByType('Uncategorized');
