@@ -1,11 +1,11 @@
 import { Controller, Post, Request, Get, Response, HttpStatus, Res} from '@nestjs/common';
+import { ConfigService } from '../../shared/config.service';
 import { WorkspaceService } from 'src/modules/workspace/workspace.service';
 import { SlackApiService } from './slack.service';
 import { stringify } from 'querystring';
 import { OauthAccessDto } from './dto/OauthAccessDto';
 import { viewAxisbkCredit, viewSbicrdCardFundTransfer } from 'src/providers/blocks';
 import { ACTION_SHOW_OTP } from 'src/common/constants/action';
-import { ConfigService } from '@nestjs/config';
 
 @Controller('slack')
 export class SlackController {

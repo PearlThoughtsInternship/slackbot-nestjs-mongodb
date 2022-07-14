@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigService } from '@nestjs/config';
+
+import { ConfigService } from '../../shared/config.service';
 import { ViewOtpLogModel } from './view_otp_log.model';
 import { ViewOtpLogService } from './view_otp_log.service';
 
