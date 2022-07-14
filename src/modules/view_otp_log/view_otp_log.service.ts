@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ConfigService } from 'src/shared/config.service';
 import { Repository } from 'typeorm';
-import { ConfigService } from '@nestjs/config';
+
 import { ViewOtpLogModel } from "./view_otp_log.model";
 
 @Injectable()
@@ -16,6 +17,6 @@ export class ViewOtpLogService {
    }
 
    async fetchUserDetails(msgId){
-        return this.viewOtpLogModel.find({where:{text_id:msgId}});
+        return this.viewOtpLogModel.find({text_id:msgId});
    }
 }
