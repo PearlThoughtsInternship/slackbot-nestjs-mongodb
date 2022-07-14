@@ -33,7 +33,16 @@ import { ViewOtpLogService } from './modules/view_otp_log/view_otp_log.service';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    TypeOrmModule.forRoot(),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.POSTGRES_HOST,
+      port: parseInt(process.env.POSTGRES_PORT),
+      username: process.env.POSTGRES_USER,
+      password: process.env.POSTGRES_PASSWORD,
+      database: process.env.POSTGRES_DATABASE,
+      entities: [WorkspaceModel, MessageModel, ChannelModel,ViewOtpLogModel],
+      synchronize: false,
+    }),
     LoggerModule.forRoot({
       accessToken: process.env.ROLLBAR_ACCESS_TOKEN,
       environment: process.env.ROLLBAR_ENVIRONMENT,
