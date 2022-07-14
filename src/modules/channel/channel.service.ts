@@ -9,7 +9,7 @@ export class ChannelService {
     constructor(@InjectRepository(ChannelModel) private readonly _channelModel: Repository<ChannelModel>) {
 
     }
-    async findByType(message): Promise<ChannelModel[]> {
-        return this._channelModel.find({type: message});
+    async findByType(message:string): Promise<ChannelModel[]> {
+        return this._channelModel.find({where:{type: message}});
     }
 }

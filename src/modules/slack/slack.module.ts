@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigService } from 'src/shared/config.service';
+import { ConfigService } from '@nestjs/config';
 import { WorkspaceModule } from '../workspace/workspace.module';
 import { SlackController } from './slack.controller';
 import { WorkspaceService } from '../workspace/workspace.service';
