@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MessageService } from './message.service';
-import { ConfigService } from '@nestjs/config';
+import { ConfigService } from '../../shared/config.service';
 import { MessageModel } from './message.model';
 import { ViewOtpLogService } from '../view_otp_log/view_otp_log.service';
 import { ViewOtpLogModule } from '../view_otp_log/view_otp_log.module';
