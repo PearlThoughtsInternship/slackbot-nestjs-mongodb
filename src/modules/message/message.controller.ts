@@ -44,7 +44,7 @@ export class MessageController {
         let icon_url;
         let notificationType = 'uncategorized';
         let OTP, amount, account, payee,card ,utr ,limitConsumed, availableLimit , ref , balance,purpose,paymentService,type,status,totDue,minDue,upiId,transactionType,dueDate;
-        let channel,channelID,workspace,subNotificationType,subChannels,commitmentType,payerAccount,merchant,transactionMode,retryLeft,action,info;
+        let channel,channelID,workspace,subNotificationType,subChannels,commitmentType,payerAccount,merchant,transactionMode,retryLeft,action,info,transactionDate,referenceNumber;
         
         console.log('sender: ' + sender);
         console.log('sender: ' + typeof(sender));
@@ -321,7 +321,7 @@ export class MessageController {
                     const regexICICIBDueReminder = /.*?(?<transactionType>Amount Due).*? ICICI Bank Credit (?<account>Card XX\d+) is (?<amount>(INR )(\d+(.*\,\d{0,})?)(\.[0-9]+|)). Amount will be debited from your bank account on or before (?<dueDate>(\d{2}[-]\w{3,}[-]\d{2}))./m;
                     const regexICICIBCibLogin =/.*?OTP.*?CIB.application. .* The OTP is (?<OTP>\d+)./m;
                     const regexICICIBSI = /.*? your payment.*(?<amount>(Rs )(\d+(.*\,\d{0,})?)(\.[0-9]+|)) for (?<merchant>\w.*?[,]) as per (?<commitmentType>Standing Instruction) .*? due by (?<dueDate>\d{2}[\/]\d{2}[\/]\d{4}).*? debited .* (?<account>(Credit Card) (\d{4}))./m
-
+                    const regexICICIBTransaction4 = /.*? your transaction of (?<amount>INR \d+).* on ICICI Bank (?<account>.*? XX\d+) at (?<paymentService>\w+) (?<referenceNumber>\d+) dated (?<transactionDate>(\d{2}[-]\w{3,}[-]\d{2})) .* has been (?<status>\w+). Available Credit limit is (?<availableLimit>INR (\d+(.*\,\d{0,})?))/m;
                     if (regexICICIBankingFundTransfer.test(msg)) {
                         ({
                             groups: { account, amount, payee, OTP }
@@ -449,6 +449,11 @@ export class MessageController {
                             groups:{amount,commitmentType,dueDate,account,merchant}
                         } = regexICICIBSI.exec(msg))
                         notificationType = 'standingInstruction'
+                    }else if(regexICICIBTransaction4.test(msg)){
+                        ({
+                            groups:{account,amount,paymentService,transactionDate,referenceNumber,status,availableLimit}
+                        } = regexICICIBTransaction4.exec(msg))
+                        notificationType = 'transaction'
                     }
 
 
@@ -472,7 +477,7 @@ export class MessageController {
                         case 'transaction':
                             channel = await this.channelService.findByType('service-alerts');
                             icon_url = 'https://d10pef68i4w9ia.cloudfront.net/companies/logos/10126/925004492s_thumb.jpg';
-                            blocks = viewIcicibTransaction({account,payee,ref,balance,amount,paymentService,availableLimit,transactionType});
+                            blocks = viewIcicibTransaction({account,payee,ref,balance,amount,paymentService,availableLimit,transactionType,transactionDate,status,referenceNumber});
                             break;
                         case 'personalMessage':
                             channel = await this.channelService.findByType('PersonalMessages');

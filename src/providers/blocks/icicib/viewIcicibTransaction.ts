@@ -1,4 +1,4 @@
-export function viewIcicibTransaction({account,payee,ref,balance,amount,paymentService,availableLimit,transactionType}: any): any {
+export function viewIcicibTransaction({account,payee,ref,balance,amount,paymentService,availableLimit,transactionType,transactionDate,status,referenceNumber}: any): any {
     const blocks = [
         {
             "type": "header",
@@ -22,7 +22,11 @@ export function viewIcicibTransaction({account,payee,ref,balance,amount,paymentS
                 {
                     "type": "mrkdwn",
                     "text": (transactionType === undefined) ? " " : ((transactionType === "debited") ? "*Transaction Type :*\n" + "Debit" : transactionType )
-                }
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": (ref === undefined) ? " " : "*Payee:*\n" + ref
+                },
 
             ]
         },
@@ -36,13 +40,22 @@ export function viewIcicibTransaction({account,payee,ref,balance,amount,paymentS
                 },
                 {
                     "type": "mrkdwn",
-                    "text": (payee === undefined) ? " " :"*Payee :*\n" + payee
-                }
+                    "text": (status === undefined) ? " " :"*Status :*\n" + status
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": (referenceNumber === undefined) ? " " : "*Reference Number:*\n" + referenceNumber
+                },
+
             ]
         },
         {
             "type": "section",
             "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": (transactionDate === undefined) ? " " : "*Transaction Date:*\n" + transactionDate
+                },
                 {
                     "type": "mrkdwn",
                     "text": (ref === undefined) ? " " : "*Payee:*\n" + ref
