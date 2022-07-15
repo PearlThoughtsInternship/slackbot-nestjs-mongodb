@@ -5,7 +5,6 @@ import { WorkspaceService } from '../workspace/workspace.service';
 import { MessageService } from './message.service';
 import { SlackApiService } from '../slack/slack.service';
 import { ReqParserService } from '../reqparser/reqparser.service';
-import { ConfigService } from '../../shared/config.service';
 import {
     viewSbiinbLogin, viewSbiinbFundTransfer, viewSbiinbCredit, viewSbiinbTransaction,
     viewSbicrdLogin, viewSbicrdFundTransfer, viewSbicrdCredit, viewSbicrdTransaction, viewSbicrdDevopsCloud, viewSbicrdLimit, viewSbicrdUdemyOtp, viewSbicrdCardFundTransfer, viewSbicrdCardLogin, 
@@ -20,7 +19,7 @@ import {
     view57575701Uncategorized,
 } from 'src/providers/blocks';
 import { ACTION_SHOW_ORIGINAL, ACTION_SHOW_ORIGINAL_NO_LOG, ACTION_SHOW_OTP, ACTION_SHOW_VIEW_LOG } from 'src/common/constants/action';
-
+import { ConfigService } from '@nestjs/config';
 
 @Controller('message')
 export class MessageController {
