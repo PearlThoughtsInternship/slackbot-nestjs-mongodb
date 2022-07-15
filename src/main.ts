@@ -22,6 +22,7 @@ const bootstrap = async() => {
   const configService = app.get(ConfigService);
   appModule.initSlack(receiver);
   app.use(receiver.router);
-  await app.listen(configService.get('PORT'));
+  const PORT = parseInt(configService.get('PORT'))
+  await app.listen(PORT);
 }
 bootstrap();
