@@ -10,7 +10,6 @@ import { WorkspaceModule } from './modules/workspace/workspace.module';
 import { MessageModule } from './modules/message/message.module';
 // import { MessageModule } from './modules/message/message.module';
 // import { ChannelModule } from './modules/channel/channel.module';
-import { ConfigService } from './shared/config.service';
 import { SlackApiModule } from './modules/slack/slack.module';
 import { WorkspaceModel } from './modules/workspace/workspace.model';
 import { MessageModel } from './modules/message/message.model';
@@ -28,20 +27,20 @@ import { ReqParserService } from './modules/reqparser/reqparser.service';
 import { ViewOtpLogModel } from './modules/view_otp_log/view_otp_log.model';
 import { ViewOtpLogModule } from './modules/view_otp_log/view_otp_log.module';
 import { ViewOtpLogService } from './modules/view_otp_log/view_otp_log.service';
+import { config } from './config';
+import { DatabaseConfig } from './database.config';
+import { ConfigService } from '@nestjs/config';
 
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.POSTGRES_HOST,
-      port: parseInt(process.env.POSTGRES_PORT),
-      username: process.env.POSTGRES_USER,
-      password: process.env.POSTGRES_PASSWORD,
-      database: process.env.POSTGRES_DATABASE,
-      entities: [WorkspaceModel, MessageModel, ChannelModel,ViewOtpLogModel],
-      synchronize: false,
+    ConfigModule.forRoot({
+      isGlobal:true,
+      load:[config]
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useClass: DatabaseConfig,
     }),
     LoggerModule.forRoot({
       accessToken: process.env.ROLLBAR_ACCESS_TOKEN,
@@ -56,7 +55,8 @@ import { ViewOtpLogService } from './modules/view_otp_log/view_otp_log.service';
     ChannelModule,
     SlackApiModule,
     ReqParserModule,
-    ViewOtpLogModule
+    ViewOtpLogModule,
+ 
   ],
   controllers: [AppController, MessageController],
   providers: [
@@ -84,7 +84,7 @@ export class AppModule {
       clientSecret: process.env.SLACK_CLIENT_SECRET,
       scopes: "",
       authorize: async ({ teamId, enterpriseId }) => {
-        let data = await this._workspaceService.findOne({teamId: teamId});
+        let data = await this._workspaceService.findOne({where:{teamId: teamId}});
         return {
             botToken: data.accessToken,
             botId: data.userId

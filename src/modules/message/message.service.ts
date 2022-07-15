@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MessageModel } from './message.model';
-import { ConfigService } from '../../shared/config.service';
+import { ConfigService } from '@nestjs/config';
 import { ViewOtpLogService } from '../view_otp_log/view_otp_log.service';
 import { WorkspaceService } from '../workspace/workspace.service';
 
@@ -38,9 +38,9 @@ export class MessageService {
 
   async fetchMsgDetails({ body }) {
     let d = new Date();
-    let msgDetails = await this._messageModel.find({
+    let msgDetails = await this._messageModel.find({where:{
       messageTs: body.message.ts,
-    });
+    }});
     let workspaceDetails = await this.workSpaceService.findByTeamId(
       body.team.id,
     );
@@ -59,9 +59,9 @@ export class MessageService {
   }
 
   async fetchViewLogDetails({ body }) {
-    let msgDetails = await this._messageModel.find({
+    let msgDetails = await this._messageModel.find({where:{
       messageTs: body.message.ts,
-    });
+    }});
     let viewDetails,showviewDetails = [];
     try{
          viewDetails = await this.viewOtpLogService.fetchUserDetails(msgDetails[0].id);
