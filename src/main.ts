@@ -8,7 +8,7 @@ const { ExpressReceiver } = require('@slack/bolt');
 const bootstrap = async() => {
   const receiver = new ExpressReceiver({ 
     signingSecret: process.env.SLACK_SIGNING_SECRET,
-    endpoints: { events: '/slack/events', interactive: '/slack/interactive' , commands: '/slack/command' },
+    endpoints: { commands: '/slack/command' },
   });
 
   const app = await NestFactory.create(AppModule);

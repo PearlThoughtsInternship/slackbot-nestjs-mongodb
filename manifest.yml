@@ -1,59 +1,28 @@
 display_information:
-  name: Message Router-local
-  description: Message Router-local
-  background_color: '#004492'
+  name: slackbot-demo
+  description: SlackBot demo
+  background_color: "#004492"
 features:
   app_home:
-    home_tab_enabled: true
-    messages_tab_enabled: false
+    home_tab_enabled: false
+    messages_tab_enabled: true
     messages_tab_read_only_enabled: true
   bot_user:
-    display_name: Message Router - local
+    display_name: Slackbot demo
     always_online: true
   slash_commands:
-    - command: /echo
-      url: <your-domain-url>/slack/events
-      description: Echos
+    - command: /hello
+      url: <your-domain-url>/slack/command
+      description: Hello World
       should_escape: false
 oauth_config:
   redirect_urls:
     - <your-domain-url>/slack/oauth_redirect
   scopes:
-    user:
-      - channels:history
-      - channels:write
-      - chat:write
-      - groups:write
-      - identify
-      - im:write
-      - mpim:write
-      - users:read
-      - team:read
     bot:
-      - app_mentions:read
-      - channels:history
-      - channels:join
-      - channels:manage
       - chat:write
-      - chat:write.public
       - commands
-      - conversations.connect:manage
-      - groups:write
-      - im:write
-      - mpim:write
-      - users:read
-      - users:write
-      - chat:write.customize
 settings:
-  event_subscriptions:
-    request_url: <your-domain-url>/slack/events
-    bot_events:
-      - app_home_opened
-      - app_mention
-      - message.channels
-  interactivity:
-    is_enabled: true
-    request_url: <your-domain-url>/slack/events
   org_deploy_enabled: false
   socket_mode_enabled: false
   token_rotation_enabled: false

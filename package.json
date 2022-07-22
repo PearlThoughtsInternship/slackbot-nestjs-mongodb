@@ -1,9 +1,9 @@
 {
-  "name": "messagerouterapi",
-  "private": true,
+  "name": "slackbot-demo",
+  "private": false,
   "version": "1.0.0",
-  "description": "messagerouterapi",
-  "license": "MIT",
+  "description": "Basic slackbot with NestJs and Bolt",
+  "license": "",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
@@ -27,14 +27,11 @@
     "@nestjs/typeorm": "^8.0.2",
     "@slack/bolt": "3.6.0",
     "dotenv": "^10.0.0",
-    "messagebird": "^3.6.4",
     "nestjs-rollbar": "^1.7.0",
-    "pg": "^8.7.1",
     "query-string": "^7.0.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.3.0",
-    "typeorm": "^0.2.38"
+    "rxjs": "^7.3.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.1.1",

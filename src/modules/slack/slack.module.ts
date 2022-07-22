@@ -1,13 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from 'src/shared/config.service';
-import { WorkspaceModule } from '../workspace/workspace.module';
 import { SlackController } from './slack.controller';
-import { WorkspaceService } from '../workspace/workspace.service';
-import { SlackApiService } from './slack.service';
+import { SlackService } from './slack.service';
 
 @Module({
-  imports:[WorkspaceModule],
+  imports:[],
   controllers: [SlackController],
-  providers:[ConfigService, WorkspaceService, SlackApiService]
+  providers:[ConfigService, SlackService]
 })
-export class SlackApiModule {}
+export class SlackModule {}
