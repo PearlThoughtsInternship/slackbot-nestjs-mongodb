@@ -1,8 +1,8 @@
 {
-  "name": "slackbot-demo",
+  "name": "slackbot-nestjs-mongodb",
   "private": false,
   "version": "1.0.0",
-  "description": "Basic slackbot with NestJs and Bolt",
+  "description": "Basic slackbot with NestJs and MongoDB",
   "license": "",
   "scripts": {
     "prebuild": "rimraf dist",
