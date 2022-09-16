@@ -1,28 +1,65 @@
 display_information:
-  name: slackbot-demo
-  description: SlackBot demo
-  background_color: "#004492"
+  name: hello-world-mongo
+  description: hello world app with nestjs & mongodb
+  background_color: '#004492'
 features:
   app_home:
-    home_tab_enabled: false
+    home_tab_enabled: true
     messages_tab_enabled: true
     messages_tab_read_only_enabled: true
   bot_user:
-    display_name: Slackbot demo
+    display_name: Hello World Mongo
     always_online: true
   slash_commands:
-    - command: /hello
+    - command: /helloworld
       url: <your-domain-url>/slack/command
       description: Hello World
       should_escape: false
 oauth_config:
   redirect_urls:
-    - <your-domain-url>/slack/oauth_redirect
+    - <your-domain-url>/slack/add
   scopes:
-    bot:
+    user:
+      - channels:history
+      - channels:write
       - chat:write
+      - groups:history
+      - groups:read
+      - groups:write
+      - mpim:history
+      - mpim:read
+      - mpim:write
+      - users:read
+      - users:read.email
+      - im:write
+    bot:
+      - channels:history
+      - channels:join
+      - channels:manage
+      - channels:read
+      - chat:write
+      - chat:write.public
       - commands
+      - groups:history
+      - groups:read
+      - groups:write
+      - mpim:history
+      - mpim:read
+      - mpim:write
+      - users:read
+      - im:write
 settings:
+  event_subscriptions:
+    request_url: <your-domain-url>/slack/events
+    user_events:
+      - message.channels
+    bot_events:
+      - app_home_opened
+      - message.channels
+      - team_join
+  interactivity:
+    is_enabled: true
+    request_url: <your-domain-url>/slack/interactive
   org_deploy_enabled: false
   socket_mode_enabled: false
   token_rotation_enabled: false

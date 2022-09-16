@@ -1,0 +1,51 @@
+version: '3.3'
+services:
+  dev:
+    container_name: helloworld_mongo_dev
+    image: helloworld_mongo_dev:1.0.0
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: yarn start:dev
+    ports:
+      - 3000:3000
+      - 3001:9229
+    networks:
+      - helloworld-mongo-network
+    depends_on:
+      - mongodb-helloworld
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+  mongodb-helloworld:
+    image : mongo:latest
+    container_name: mongodb-helloworld
+    volumes:
+      - ./database:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      - helloworld-mongo-network
+    restart: always
+  prod:
+    container_name: helloworld_mongo_prod
+    image: helloworld_mongo_prod:1.0.0
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: yarn start:prod
+    ports:
+      - 3000:3000
+      - 9229:9229
+    networks:
+      - helloworld-mongo-network
+    depends_on:
+      - mongodb-helloworld
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+networks:
+    helloworld-mongo-network:
+      driver: bridge
